@@ -33,4 +33,3 @@ controls.enabled = true;
 function animate() {
     renderer.render(scene, camera);
 }
-
