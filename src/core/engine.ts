@@ -13,8 +13,7 @@ export class Engine {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setAnimationLoop((time: DOMHighResTimeStamp, frame: XRFrame) => {
       this.renderer.render(scene, camera);
-
-      if(animator != undefined) {
+      if (animator != undefined) {
         animator(time, frame);
       }
     });

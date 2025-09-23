@@ -1,5 +1,5 @@
 import { Camera, MathUtils, Mesh, MeshStandardMaterial, SphereGeometry, SRGBColorSpace, Texture, Vector3 } from "three";
-import type { Engine } from "../core/engine";
+import type { Engine } from "./core/engine";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export class Earth extends Mesh {
@@ -14,11 +14,11 @@ export class Earth extends Mesh {
       128
     );
 
-    this.customTexture = engine.getTextures().load("./../../assets/textures/earth.jpg");
+    this.customTexture = engine.getTextures().load("./../assets/textures/earth.jpg");
     this.material = new MeshStandardMaterial({
       map: this.customTexture
     });
-    
+
     this.customTexture.colorSpace = SRGBColorSpace;
 
     this.rotation.order = "YXZ";
@@ -49,12 +49,12 @@ export class Earth extends Mesh {
     });
   }
 
-  public getGeolocalization(camera: Camera, controls: OrbitControls): {longitude: number, latitude: number} {
+  public getGeolocalization(camera: Camera, controls: OrbitControls): { longitude: number, latitude: number } {
     const dir = new Vector3(); dir.subVectors(camera.position, controls.target).normalize();
     const lat = MathUtils.radToDeg(Math.asin(dir.y));
     const lon = MathUtils.radToDeg(Math.atan2(dir.x, dir.z));
-    
-    console.log({lat, lon});
+
+    console.log({ lat, lon });
 
     return {
       longitude: lon,
