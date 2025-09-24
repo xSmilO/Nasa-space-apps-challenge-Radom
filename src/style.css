@@ -12,10 +12,17 @@ div#radar {
   left: calc(100% - 450px);
   top: calc(100% - 350px);
   padding: 10px;
+  text-align: center;
+  font-style: italic;
+  color: antiquewhite;
+  font-family: Verdana;
+  line-height: 300px;
+  overflow: hidden;
 }
 
-div#radar>image#radarImage {
+div#radar>img#radarImage {
   width: 100%;
   height: 100%;
-  background-color: red;
+  overflow: hidden;
+  border: none;
 }

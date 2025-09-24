@@ -22,6 +22,10 @@ export class System {
     this.renderer.outputColorSpace = SRGBColorSpace;
     this.controls = new OrbitControls(camera, this.renderer.domElement);
 
+    this.controls.enablePan = false;
+    this.controls.maxDistance = 1200;
+    this.controls.minDistance = 115;
+
     document.body.appendChild(this.renderer.domElement);
   }
 
