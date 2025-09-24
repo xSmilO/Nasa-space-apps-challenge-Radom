@@ -19,7 +19,3 @@ div#radar>image#radarImage {
   height: 100%;
   background-color: red;
 }
-
-div#radarTemplate {
-  /* display: none; */
-}
