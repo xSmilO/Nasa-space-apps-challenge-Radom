@@ -29,8 +29,8 @@ app.get("/generate", async (request, result) => {
     result.sendFile(filePath);
   } catch(error) {
     console.log(error);
-    result.sendStatus(100).send("An error occurred while generating the map.");
+    result.sendStatus(500).send("An error occurred while generating the map image to display inside the radar.");
   }
 });
 
-app.listen(3001, () => console.log("Map server running on: http://localhost:3001."));
+app.listen(3001, () => console.log("Radar-generating server running on: http://localhost:3001."));
