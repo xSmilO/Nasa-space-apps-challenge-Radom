@@ -1,7 +1,7 @@
 import { Camera, Scene, SRGBColorSpace, TextureLoader, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
-export class Engine {
+export class System {
   private renderer: WebGLRenderer;
   private textures: TextureLoader;
   private controls?: OrbitControls;

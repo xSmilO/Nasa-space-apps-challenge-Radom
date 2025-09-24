@@ -1,4 +1,4 @@
-import { Camera, Mesh, Object3D, PerspectiveCamera, Scene } from "three";
+import { Camera, Object3D, PerspectiveCamera, Scene } from "three";
 
 export class World {
   private camera3D: PerspectiveCamera;
@@ -20,7 +20,7 @@ export class World {
     return this.scene;
   }
 
-  public add3DElement(element: Object3D): Object3D {
+  public addElement3D(element: Object3D): Object3D {
     this.scene.add(element);
     return element;
   }
