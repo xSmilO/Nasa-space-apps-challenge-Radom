@@ -21,7 +21,8 @@ export class Earth extends Mesh {
 
     this.customTexture.colorSpace = SRGBColorSpace;
 
-    this.rotation.order = "YXZ";
+    this.rotation.set(0, -1.57, 0);
+    // this.rotation.order = "YXZ";
   }
 
   public setRotationFromGeolocalization(): void {

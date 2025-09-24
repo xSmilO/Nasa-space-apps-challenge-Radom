@@ -29,12 +29,6 @@ const hitMarker = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 16), new THREE.
 world.add3DElement(hitMarker);
 
 window.addEventListener("mousemove", (e: MouseEvent) => {
-  // const mousePos: Vector2 = new Vector2(
-  //   (e.clientX / window.innerWidth) * 2 - 1,
-  //   (e.clientY / window.innerHeight) * 2 - 1
-  // )
-  console.log("kurwa!!!")
-
   const isLMBDown: boolean = (e.buttons & 1) === 1;
 
   if (!isLMBDown) return;
@@ -82,6 +76,4 @@ function toLatLon(point: Vector3, radius: number) {
   }
 
   hitMarker.position.copy(point)
-
-  console.log(`My ${lat}/${lon} His: ${tempLat}/${tempLon}`)
 }

@@ -1,6 +1,13 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 body {
   background-color: #0d0d0f;
   margin: 0;
+  position: relative;
 }
 
 div#radar {
@@ -11,4 +18,85 @@ div#radar {
   position: absolute;
   left: calc(100% - 450px);
   top: calc(100% - 350px);
+}
+
+.meteor-btn {
+  padding: 0.5em 1em;
+  position: absolute;
+  bottom: 5em;
+  left: 6em;
+}
+
+.meteor-creator {
+  background-color: #40424750;
+  color: white;
+  position: absolute;
+  border-radius: 0.5em;
+  left: 5em;
+  top: 30%;
+  transform: translate(0, -50%);
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.meteor-creator h2 {
+  text-align: center;
+  font-size: 1em;
+}
+
+.meteor-creator .display {
+  width: 100%;
+  height: 16em;
+  background-color: #121212;
+  border-radius: 0.5em;
+}
+
+.meteor-creator .categories {
+  display: flex;
+}
+
+.parameters {
+  border-radius: 0.5em;
+  background-color: #494A50;
+  padding: 0.5em 0;
+}
+
+.parameters h3 {
+  text-align: center;
+}
+
+.parameters .categories .category {
+  padding: 0px 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid black;
+  cursor: pointer;
+  transition: border-bottom 0.5s ease;
+}
+
+.parameters .categories .category.active {
+  border-bottom: 2px solid white;
+}
+
+.parameters .inputs {
+  width: 100%;
+  background-color: red;
+  display: flex;
+  overflow: hidden;
+}
+
+.parameters .inputs .variant {
+  width: 100%;
+  flex-shrink: 0;
+  transition: transform 0.5s ease;
+  padding: 1em
+}
+
+.parameters .inputs:has(#size-inputs.active) .variant {
+  transform: translate(0);
+}
+
+.parameters .inputs:has(#entry-inputs.active) .variant {
+  transform: translate(-100%);
 }
