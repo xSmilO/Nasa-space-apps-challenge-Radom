@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, TextureLoader, Vector2, WebGLRenderer } from "three";
+import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, WebGLRenderer } from "three";
 import { Earth } from "../element3D/earth";
 import { Map } from "maplibre-gl";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
@@ -23,7 +23,7 @@ export class Environment {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.earth = new Earth(this.textureLoader);
     this.directionalLight = new DirectionalLight(0xffffff, 2.5);
-    this.ambientLight = new AmbientLight(0xffffff, 0.25);
+    this.ambientLight = new AmbientLight(0xffffff, 0.1);
     this.radar = new Map({
       container: "radarContainer",
       style: "/radar/getStyle",
@@ -52,8 +52,14 @@ export class Environment {
     this.scene.add(this.directionalLight);
     this.scene.add(this.ambientLight);
 
+    this.textureLoader.load("./../../assets/textures/skybox.png", (texture: Texture) => {
+      texture.mapping = EquirectangularReflectionMapping;
+      texture.colorSpace = SRGBColorSpace;
+
+      this.scene.background = texture;
+    });
+
     this.renderer.outputColorSpace = SRGBColorSpace;
-    this.renderer.setClearColor(0x0d0d0f);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setAnimationLoop((time: DOMHighResTimeStamp, frame: XRFrame) => {
       this.renderer.render(this.scene, this.camera);
