@@ -31,6 +31,9 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
     onUpdate: () => {
       const direction = new Vector3().subVectors(environment.controls.object.position, environment.controls.target).normalize();
       environment.controls.object.position.copy(environment.controls.target.clone().add(direction.multiplyScalar(object.distance)));
+    },
+    onComplete: () => {
+      environment.updateControlsSpeed();
     }
   })
 });

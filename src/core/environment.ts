@@ -108,7 +108,7 @@ export class Environment {
   public updateControlsSpeed(): void {
     const distance: number = this.controls.getDistance();
     const minSpeed: number = 0.01;
-    const maxSpeed: number = 1.0;
+    const maxSpeed: number = 2.0;
     const delta: number = Math.min(Math.max((distance - this.controls.minDistance) / (this.controls.maxDistance - this.controls.minDistance), 0), 1);
     this.controls.rotateSpeed = MathUtils.lerp(minSpeed, maxSpeed, delta);
   }
