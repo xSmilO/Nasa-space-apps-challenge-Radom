@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "radar": "ts-node src/radarserver.ts"
+    "radar": "ts-node src/radarserver.ts",
+    "test": "concurrently \"npm run radar\" \"npm run dev\""
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
