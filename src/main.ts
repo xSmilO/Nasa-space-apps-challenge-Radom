@@ -1,7 +1,6 @@
 import { Environment } from "./core/environment";
 import gsap from "gsap";
 import { Vector3 } from "three";
-import type { OrbitControls } from "three/examples/jsm/Addons.js";
 
 const environment: Environment = new Environment(() => {
   environment.earth.clouds.rotation.y += 0.0001;
@@ -24,11 +23,6 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
   const object: {distance: number} = {
     distance: environment.controls.getDistance()
   };
-
-  function setCameraDistance(controls: OrbitControls, distance: number) {
-    const direction = new Vector3().subVectors(controls.object.position, controls.target).normalize();
-    controls.object.position.copy(controls.target.clone().add(direction.multiplyScalar(distance)));
-  }
 
   gsap.to(object, {
     distance: 200,
