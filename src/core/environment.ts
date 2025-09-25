@@ -2,7 +2,6 @@ import { AmbientLight, DirectionalLight, PerspectiveCamera, Raycaster, Scene, SR
 import { Earth } from "../element3D/earth";
 import { Map } from "maplibre-gl";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { CustomRadarLayer } from "./customRadarLayer";
 import { RadarHelper } from "../utility/radarHelper";
 
 export class Environment {
@@ -33,6 +32,10 @@ export class Environment {
       interactive: false
     });
 
+    this.radar.on("load", () => {
+      this.updateRadar();
+    });
+
     this.camera.position.z = 200;
     this.directionalLight.position.set(5, 3, 5);
     this.controls.minDistance = 115;
@@ -54,10 +57,6 @@ export class Environment {
     });
 
     document.body.appendChild(this.renderer.domElement);
-  }
-
-  private attachCustomRadarLayer(): void {
-    this.radar.addLayer(new CustomRadarLayer());
   }
 
   public updateRadar(): void {
