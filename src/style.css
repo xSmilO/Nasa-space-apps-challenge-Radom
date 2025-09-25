@@ -1,5 +1,171 @@
+@import url("https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap");
+
 * {
-    margin: 0;
     padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Saira", sans-serif;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+body {
+    background-color: #0d0d0f;
+    margin: 0;
+    position: relative;
+}
+
+div#radar {
+    width: 400px;
+    height: 300px;
+    border: 1px solid #eeedff;
+    background-color: #0a0a0a;
+    position: absolute;
+    left: calc(100% - 450px);
+    top: calc(100% - 350px);
+}
+
+.meteor-btn {
+    padding: 0.5em 1em;
+    position: absolute;
+    bottom: 5em;
+    left: 6em;
+    z-index: 100;
+}
+
+.meteor-creator {
+    background-color: #40424750;
+    color: white;
+    position: absolute;
+    border-radius: 0.5em;
+    left: 5em;
+    padding: 2em 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    top: 10%;
+    display: none;
+}
+
+.meteor-creator.active {
+    display: block;
+}
+
+.meteor-creator h2 {
+    text-align: center;
+    font-size: 1.25em;
+}
+
+.meteor-creator .display-container {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.meteor-creator .display-container .display {
+    width: 100%;
+    height: 14em;
+    background-color: #121212;
+    border-radius: 0.5em;
+}
+
+.meteor-creator .display-container .arrow {
+    width: 1.3em;
+    height: 1.3em;
+    cursor: pointer;
+    transition: scale 250ms ease;
+}
+
+.meteor-creator .display-container .arrow:hover {
+    scale: 1.15
+}
+
+.meteor-creator .display-container .arrow img {
+    width: 100%;
+    height: 100%;
+}
+
+.meteor-creator .categories {
+    display: flex;
+    width: 100%;
+}
+
+.parameters {
+    border-radius: 0.5em;
+    padding: 0.5em 0;
+    width: 100%;
+}
+
+.parameters h3 {
+    text-align: center;
+}
+
+.parameters .categories .category {
+    padding: 0px 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 2px solid black;
+    cursor: pointer;
+    transition: border-bottom 0.5s ease;
+    width: 50%;
+    text-align: center;
+}
+
+.parameters .categories .category.active {
+    border-bottom: 2px solid white;
+}
+
+.parameters .inputs {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
+.parameters .inputs .variant {
+    flex-shrink: 0;
+    transition: transform 0.5s ease;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    color: #AFB0B6;
+    font-weight: 500;
+}
+
+
+.parameters .inputs .variant input {
+    outline: none;
+    padding: 0.5em 1em;
+    width: 10em;
+    background: none;
+    border: 1px solid #AFB0B628;
+    border-radius: 0.25em;
+    color: white;
+    font-size: 1em;
+    text-align: right;
+}
+
+.meteor-creator .close-btn {
+    cursor: pointer;
+    position: absolute;
+    top: 2em;
+    right: 2em;
+    width: 1.25em;
+    height: 1.25em;
+    transition: scale 250ms ease-out;
+}
+
+.meteor-creator .close-btn:hover {
+    scale: 1.1;
+}
+
+.meteor-creator .close-btn img {
+    width: 100%;
+    height: 100%;
+}
