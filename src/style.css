@@ -23,14 +23,27 @@ body {
     position: relative;
 }
 
+body {
+    background-color: #0d0d0f;
+    margin: 0;
+}
+
 div#radar {
     width: 400px;
     height: 300px;
-    border: 1px solid #eeedff;
+    border: 1px solid #a1a0b0;
     background-color: #0a0a0a;
     position: absolute;
     left: calc(100% - 450px);
     top: calc(100% - 350px);
+    padding: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+div#radar > div#radarContainer {
+    width: 100%;
+    height: 100%;
 }
 
 .meteor-btn {
@@ -85,7 +98,7 @@ div#radar {
 }
 
 .meteor-creator .display-container .arrow:hover {
-    scale: 1.15
+    scale: 1.15;
 }
 
 .meteor-creator .display-container .arrow img {
@@ -134,17 +147,16 @@ div#radar {
     padding: 1em;
     display: flex;
     flex-direction: column;
-    color: #AFB0B6;
+    color: #afb0b6;
     font-weight: 500;
 }
-
 
 .parameters .inputs .variant input {
     outline: none;
     padding: 0.5em 1em;
     width: 10em;
     background: none;
-    border: 1px solid #AFB0B628;
+    border: 1px solid #afb0b628;
     border-radius: 0.25em;
     color: white;
     font-size: 1em;
@@ -169,3 +181,4 @@ div#radar {
     width: 100%;
     height: 100%;
 }
+

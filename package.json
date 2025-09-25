@@ -6,17 +6,24 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "radar": "ts-node src/radarserver.ts"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/leaflet": "^1.9.20",
     "@types/three": "^0.180.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.7"
   },
   "dependencies": {
-    "leaflet": "^1.9.4",
+    "@types/express": "^5.0.3",
+    "maplibre-gl": "^5.7.3",
     "three": "^0.180.0",
-    "three.js": "^0.77.0"
+    "three.js": "^0.77.0",
+    "ts-node": "^10.9.2"
   }
 }
