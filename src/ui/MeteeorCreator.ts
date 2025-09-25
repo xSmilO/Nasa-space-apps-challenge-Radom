@@ -7,13 +7,37 @@ export default class MeteorCreator {
     private scene!: Scene;
     private camera!: PerspectiveCamera;
     private canvas: HTMLDivElement | null;
+    private container: HTMLDivElement | null;
     private renderer!: WebGLRenderer;
     private meteor: Mesh;
-    private categories: NodeListOf<HTMLDivElement> | null;
+
+    // parameters
+    private diameterInput: HTMLInputElement | null;
+    private densityInput: HTMLInputElement | null;
+    private angleInput: HTMLInputElement | null;
+    private velocityInput: HTMLInputElement | null;
+    private angleLabel: HTMLLabelElement | null;
+    private velocityLabel: HTMLLabelElement | null;
+    private _diameter: number;
+    private _density: number;
+    private _angle: number;
+    private _velocity: number;
 
     constructor() {
+        this.diameterInput = null;
+        this.densityInput = null;
+        this.angleInput = null;
+        this.velocityInput = null;
+        this.angleLabel = null;
+        this.velocityLabel = null;
+        this._diameter = 0;
+        this._angle = 0;
+        this._density = 0;
+        this._velocity = 0;
+
         this._active = false;
-        this.fetchHTMLElements()
+        this.container = document.querySelector<HTMLDivElement>(".meteor-creator");
+        this.canvas = document.querySelector<HTMLDivElement>(".meteor-creator .display-container .display");
 
         if (!this.canvas) throw new Error("MeteorCreator: .meteor-creator .display doesn't not exist");
 
@@ -33,6 +57,8 @@ export default class MeteorCreator {
         this.scene.add(light);
 
         this.camera.position.z = 2;
+
+        this.fetchHTMLElements();
     }
 
     public render(): void {
@@ -44,49 +70,59 @@ export default class MeteorCreator {
 
     public enable(): void {
         this._active = true;
+        this.container?.classList.add("active");
+
+        this.camera.aspect = this.canvas!.clientWidth / this.canvas!.clientHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(this.canvas!.clientWidth, this.canvas!.clientHeight);
+
     }
 
     public disable(): void {
         this._active = false;
+        this.container?.classList.remove("active");
     }
 
     get active(): boolean {
         return this._active;
     }
 
+    onInputChange(): void {
+        this._diameter = parseInt(this.diameterInput!.value);
+        this._density = parseInt(this.densityInput!.value);
+        this._angle = parseInt(this.angleInput!.value);
+        this._velocity = parseInt(this.velocityInput!.value);
+
+        this.angleLabel!.innerHTML = `Angle: ${this._angle ? this._angle : 0}&deg`
+        this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
+    }
+
     fetchHTMLElements(): void {
-        this.canvas = document.querySelector<HTMLDivElement>(".meteor-creator .display");
+        this.diameterInput = document.querySelector<HTMLInputElement>("input[name='diameter']");
+        this.densityInput = document.querySelector<HTMLInputElement>("input[name='density']");
+        this.angleInput = document.querySelector<HTMLInputElement>("input[name='angle']");
+        this.velocityInput = document.querySelector<HTMLInputElement>("input[name='velocity']");
 
-        // parameters categories
-        this.categories = document.querySelectorAll(".meteor-creator .parameters .categories .category");
-        const inputs = document.querySelectorAll(".meteor-creator .parameters .inputs .variant");
+        this.angleLabel = document.querySelector<HTMLLabelElement>("label[for='angle']");
+        this.velocityLabel = document.querySelector<HTMLLabelElement>("label[for='velocity']");
 
-        console.log(inputs.item(0))
 
-        if (this.categories) {
-            this.categories.forEach(category => {
-                category.addEventListener("click", () => {
-                    this.categories!.forEach(elem => {
-                        elem.classList.remove("active");
-                    })
-                    category.classList.add("active");
+        this._diameter = parseInt(this.diameterInput!.value);
+        this._density = parseInt(this.densityInput!.value);
+        this._angle = parseInt(this.angleInput!.value);
+        this._velocity = parseInt(this.velocityInput!.value);
 
-                    inputs.forEach(inputCategory => {
-                        inputCategory.classList.remove("active");
-                    })
+        this.angleLabel!.innerHTML = `Angle: ${this._angle ? this._angle : 0}&deg`
+        this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
 
-                    switch (category.id) {
-                        case "size-category":
-                            inputs.item(0).classList.add("active");
-                            break;
-                        case "entry-category":
-                            inputs.item(1).classList.add("active");
-                            break;
-                    }
-                })
-            });
-        }
+        this.setEventListeners();
+    }
 
+    setEventListeners(): void {
+        this.diameterInput?.addEventListener("input", () => this.onInputChange());
+        this.densityInput?.addEventListener("input", () => this.onInputChange());
+        this.angleInput?.addEventListener("input", () => this.onInputChange());
+        this.velocityInput?.addEventListener("input", () => this.onInputChange());
     }
 }
 

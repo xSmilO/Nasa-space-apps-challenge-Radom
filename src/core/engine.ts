@@ -7,17 +7,19 @@ export class Engine {
   private textures: TextureLoader;
   private controls?: OrbitControls;
   private meteorCreator: MeteorCreator
+  private meteorCreatorBtn: HTMLButtonElement | null;
 
   constructor(scene: Scene, camera: Camera, animator?: (time: DOMHighResTimeStamp, frame: XRFrame) => void) {
+    this.meteorCreatorBtn = document.querySelector<HTMLButtonElement>(".meteor-btn");
     this.renderer = new WebGLRenderer();
     this.textures = new TextureLoader();
     this.meteorCreator = new MeteorCreator();
-    this.meteorCreator.enable();
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setAnimationLoop((time: DOMHighResTimeStamp, frame: XRFrame) => {
-      if (this.meteorCreator.active)
+      if (this.meteorCreator.active) {
         this.meteorCreator.render();
+      }
 
       this.renderer.render(scene, camera);
       if (animator != undefined) {
@@ -29,6 +31,10 @@ export class Engine {
     this.controls = new OrbitControls(camera, this.renderer.domElement);
 
     document.body.appendChild(this.renderer.domElement);
+
+    if (this.meteorCreatorBtn) this.meteorCreatorBtn.addEventListener("click", () => {
+      this.meteorCreator.active ? this.meteorCreator.disable() : this.meteorCreator.enable();
+    })
   }
 
   public getRenderer(): WebGLRenderer {

@@ -12,26 +12,34 @@
     <button type="button" class="meteor-btn">Generate meteor</button>
     <div class="meteor-creator">
         <h2>Apophis</h2>
-        <div class="display">
+        <div class="display-container">
+            <div class="left-arrow arrow">
+                <img src="/assets/icons/left-arrow.svg" alt="">
+            </div>
+            <div class="display">
+            </div>
+            <div class="left-arrow arrow">
+                <img src="/assets/icons/right-arrow.svg" alt="">
+            </div>
         </div>
         <div class="parameters">
             <h3>Parameters</h3>
-            <div class="categories">
-                <div class="category active" id="size-category">
-                    Size & Composition
-                </div>
-
-                <div class="category" id="entry-category">
-                    Entry / Trajectory
-                </div>
+            <div class="close-btn">
+                <img src="/assets/icons/cross.svg" alt="">
             </div>
 
             <div class="inputs">
                 <div class="variant" id="size-inputs">
-                    chuj1
+                    <label for="diameter">Diameter (m)</label>
+                    <input type="number" name="diameter" value="50" min="0" max="1000">
+                    <label for="density">Density (kg/m<sup>3</sup>)</label>
+                    <input type="number" name="density" value="50" min="0" max="1000">
                 </div>
                 <div class="variant" id="entry-inputs">
-                    penis
+                    <label for="angle">Angle: 20&deg;</label>
+                    <input type="range" name="angle" value="20" min="0" max="70">
+                    <label for="velocity">Velocity: 40 km/s</label>
+                    <input type="range" name="velocity" value="40" min="0" max="150">
                 </div>
             </div>
 
