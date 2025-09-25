@@ -14,6 +14,7 @@ export class Environment {
   public directionalLight: DirectionalLight;
   public ambientLight: AmbientLight;
   public radar: Map;
+  public radarHTMLElement: HTMLDivElement;
 
   constructor(animator?: (time: DOMHighResTimeStamp, frame: XRFrame) => void) {
     this.textureLoader = new TextureLoader();
@@ -31,6 +32,8 @@ export class Environment {
       zoom: 0,
       interactive: false
     });
+
+    this.radarHTMLElement = document.getElementById("radar") as HTMLDivElement;
 
     this.radar.on("load", () => {
       this.earth.rotateFromGeolocation(this.controls);
@@ -78,6 +81,15 @@ export class Environment {
 
     this.radar.setCenter([geolocalization.longitude, geolocalization.latitude]);
     this.radar.setZoom(zoom);
+    this.radar.resize();
+
+    if(zoom == 10) {
+      this.radarHTMLElement.classList.add("bigger");
+    } else if(zoom < 2) {
+      this.radarHTMLElement.classList.add("smaller");
+    } else {
+      this.radarHTMLElement.classList.remove("bigger", "smaller");
+    }
   }
 
   public updateControlsState(event: MouseEvent): void {

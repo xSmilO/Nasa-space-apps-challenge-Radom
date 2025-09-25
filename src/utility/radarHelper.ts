@@ -4,7 +4,7 @@ function resolveGoodZoomValue(zoom: number): number {
   return parseInt(zoom.toFixed());
 }
 
-export function resolveRadarZoom(controls: OrbitControls): number {
+export function resolveRadarZoomLegacy(controls: OrbitControls): number {
   const minDistance: number = controls.minDistance;
   const maxDistance: number = controls.maxDistance;
   const distance: number = controls.getDistance();
@@ -29,4 +29,34 @@ export function resolveRadarZoom(controls: OrbitControls): number {
   const zoom = maxZoom * (1 - Math.pow(delta, exponent));
 
   return resolveGoodZoomValue(Math.max(minZoom, Math.min(maxZoom, zoom)));
+}
+
+export function resolveRadarZoom(controls: OrbitControls): number {
+  const minDistance: number = controls.minDistance;
+  const maxDistance: number = controls.maxDistance;
+  const distance: number = controls.getDistance();
+  const maxZoom: number = 10;
+  const minZoom: number = 0;
+
+  const anchors: [number, number][] = [
+    [minDistance, maxZoom],
+    [150, 8],
+    [200, 2],
+    [maxDistance, minZoom],
+  ];
+
+  const distanceClamped = Math.max(minDistance, Math.min(maxDistance, distance));
+
+  for (let i = 0; i < anchors.length - 1; i++) {
+    const [d1, z1]: [number, number] = anchors[i];
+    const [d2, z2]: [number, number] = anchors[i + 1];
+    if (distanceClamped >= d1 && distanceClamped <= d2) {
+      const delta: number = (distanceClamped - d1) / (d2 - d1);
+      const zoom: number = z1 + (z2 - z1) * delta;
+
+      return resolveGoodZoomValue(Math.max(minZoom, Math.min(maxZoom, zoom)));
+    }
+  }
+
+  return resolveGoodZoomValue(minZoom);
 }
