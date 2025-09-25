@@ -2,9 +2,9 @@ import { Camera, Scene, SRGBColorSpace, TextureLoader, WebGLRenderer } from "thr
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export class System {
-  private renderer: WebGLRenderer;
-  private textures: TextureLoader;
-  private controls?: OrbitControls;
+  public renderer: WebGLRenderer;
+  public textures: TextureLoader;
+  public controls: OrbitControls;
 
   constructor(scene: Scene, camera: Camera, animator?: (time: DOMHighResTimeStamp, frame: XRFrame) => void) {
     this.renderer = new WebGLRenderer();
@@ -27,17 +27,5 @@ export class System {
     this.controls.minDistance = 115;
 
     document.body.appendChild(this.renderer.domElement);
-  }
-
-  public getRenderer(): WebGLRenderer {
-    return this.renderer;
-  }
-
-  public getTextures(): TextureLoader {
-    return this.textures;
-  }
-
-  public getControls(): OrbitControls {
-    return this.controls as OrbitControls;
   }
 }

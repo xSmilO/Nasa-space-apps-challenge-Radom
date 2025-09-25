@@ -1,12 +1,8 @@
 import express from "express";
-import StaticMaps from "staticmaps";
 import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const filePath: string = path.join(__dirname, "./../assets/map.png");
+dotenv.config();
 
 const app = express();
 
@@ -14,23 +10,12 @@ app.use(cors({
   origin: "http://localhost:5173/"
 }));
 
-app.get("/generate", async (request, result) => {
-  const longitude: number = parseFloat(request.query.longitude as string);
-  const latitude: number = parseFloat(request.query.latitude as string);
-  const zoom: number = parseFloat(request.query.zoom as string);
-  const map = new StaticMaps({width: 400, height: 300});
+app.get("/getStyle", async (request, result) => {
+  const apiKey = process.env.MAP_TILER_API_KEY;
+  const style = await fetch(`https://api.maptiler.com/maps/topo-v2/style.json?key=${apiKey}`);
+  const data = await style.json();
 
-  try {
-    console.log("Generating for: ", longitude, latitude, zoom)
-
-    await map.render([longitude, latitude], zoom);
-    await map.image.save(filePath);
-
-    result.sendFile(filePath);
-  } catch(error) {
-    console.log(error);
-    result.sendStatus(500).send("An error occurred while generating the map image to display inside the radar.");
-  }
+  result.json(data);
 });
 
-app.listen(3001, () => console.log("Radar-generating server running on: http://localhost:3001."));
+app.listen(3001, () => console.log("Radar-generating server running on: \x1b[7mhttp://localhost:3001\x1b[0m."));

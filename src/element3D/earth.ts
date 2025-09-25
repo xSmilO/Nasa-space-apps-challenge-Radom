@@ -1,11 +1,10 @@
-import { Camera, MathUtils, Mesh, MeshStandardMaterial, SphereGeometry, SRGBColorSpace, Texture, Vector3 } from "three";
-import type { System } from "../core/system";
+import { Camera, MathUtils, Mesh, MeshStandardMaterial, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, Vector3 } from "three";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export class Earth extends Mesh {
   private customTexture: Texture;
 
-  constructor(system: System) {
+  constructor(textureLoader: TextureLoader) {
     super();
 
     this.geometry = new SphereGeometry(
@@ -14,7 +13,7 @@ export class Earth extends Mesh {
       128
     );
 
-    this.customTexture = system.getTextures().load("./../../assets/textures/earth.jpg");
+    this.customTexture = textureLoader.load("./../../assets/textures/earth.jpg");
     this.material = new MeshStandardMaterial({
       map: this.customTexture
     });
@@ -28,8 +27,8 @@ export class Earth extends Mesh {
     const lon = MathUtils.radToDeg(Math.atan2(dir.x, dir.z));
 
     return {
-      longitude: lon - 87.5,
-      latitude: lat - 2.0
+      longitude: lon - 90.75,
+      latitude: lat
     };
   }
 }
