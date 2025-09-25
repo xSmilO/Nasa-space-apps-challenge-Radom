@@ -31,14 +31,15 @@ body {
 div#radar {
     width: 400px;
     height: 300px;
-    border: 1px solid #a1a0b0;
+    border: 1px solid #807f8b;
     background-color: #0a0a0a;
     position: absolute;
-    left: calc(100% - 450px);
-    top: calc(100% - 350px);
-    padding: 10px;
+    right: 6em;
+    bottom: 5em;
+    padding: 5px;
     overflow: hidden;
     box-sizing: border-box;
+    border-radius: 5px;
 }
 
 div#radar > div#radarContainer {

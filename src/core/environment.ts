@@ -1,8 +1,8 @@
-import { AmbientLight, DirectionalLight, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, TextureLoader, Vector2, WebGLRenderer } from "three";
+import { AmbientLight, DirectionalLight, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, TextureLoader, Vector2, WebGLRenderer } from "three";
 import { Earth } from "../element3D/earth";
 import { Map } from "maplibre-gl";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { RadarHelper } from "../utility/radarHelper";
+import { resolveRadarZoom } from "../utility/radarHelper";
 
 export class Environment {
   public textureLoader: TextureLoader;
@@ -22,8 +22,8 @@ export class Environment {
     this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.earth = new Earth(this.textureLoader);
-    this.directionalLight = new DirectionalLight(0xffffff, 2.0);
-    this.ambientLight = new AmbientLight(0xffffff, 0.5);
+    this.directionalLight = new DirectionalLight(0xffffff, 2.5);
+    this.ambientLight = new AmbientLight(0xffffff, 0.25);
     this.radar = new Map({
       container: "radarContainer",
       style: "/radar/getStyle",
@@ -33,15 +33,22 @@ export class Environment {
     });
 
     this.radar.on("load", () => {
+      this.earth.rotateFromGeolocation(this.controls);
       this.updateRadar();
     });
 
     this.camera.position.z = 200;
+
     this.directionalLight.position.set(5, 3, 5);
+
     this.controls.minDistance = 115;
     this.controls.maxDistance = 1200;
+    this.controls.enablePan = false;
+    
+    this.updateControlsSpeed();
 
     this.scene.add(this.earth);
+    this.scene.add(this.earth.clouds);
     this.scene.add(this.directionalLight);
     this.scene.add(this.ambientLight);
 
@@ -60,8 +67,8 @@ export class Environment {
   }
 
   public updateRadar(): void {
-    const geolocalization: {longitude: number, latitude: number} = this.earth.getGeolocalization(this.camera, this.controls);
-    const zoom: number = RadarHelper.resolveZoom(this.controls);
+    const geolocalization: {longitude: number, latitude: number} = this.earth.getGeolocation(this.controls);
+    const zoom: number = resolveRadarZoom(this.controls);
 
     this.radar.setCenter([geolocalization.longitude, geolocalization.latitude]);
     this.radar.setZoom(zoom);
@@ -82,9 +89,16 @@ export class Environment {
 
   public updateControlsSpeed(): void {
     const distance: number = this.controls.getDistance();
-    const minSpeed: number = 0.1;
+    const minSpeed: number = 0.01;
     const maxSpeed: number = 1.0;
-    const t: number = Math.min(Math.max((distance - this.controls.minDistance) / (this.controls.maxDistance - this.controls.minDistance), 0), 1);
-    this.controls.rotateSpeed = minSpeed + t * (maxSpeed - minSpeed);
+    const delta: number = Math.min(Math.max((distance - this.controls.minDistance) / (this.controls.maxDistance - this.controls.minDistance), 0), 1);
+    this.controls.rotateSpeed = MathUtils.lerp(minSpeed, maxSpeed, delta);
+  }
+
+  public updateDimensions(): void {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.camera.updateProjectionMatrix();
   }
 }

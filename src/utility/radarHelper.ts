@@ -1,17 +1,32 @@
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
-import { easeInCirc, easeInQuad, easeOutCirc } from "./easings";
 
-export class RadarHelper {
-  private static zoomTreshold: number = 2;
+function resolveGoodZoomValue(zoom: number): number {
+  return parseInt(zoom.toFixed());
+}
 
-  private constructor() {}
+export function resolveRadarZoom(controls: OrbitControls): number {
+  const minDistance: number = controls.minDistance;
+  const maxDistance: number = controls.maxDistance;
+  const distance: number = controls.getDistance();
+  const maxZoom = 10
+  const minZoom = 0;
+  const anchorDistance = 200;
+  const anchorZoom = 2;
+  const distanceClamped = Math.max(minDistance, Math.min(maxDistance, distance));
+  const range = maxDistance - minDistance;
 
-  public static resolveZoom(controls: OrbitControls): number {
-    const distance: number = controls.getDistance();
-    const inverted = 1200 - distance;
-    const zoom = inverted / 120;
-    const finalZoom = Math.abs(this.zoomTreshold - zoom);
+  if(range <= 0) return resolveGoodZoomValue(anchorZoom);
 
-    return parseInt(Math.max(finalZoom, 1).toFixed());
+  const delta = (distanceClamped - minDistance) / range;
+  const anchorDelta = (anchorDistance - minDistance) / range;
+
+  if(anchorDelta <= 0 || anchorZoom >= maxZoom) {
+    const zoom = maxZoom * (1 - Math.pow(delta, 1.0));
+    return resolveGoodZoomValue(Math.max(minZoom, Math.min(maxZoom, zoom)));
   }
+  
+  const exponent = Math.log(1 - anchorZoom / maxZoom) / Math.log(anchorDelta);
+  const zoom = maxZoom * (1 - Math.pow(delta, exponent));
+
+  return resolveGoodZoomValue(Math.max(minZoom, Math.min(maxZoom, zoom)));
 }
