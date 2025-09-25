@@ -30,7 +30,9 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
     ease: "power1.inOut",
     onUpdate: () => {
       const direction = new Vector3().subVectors(environment.controls.object.position, environment.controls.target).normalize();
+
       environment.controls.object.position.copy(environment.controls.target.clone().add(direction.multiplyScalar(object.distance)));
+      environment.updateRadar();
     },
     onComplete: () => {
       environment.updateControlsSpeed();
