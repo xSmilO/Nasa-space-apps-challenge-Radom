@@ -55,19 +55,19 @@ div#radar.smaller {
   height: 150px;
 }
 
-div#radar>div#radarContainer {
-  width: 100%;
-  flex: 1;
-  overflow: hidden;
-}
-
-div#radar>button#resetZoomButton {
+div#radar>button {
   width: 100%;
   margin: 0;
   bottom: auto;
   left: auto;
   position: relative;
   margin-bottom: 5px;
+}
+
+div#radar>div#radarContainer {
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
 }
 
 .meteor-btn {

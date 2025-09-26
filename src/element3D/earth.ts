@@ -70,36 +70,40 @@ export class Earth extends Mesh {
     };
   }
 
+  public rotateFromGeolocationRaw(controls: OrbitControls, latitude: number,  longitude: number): void {
+    latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
+    longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
+    const directionVector: Vector3 = new Vector3(
+      Math.sin(longitude) * Math.cos(latitude),
+      Math.sin(latitude),
+      Math.cos(longitude) * Math.cos(latitude)
+    );
+
+    const cameraPosition = directionVector.multiplyScalar(controls.getDistance());
+
+    gsap.to(this.rotation, {
+      x: 0,
+      y: 0,
+      z: 0,
+      duration: 1,
+      ease: "power1.inOut"
+    });
+
+    gsap.to(controls.object.position, {
+      x: cameraPosition.x,
+      y: cameraPosition.y,
+      z: cameraPosition.z,
+      duration: 1,
+      ease: "power1.inOut",
+      onUpdate: () => {
+        controls.object.lookAt(controls.target);
+      }
+    });
+  }
+
   public rotateFromGeolocation(controls: OrbitControls): void {
     navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-      const longitude: number = MathUtils.degToRad(position.coords.longitude + Earth.longitudalOffset);
-      const latitude: number = MathUtils.degToRad(position.coords.latitude + Earth.latitudalOffset);
-      const directionVector: Vector3 = new Vector3(
-        Math.sin(longitude) * Math.cos(latitude),
-        Math.sin(latitude),
-        Math.cos(longitude) * Math.cos(latitude)
-      );
-
-      const cameraPosition = directionVector.multiplyScalar(controls.getDistance());
-
-      gsap.to(this.rotation, {
-        x: 0,
-        y: 0,
-        z: 0,
-        duration: 1,
-        ease: "power1.inOut"
-      });
-
-      gsap.to(controls.object.position, {
-        x: cameraPosition.x,
-        y: cameraPosition.y,
-        z: cameraPosition.z,
-        duration: 1,
-        ease: "power1.inOut",
-        onUpdate: () => {
-          controls.object.lookAt(controls.target);
-        }
-      });
+      this.rotateFromGeolocationRaw(controls, position.coords.latitude, position.coords.longitude);
     });
   }
 
@@ -108,15 +112,15 @@ export class Earth extends Mesh {
     controls.object.lookAt(controls.target);
   }
 
-  public getGeolocation(controls: OrbitControls): {longitude: number, latitude: number} {
+  public getGeolocation(controls: OrbitControls): {latitude: number, longitude: number} {
     const directionVector = this.getCrosshairDirectionVector(controls);
     const rotatedDirection = directionVector.clone().applyQuaternion(this.quaternion.clone().invert());
-    const longitude_ = MathUtils.radToDeg(Math.asin(rotatedDirection.y));
     const latitude_ = MathUtils.radToDeg(Math.atan2(rotatedDirection.x, rotatedDirection.z));
+    const longitude_ = MathUtils.radToDeg(Math.asin(rotatedDirection.y));
 
     return {
-      longitude: latitude_ - Earth.longitudalOffset,
-      latitude: longitude_ - Earth.latitudalOffset
+      latitude: longitude_ - Earth.latitudalOffset,
+      longitude: latitude_ - Earth.longitudalOffset
     };
   }
 
