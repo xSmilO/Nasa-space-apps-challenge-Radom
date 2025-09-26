@@ -64,10 +64,10 @@ export class Earth extends Mesh {
 
       shader.uniforms.dayTexture = {value: material.map}
       shader.uniforms.nightTexture = {value: this.initializeTexture("night.jpg")}
-      shader.uniforms.customLightDirection = {value: lightDirectionViewSpace}
+      shader.uniforms.sunLightDirection = {value: lightDirectionViewSpace}
 
-      shader.vertexShader = EarthTextureBlendingLegacyShader.vertex;
-      shader.fragmentShader = EarthTextureBlendingLegacyShader.fragment;
+      shader.vertexShader = EarthTextureBlendingShader.vertex;
+      shader.fragmentShader = EarthTextureBlendingShader.fragment;
     };
   }
 
