@@ -22,8 +22,8 @@ export class EarthTextureBlendingLegacyShader {
       vec4 dayColor = texture2D(dayTexture, vUv);
       vec4 nightColor = texture2D(nightTexture, vUv);
       float NdotL = dot(vNormalWorld, normalize(customLightDirection));
-      float blend = smoothstep(-0.05, 0.5, NdotL); // soft transition at the terminator
-      gl_FragColor = mix(dayColor, nightColor, blend);
+      float blend = smoothstep(-0.05, 0.05, NdotL); // soft transition at the terminator
+      gl_FragColor = mix(dayColor * vec4(0.6, 0.6, 0.6, 1.0), nightColor, blend);
     }
   `;
 
