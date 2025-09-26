@@ -2,7 +2,6 @@ import gsap from "gsap";
 import {Camera, MathUtils, Mesh, MeshStandardMaterial, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, Vector3, type WebGLProgramParametersWithUniforms } from "three";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 import { EarthTextureBlendingShader } from "../shader/earthTextureBlending";
-import { EarthTextureBlendingLegacyShader } from "../shader/earthTextureBlendingLegacy";
 
 export class Earth extends Mesh {
   private static longitudalOffset: number = 90.015;
@@ -83,6 +82,14 @@ export class Earth extends Mesh {
 
       const cameraPosition = directionVector.multiplyScalar(controls.getDistance());
 
+      gsap.to(this.rotation, {
+        x: 0,
+        y: 0,
+        z: 0,
+        duration: 1,
+        ease: "power1.inOut"
+      });
+
       gsap.to(controls.object.position, {
         x: cameraPosition.x,
         y: cameraPosition.y,
@@ -103,8 +110,9 @@ export class Earth extends Mesh {
 
   public getGeolocation(controls: OrbitControls): {longitude: number, latitude: number} {
     const directionVector = this.getCrosshairDirectionVector(controls);
-    const longitude_ = MathUtils.radToDeg(Math.asin(directionVector.y));
-    const latitude_ = MathUtils.radToDeg(Math.atan2(directionVector.x, directionVector.z));
+    const rotatedDirection = directionVector.clone().applyQuaternion(this.quaternion.clone().invert());
+    const longitude_ = MathUtils.radToDeg(Math.asin(rotatedDirection.y));
+    const latitude_ = MathUtils.radToDeg(Math.atan2(rotatedDirection.x, rotatedDirection.z));
 
     return {
       longitude: latitude_ - Earth.longitudalOffset,
