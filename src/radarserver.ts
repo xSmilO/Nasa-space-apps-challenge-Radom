@@ -18,4 +18,4 @@ app.get("/getStyle", async (_, result) => {
   result.json(data);
 });
 
-app.listen(3001, () => console.log("Radar style-retrieving serive running on: \x1b[7mhttp://localhost:3001\x1b[0m."));
+app.listen(3001, () => console.log("Retrieve the radar's style from: \x1b[7mhttp://localhost:3001\x1b[0m."));
