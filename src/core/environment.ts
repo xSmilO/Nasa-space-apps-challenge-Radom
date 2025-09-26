@@ -56,6 +56,7 @@ export class Environment {
     this.controls.minDistance = 115;
     this.controls.maxDistance = 1200;
     this.controls.enablePan = false;
+    this.controls.enableDamping = true;
     
     this.updateControlsSpeed();
 

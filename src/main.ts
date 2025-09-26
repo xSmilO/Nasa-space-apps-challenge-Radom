@@ -4,6 +4,8 @@ import { Vector3 } from "three";
 
 const environment: Environment = new Environment(() => {
   environment.earth.clouds.rotation.y += 0.0001;
+  
+  environment.controls.update();
 });
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
