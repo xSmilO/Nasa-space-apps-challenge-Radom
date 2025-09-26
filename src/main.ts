@@ -6,6 +6,7 @@ const environment: Environment = new Environment(() => {
   environment.earth.clouds.rotation.y += 0.0001;
 
   environment.controls.update();
+  environment.updateRadar();
 });
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
@@ -16,7 +17,6 @@ window.addEventListener("mousemove", (event) => {
 
 window.addEventListener("wheel", () => {
   currentZoomAnimation.kill();
-  environment.updateRadar();
   environment.updateControlsSpeed();
 });
 
