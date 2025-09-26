@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, WebGLRenderer } from "three";
+import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer } from "three";
 import { Earth } from "../element3D/earth";
 import { Map } from "maplibre-gl";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
@@ -10,8 +10,8 @@ export class Environment {
   public renderer: WebGLRenderer;
   public camera: PerspectiveCamera;
   public controls: OrbitControls;
-  public earth: Earth;
   public directionalLight: DirectionalLight;
+  public earth: Earth;
   public ambientLight: AmbientLight;
   public radar: Map;
   public radarHTMLElement: HTMLDivElement;
@@ -22,8 +22,8 @@ export class Environment {
     this.renderer = new WebGLRenderer();
     this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.earth = new Earth(this.textureLoader);
     this.directionalLight = new DirectionalLight(0xffffff, 2.5);
+    this.earth = new Earth(this.textureLoader);
     this.ambientLight = new AmbientLight(0xffffff, 0.1);
     this.radar = new Map({
       container: "radarContainer",
@@ -43,6 +43,15 @@ export class Environment {
     this.camera.position.z = 200;
 
     this.directionalLight.position.set(5, 3, 5);
+    this.directionalLight.target = this.earth;
+
+    this.earth.enableNightTimeTexture(
+      new Vector3().subVectors(
+        this.directionalLight.target.position,
+        this.directionalLight.position
+      ).normalize(),
+      this.camera
+    );
 
     this.controls.minDistance = 115;
     this.controls.maxDistance = 1200;
@@ -99,16 +108,18 @@ export class Environment {
     );
 
     const isLMBDown: boolean = (event.buttons & 1) === 1;
+    const isMMBDown: boolean = (event.button & 3) === 1;
+
     const raycaster: Raycaster = new Raycaster(); raycaster.setFromCamera(mousePos, this.camera);
-    this.controls.enabled = (raycaster.intersectObject(this.earth).length > 0) || isLMBDown;
+    this.controls.enabled = (raycaster.intersectObject(this.earth).length > 0) || isLMBDown || isMMBDown;
 
     this.updateRadar();
   }
 
   public updateControlsSpeed(): void {
     const distance: number = this.controls.getDistance();
-    const minSpeed: number = 0.01;
-    const maxSpeed: number = 2.0;
+    const minSpeed: number = 0.001;
+    const maxSpeed: number = 3.0;
     const delta: number = Math.min(Math.max((distance - this.controls.minDistance) / (this.controls.maxDistance - this.controls.minDistance), 0), 1);
     this.controls.rotateSpeed = MathUtils.lerp(minSpeed, maxSpeed, delta);
   }

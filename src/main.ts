@@ -6,11 +6,14 @@ const environment: Environment = new Environment(() => {
   environment.earth.clouds.rotation.y += 0.0001;
 });
 
+let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
+
 window.addEventListener("mousemove", (event) => {
   environment.updateControlsState(event);
 });
 
 window.addEventListener("wheel", () => {
+  currentZoomAnimation.kill();
   environment.updateRadar();
   environment.updateControlsSpeed();
 });
@@ -24,7 +27,9 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
     distance: environment.controls.getDistance()
   };
 
-  gsap.to(object, {
+  currentZoomAnimation.kill();
+
+  currentZoomAnimation = gsap.to(object, {
     distance: 200,
     duration: 1,
     ease: "power1.inOut",
