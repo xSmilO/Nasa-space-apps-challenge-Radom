@@ -61,10 +61,7 @@ export class Earth extends Mesh {
 
         void main() {
           vUv = uv;
-
-          // Transform normal to world space
           vNormalWorld = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
-
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `;
@@ -80,9 +77,7 @@ export class Earth extends Mesh {
         void main() {
           vec4 dayColor = texture2D(dayTexture, vUv);
           vec4 nightColor = texture2D(nightTexture, vUv);
-
           float NdotL = dot(vNormalWorld, normalize(lightDirection));
-
           float blend = smoothstep(-0.05, 0.5, NdotL); // soft transition at the terminator
           gl_FragColor = mix(dayColor, nightColor, blend);
         }
