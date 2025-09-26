@@ -88,18 +88,20 @@ export class Environment {
   public updateRadar(): void {
     const geolocalization: {longitude: number, latitude: number} = this.earth.getGeolocation(this.controls);
     const zoom: number = resolveRadarZoom(this.controls);
+    
+    try {
+      this.radar.setCenter([geolocalization.longitude, geolocalization.latitude]);
+      this.radar.setZoom(zoom);
+      this.radar.resize();
 
-    this.radar.setCenter([geolocalization.longitude, geolocalization.latitude]);
-    this.radar.setZoom(zoom);
-    this.radar.resize();
-
-    if(zoom == 10) {
-      this.radarHTMLElement.classList.add("bigger");
-    } else if(zoom < 2) {
-      this.radarHTMLElement.classList.add("smaller");
-    } else {
-      this.radarHTMLElement.classList.remove("bigger", "smaller");
-    }
+      if(zoom == 10) {
+        this.radarHTMLElement.classList.add("bigger");
+      } else if(zoom < 2) {
+        this.radarHTMLElement.classList.add("smaller");
+      } else {
+        this.radarHTMLElement.classList.remove("bigger", "smaller");
+      }
+    } catch(exception: any) {}
   }
 
   public updateControlsState(event: MouseEvent): void {
