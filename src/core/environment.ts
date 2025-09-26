@@ -108,10 +108,8 @@ export class Environment {
     );
 
     const isLMBDown: boolean = (event.buttons & 1) === 1;
-    const isMMBDown: boolean = (event.button & 3) === 1;
-
     const raycaster: Raycaster = new Raycaster(); raycaster.setFromCamera(mousePos, this.camera);
-    this.controls.enabled = (raycaster.intersectObject(this.earth).length > 0) || isLMBDown || isMMBDown;
+    this.controls.enabled = (raycaster.intersectObject(this.earth).length > 0) || isLMBDown;
 
     this.updateRadar();
   }
