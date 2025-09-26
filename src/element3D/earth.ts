@@ -1,6 +1,8 @@
 import gsap from "gsap";
 import {Camera, MathUtils, Mesh, MeshStandardMaterial, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, Vector3, type WebGLProgramParametersWithUniforms } from "three";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
+import { EarthTextureBlendingShader } from "../shader/earthTextureBlending";
+import { EarthTextureBlendingLegacyShader } from "../shader/earthTextureBlendingLegacy";
 
 export class Earth extends Mesh {
   private static longitudalOffset: number = 90.015;
@@ -17,7 +19,10 @@ export class Earth extends Mesh {
 
     this.geometry = this.makeSphere(100.0);
     this.material = new MeshStandardMaterial({
-      map: this.initializeTexture("day.jpg")
+      map: this.initializeTexture("day.jpg"),
+      transparent: false,
+      opacity: 1.0,
+      depthWrite: true
     });
     
     this.clouds.geometry = this.makeSphere(101.0);
@@ -29,9 +34,12 @@ export class Earth extends Mesh {
     });
   }
 
-  private initializeTexture(fileName: string): Texture {
+  private initializeTexture(fileName: string, useSRGB: boolean = true): Texture {
     const texture: Texture = this.textureLoader.load(`./../../assets/textures/earth/${fileName}`);
-    texture.colorSpace = SRGBColorSpace;
+    
+    if(useSRGB) {
+      texture.colorSpace = SRGBColorSpace;
+    }
     
     return texture;
   }
@@ -45,43 +53,21 @@ export class Earth extends Mesh {
   }
 
   public enableNightTimeTexture(lightDirection: Vector3, camera: Camera): void {
-    ((this.material) as MeshStandardMaterial).onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
+    const material: MeshStandardMaterial = ((this.material) as MeshStandardMaterial);
+    material.map = this.initializeTexture("day.jpg", false);
+
+    material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
       const lightDirectionViewSpace: Vector3 = new Vector3();
 
       lightDirectionViewSpace.copy(lightDirection);
       lightDirectionViewSpace.transformDirection(camera.matrixWorldInverse);
 
-      shader.uniforms.dayTexture = {value: this.initializeTexture("day.jpg")}
+      shader.uniforms.dayTexture = {value: material.map}
       shader.uniforms.nightTexture = {value: this.initializeTexture("night.jpg")}
-      shader.uniforms.lightDirection = {value: lightDirectionViewSpace}
+      shader.uniforms.customLightDirection = {value: lightDirectionViewSpace}
 
-      shader.vertexShader = `
-        varying vec2 vUv;
-        varying vec3 vNormalWorld;
-
-        void main() {
-          vUv = uv;
-          vNormalWorld = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `;
-
-      shader.fragmentShader = `
-        uniform sampler2D dayTexture;
-        uniform sampler2D nightTexture;
-        uniform vec3 lightDirection;
-
-        varying vec2 vUv;
-        varying vec3 vNormalWorld;
-
-        void main() {
-          vec4 dayColor = texture2D(dayTexture, vUv);
-          vec4 nightColor = texture2D(nightTexture, vUv);
-          float NdotL = dot(vNormalWorld, normalize(lightDirection));
-          float blend = smoothstep(-0.05, 0.5, NdotL); // soft transition at the terminator
-          gl_FragColor = mix(dayColor, nightColor, blend);
-        }
-      `;
+      shader.vertexShader = EarthTextureBlendingLegacyShader.vertex;
+      shader.fragmentShader = EarthTextureBlendingLegacyShader.fragment;
     };
   }
 
