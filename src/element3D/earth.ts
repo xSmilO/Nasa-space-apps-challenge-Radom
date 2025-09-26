@@ -9,6 +9,7 @@ export class Earth extends Mesh {
 
   public textureLoader: TextureLoader;
   public clouds: Mesh;
+  private lastTimeStamp: DOMHighResTimeStamp = 0;
 
   constructor(textureLoader: TextureLoader) {
     super();
@@ -126,5 +127,13 @@ export class Earth extends Mesh {
 
   public getCrosshairDirectionVector(controls: OrbitControls): Vector3 {
     return new Vector3().subVectors(controls.object.position, controls.target).normalize();
+  }
+
+  public rotate(timeStamp: DOMHighResTimeStamp) {
+    const delta: number = (timeStamp - this.lastTimeStamp) / 1000.0;
+    const angularSpeed = (2.0 * Math.PI) / 86400;
+
+    this.rotation.y += angularSpeed * delta;
+    this.lastTimeStamp = timeStamp;
   }
 }

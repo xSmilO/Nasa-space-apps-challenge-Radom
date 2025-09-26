@@ -16,7 +16,7 @@ export class Environment {
   public radar: Map;
   public radarHTMLElement: HTMLDivElement;
 
-  constructor(animator?: (time: DOMHighResTimeStamp, frame: XRFrame) => void) {
+  constructor(animator?: (timeStamp: DOMHighResTimeStamp, frame: XRFrame) => void) {
     this.textureLoader = new TextureLoader();
     this.scene = new Scene();
     this.renderer = new WebGLRenderer();
@@ -74,11 +74,11 @@ export class Environment {
 
     this.renderer.outputColorSpace = SRGBColorSpace;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setAnimationLoop((time: DOMHighResTimeStamp, frame: XRFrame) => {
+    this.renderer.setAnimationLoop((timeStamp: DOMHighResTimeStamp, frame: XRFrame) => {
       this.renderer.render(this.scene, this.camera);
 
       if(animator != undefined) {
-        animator(time, frame);
+        animator(timeStamp, frame);
       }
     });
 

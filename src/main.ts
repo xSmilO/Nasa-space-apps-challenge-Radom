@@ -2,11 +2,12 @@ import { Environment } from "./core/environment";
 import gsap from "gsap";
 import { Vector3 } from "three";
 
-const environment: Environment = new Environment(() => {
+const environment: Environment = new Environment((timeStamp: DOMHighResTimeStamp) => {
   environment.earth.clouds.rotation.y += 0.0001;
 
   environment.controls.update();
   environment.updateRadar();
+  environment.earth.rotate(timeStamp);
 });
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
