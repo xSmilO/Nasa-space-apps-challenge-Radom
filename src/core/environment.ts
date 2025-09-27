@@ -1,5 +1,4 @@
-import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer } from "three";
-import { AmbientLight, DirectionalLight, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, TextureLoader, Vector2, WebGLRenderer, Clock } from "three";
+import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer, Clock } from "three";
 import { Earth } from "../element3D/earth";
 import { Map as MapLibre } from "maplibre-gl";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
@@ -27,8 +26,6 @@ export class Environment {
   private ui: UI;
   private currentDate: Date;
   private isLive: boolean;
-
-  public radar: Map;
   public radarHTMLElement: HTMLDivElement;
 
   constructor(animator?: (timeStamp: DOMHighResTimeStamp, frame: XRFrame) => void) {
@@ -40,11 +37,8 @@ export class Environment {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.directionalLight = new DirectionalLight(0xffffff, 2.5);
     this.earth = new Earth(this.textureLoader);
-    this.directionalLight = new DirectionalLight(0xffffff, 2.0);
     this.ambientLight = new AmbientLight(0xffffff, 0.5);
     this.radar = new MapLibre({
-    this.ambientLight = new AmbientLight(0xffffff, 0.1);
-    this.radar = new Map({
       container: "radarContainer",
       style: "/radar/getStyle",
       center: [0.0, 0.0],
@@ -77,7 +71,7 @@ export class Environment {
     this.controls.maxDistance = 1200;
     this.controls.enablePan = false;
     this.controls.enableDamping = true;
-    
+
     this.updateControlsSpeed();
 
     this.scene.add(this.earth);
@@ -114,22 +108,22 @@ export class Environment {
   }
 
   public updateRadar(): void {
-    const geolocalization: {longitude: number, latitude: number} = this.earth.getGeolocation(this.controls);
+    const geolocalization: { longitude: number, latitude: number } = this.earth.getGeolocation(this.controls);
     const zoom: number = resolveRadarZoom(this.controls);
-    
+
     try {
       this.radar.setCenter([geolocalization.longitude, geolocalization.latitude]);
       this.radar.setZoom(zoom);
       this.radar.resize();
 
-      if(zoom == 10) {
+      if (zoom == 10) {
         this.radarHTMLElement.classList.add("bigger");
-      } else if(zoom < 2) {
+      } else if (zoom < 2) {
         this.radarHTMLElement.classList.add("smaller");
       } else {
         this.radarHTMLElement.classList.remove("bigger", "smaller");
       }
-    } catch(exception: any) {}
+    } catch (exception: any) { }
   }
 
   public updateControlsState(event: MouseEvent): void {

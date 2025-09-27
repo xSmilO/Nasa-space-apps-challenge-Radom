@@ -14,11 +14,10 @@ import {
     type WebGLProgramParametersWithUniforms,
 } from "three";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
-import { SETTINGS } from "../core/Settings";
 
-const SIDE_ROT_PER_SEC = 0.00007292115;
 import { EarthTextureBlendingShader } from "../shader/earthTextureBlending";
 import { CloudsMorphShader } from "../shader/cloudsMorph";
+import { SETTINGS } from "../core/Settings";
 
 export class Earth extends Mesh {
     private static longitudalOffset: number = 90.015;
@@ -28,19 +27,21 @@ export class Earth extends Mesh {
     public clouds: Mesh;
     private lastTimeStamp: DOMHighResTimeStamp = 0;
     public shaders: { [mesh: string]: WebGLProgramParametersWithUniforms } = {};
+    public radius: number;
 
     constructor(textureLoader: TextureLoader) {
         super();
+        this.radius = 6731 / SETTINGS.SIZE_SCALE;
 
         this.textureLoader = textureLoader;
         this.clouds = new Mesh();
 
-        this.geometry = this.makeSphere(100.0);
+        this.geometry = this.makeSphere(this.radius);
         this.material = new MeshStandardMaterial({
             map: this.initializeTexture("day.jpg"),
         });
 
-        this.clouds.geometry = this.makeSphere(101.0);
+        this.clouds.geometry = this.makeSphere(this.radius * 1.1);
         this.clouds.material = new MeshStandardMaterial({
             map: this.initializeTexture("clouds.jpg"),
             transparent: true,
