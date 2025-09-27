@@ -1,7 +1,15 @@
 import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer } from "three";
+import { AmbientLight, DirectionalLight, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, TextureLoader, Vector2, WebGLRenderer, Clock } from "three";
 import { Earth } from "../element3D/earth";
-import { Map } from "maplibre-gl";
+import { Map as MapLibre } from "maplibre-gl";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { RadarHelper } from "../utility/radarHelper";
+import Loader from "./loader";
+import { SETTINGS } from './Settings';
+import type { AsteroidData } from "../utility/types";
+import { UI } from "./UI";
+
+const clock = new Clock();
 import { resolveRadarZoom } from "../utility/radarHelper";
 
 export class Environment {
@@ -13,17 +21,28 @@ export class Environment {
   public directionalLight: DirectionalLight;
   public earth: Earth;
   public ambientLight: AmbientLight;
+  public radar: MapLibre;
+  public phas: Map<string, AsteroidData>;
+
+  private ui: UI;
+  private currentDate: Date;
+  private isLive: boolean;
+
   public radar: Map;
   public radarHTMLElement: HTMLDivElement;
 
   constructor(animator?: (timeStamp: DOMHighResTimeStamp, frame: XRFrame) => void) {
+    this.ui = new UI(this);
     this.textureLoader = new TextureLoader();
     this.scene = new Scene();
     this.renderer = new WebGLRenderer();
-    this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight);
+    this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.0001, SETTINGS.CAMERA_MAX_DISTANCE);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.directionalLight = new DirectionalLight(0xffffff, 2.5);
     this.earth = new Earth(this.textureLoader);
+    this.directionalLight = new DirectionalLight(0xffffff, 2.0);
+    this.ambientLight = new AmbientLight(0xffffff, 0.5);
+    this.radar = new MapLibre({
     this.ambientLight = new AmbientLight(0xffffff, 0.1);
     this.radar = new Map({
       container: "radarContainer",
@@ -32,6 +51,9 @@ export class Environment {
       zoom: 0,
       interactive: false
     });
+    this.phas = new Map<string, AsteroidData>;
+    this.currentDate = new Date();
+    this.isLive = true;
 
     this.radarHTMLElement = document.getElementById("radar") as HTMLDivElement;
 
@@ -40,9 +62,7 @@ export class Environment {
       this.updateRadar();
     });
 
-    this.camera.position.z = 200;
-
-    this.directionalLight.position.set(5, 3, 5);
+    this.camera.position.z = this.earth.radius * 1.5;
     this.directionalLight.target = this.earth;
 
     this.earth.enableEffects(
@@ -77,12 +97,20 @@ export class Environment {
     this.renderer.setAnimationLoop((timeStamp: DOMHighResTimeStamp, frame: XRFrame) => {
       this.renderer.render(this.scene, this.camera);
 
-      if(animator != undefined) {
+      if (animator != undefined) {
         animator(timeStamp, frame);
       }
+
+      this.update(clock.getDelta());
     });
 
+    clock.start();
+
     document.body.appendChild(this.renderer.domElement);
+  }
+
+  public async init(): Promise<void> {
+    this.phas = await Loader.loadPHAData();
   }
 
   public updateRadar(): void {
@@ -128,5 +156,39 @@ export class Environment {
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.camera.updateProjectionMatrix();
+  }
+
+  public update(deltaTime: number): void {
+    this.currentDate = new Date(this.currentDate.getTime() + (1000 * SETTINGS.simulationSpeed * deltaTime));
+
+    this.ui.update();
+    this.ui.updateTimelineInfo(this.currentDate);
+    this.earth.update(this.currentDate);
+
+    if (this.isLive && SETTINGS.simulationSpeed != 1) {
+      this.isLive = false;
+      this.ui.noLive();
+    }
+  }
+
+  public onResize(): void {
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.updateControlsSpeed();
+  }
+  public setUpEventListeners(): void {
+    this.ui.setUpEventListeners();
+  }
+  public setLiveDate(): void {
+    this.currentDate = new Date();
+    this.isLive = true;
+    // for (let [_, celestialBody] of this.celestialBodies) {
+    //   celestialBody.setLivePosition(this.currentDate);
+    // }
+
+    // for (let [_, phaBody] of this.phaBodies) {
+    //   phaBody.setLivePosition(this.currentDate);
+    // }
   }
 }
