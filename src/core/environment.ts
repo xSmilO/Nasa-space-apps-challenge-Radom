@@ -51,11 +51,13 @@ export class Environment {
     this.radarHTMLElement = document.getElementById("radar") as HTMLDivElement;
 
     this.radar.on("load", () => {
-      this.earth.rotateFromGeolocation(this.controls);
+      this.earth.rotateFromClientsGeolocation(this.controls);
       this.updateRadar();
     });
 
     this.camera.position.z = 200;
+
+    this.directionalLight.position.set(5, 3, 5);
     this.directionalLight.target = this.earth;
 
     this.earth.enableEffects(
@@ -161,13 +163,6 @@ export class Environment {
       this.isLive = false;
       this.ui.noLive();
     }
-  }
-
-  public onResize(): void {
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.updateControlsSpeed();
   }
   public setUpEventListeners(): void {
     this.ui.setUpEventListeners();

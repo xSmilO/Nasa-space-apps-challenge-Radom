@@ -4,7 +4,6 @@ import {
     MathUtils,
     Mesh,
     MeshStandardMaterial,
-    RepeatWrapping,
     SphereGeometry,
     SRGBColorSpace,
     Texture,
@@ -16,8 +15,6 @@ import {
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import { EarthTextureBlendingShader } from "../shader/earthTextureBlending";
-import { CloudsMorphShader } from "../shader/cloudsMorph";
-import { SETTINGS } from "../core/Settings";
 
 export class Earth extends Mesh {
     private static longitudalOffset: number = 90.015;
@@ -27,21 +24,19 @@ export class Earth extends Mesh {
     public clouds: Mesh;
     private lastTimeStamp: DOMHighResTimeStamp = 0;
     public shaders: { [mesh: string]: WebGLProgramParametersWithUniforms } = {};
-    public radius: number;
 
     constructor(textureLoader: TextureLoader) {
         super();
-        this.radius = 100.0;
 
         this.textureLoader = textureLoader;
         this.clouds = new Mesh();
 
-        this.geometry = this.makeSphere(this.radius);
+        this.geometry = this.makeSphere(100.0);
         this.material = new MeshStandardMaterial({
             map: this.initializeTexture("day.jpg"),
         });
 
-        this.clouds.geometry = this.makeSphere(this.radius + 2.0);
+        this.clouds.geometry = this.makeSphere(101.0);
         this.clouds.material = new MeshStandardMaterial({
             map: this.initializeTexture("clouds.jpg"),
             transparent: true,
@@ -122,7 +117,7 @@ export class Earth extends Mesh {
         );
     }
 
-    private enableCloudsMorph(): void {
+    /* private enableCloudsMorph(): void {
         const material: MeshStandardMaterial = this.getCloudsMaterial();
 
         this.modifyMaterial(
@@ -134,9 +129,9 @@ export class Earth extends Mesh {
             CloudsMorphShader.vertex,
             CloudsMorphShader.fragment
         );
-    }
+    } */
 
-    public rotateFromGeolocationRaw(
+    public rotateFromGeolocation(
         controls: OrbitControls,
         latitude: number,
         longitude: number
@@ -173,10 +168,10 @@ export class Earth extends Mesh {
         });
     }
 
-    public rotateFromGeolocation(controls: OrbitControls): void {
+    public rotateFromClientsGeolocation(controls: OrbitControls): void {
         navigator.geolocation.getCurrentPosition(
             (position: GeolocationPosition) => {
-                this.rotateFromGeolocationRaw(
+                this.rotateFromGeolocation(
                     controls,
                     position.coords.latitude,
                     position.coords.longitude
@@ -235,8 +230,8 @@ export class Earth extends Mesh {
         return this.clouds.material as MeshStandardMaterial;
     }
 
-    private getCloudsTexture(): Texture {
+    /* private getCloudsTexture(): Texture {
         return this.getCloudsMaterial().map as Texture;
-    }
+    } */
 }
 
