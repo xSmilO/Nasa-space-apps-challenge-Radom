@@ -45,7 +45,7 @@ export class Environment {
     this.directionalLight.position.set(5, 3, 5);
     this.directionalLight.target = this.earth;
 
-    this.earth.enableNightTimeTexture(
+    this.earth.enableEffects(
       new Vector3().subVectors(
         this.directionalLight.target.position,
         this.directionalLight.position

@@ -75,8 +75,9 @@ export class EarthTextureBlendingShader {
     uniform float metalness;
     uniform float opacity;
 
-    uniform sampler2D nightTexture; // <-- custom
-    uniform vec3 sunLightDirection; // <-- custom
+    uniform sampler2D nightTexture;
+    uniform vec3 sunLightDirection;
+    uniform float nightColorMultiplayer;
 
     #ifdef IOR
       uniform float ior;
@@ -94,7 +95,7 @@ export class EarthTextureBlendingShader {
 
     varying vec3 vViewPosition;
     varying vec3 vWorldNormal;
-    varying vec2 vUv;  // <-- custom
+    varying vec2 vUv;
 
     #include <common>
     #include <packing>
@@ -155,7 +156,7 @@ export class EarthTextureBlendingShader {
       float blend = smoothstep(-0.05, 0.5, NdotL);
 
       // Blend day and night colors
-      vec4 texelColor = mix(dayColor, nightColor * vec4(20.0, 20.0, 20.0, 1.0), blend);
+      vec4 texelColor = mix(dayColor, nightColor * vec4(nightColorMultiplayer, nightColorMultiplayer, nightColorMultiplayer, 1.0), blend);
 
       // Convert to linear manually (RGB only)
       vec3 linearTexelColor = pow(texelColor.rgb, vec3(2.2));

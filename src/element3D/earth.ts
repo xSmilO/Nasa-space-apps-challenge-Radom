@@ -1,7 +1,8 @@
 import gsap from "gsap";
-import {Camera, MathUtils, Mesh, MeshStandardMaterial, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, Vector3, type WebGLProgramParametersWithUniforms } from "three";
+import {Camera, MathUtils, Mesh, MeshStandardMaterial, RepeatWrapping, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, Vector3, type IUniform, type WebGLProgramParametersWithUniforms } from "three";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 import { EarthTextureBlendingShader } from "../shader/earthTextureBlending";
+import { CloudsMorphShader } from "../shader/cloudsMorph";
 
 export class Earth extends Mesh {
   private static longitudalOffset: number = 90.015;
@@ -10,6 +11,7 @@ export class Earth extends Mesh {
   public textureLoader: TextureLoader;
   public clouds: Mesh;
   private lastTimeStamp: DOMHighResTimeStamp = 0;
+  public shaders: {[mesh: string]: WebGLProgramParametersWithUniforms} = {};
 
   constructor(textureLoader: TextureLoader) {
     super();
@@ -20,9 +22,6 @@ export class Earth extends Mesh {
     this.geometry = this.makeSphere(100.0);
     this.material = new MeshStandardMaterial({
       map: this.initializeTexture("day.jpg"),
-      transparent: false,
-      opacity: 1.0,
-      depthWrite: true
     });
     
     this.clouds.geometry = this.makeSphere(101.0);
@@ -52,23 +51,48 @@ export class Earth extends Mesh {
     );
   }
 
-  public enableNightTimeTexture(lightDirection: Vector3, camera: Camera): void {
-    const material: MeshStandardMaterial = ((this.material) as MeshStandardMaterial);
-    material.map = this.initializeTexture("day.jpg", false);
+  public enableEffects(sunLightDirection: Vector3, camera: Camera): void {
+    this.enableTextureBlend(sunLightDirection, camera);
+    /* this.enableCloudsMorph();
 
-    material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
-      const lightDirectionViewSpace: Vector3 = new Vector3();
+    this.getCloudsTexture().wrapS = RepeatWrapping;
+    this.getCloudsTexture().wrapT = RepeatWrapping;
+    this.getCloudsTexture().repeat.set(1, 1); */
+  }
 
-      lightDirectionViewSpace.copy(lightDirection);
-      lightDirectionViewSpace.transformDirection(camera.matrixWorldInverse);
+  private modifyMaterial(which: MeshStandardMaterial, baseTextureName: string, uniforms: {[uniform: string]: IUniform}, vertexShader: string, fragmentShader: string): void {
+    which.map = this.initializeTexture(baseTextureName, false);
 
-      shader.uniforms.dayTexture = {value: material.map}
-      shader.uniforms.nightTexture = {value: this.initializeTexture("night.jpg")}
-      shader.uniforms.sunLightDirection = {value: lightDirectionViewSpace}
+    which.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
+      this.shaders[which.uuid] = shader;
 
-      shader.vertexShader = EarthTextureBlendingShader.vertex;
-      shader.fragmentShader = EarthTextureBlendingShader.fragment;
+      shader.uniforms = Object.assign({}, shader.uniforms, uniforms);
+      shader.vertexShader = vertexShader;
+      shader.fragmentShader = fragmentShader;
     };
+  }
+
+  private enableTextureBlend(sunLightDirection: Vector3, camera: Camera): void {
+    const material: MeshStandardMaterial = this.getMaterial();
+    const lightDirectionViewSpace: Vector3 = new Vector3();
+
+    lightDirectionViewSpace.copy(sunLightDirection);
+    lightDirectionViewSpace.transformDirection(camera.matrixWorldInverse);
+
+    this.modifyMaterial(material, "day.jpg", {
+      dayTexture: {value: material.map},
+      nightTexture: {value: this.initializeTexture("night.jpg")},
+      nightColorMultiplayer: {value: 20.0},
+      sunLightDirection: {value: lightDirectionViewSpace}
+    }, EarthTextureBlendingShader.vertex, EarthTextureBlendingShader.fragment);
+  }
+
+  private enableCloudsMorph(): void {
+    const material: MeshStandardMaterial = this.getCloudsMaterial();
+    
+    this.modifyMaterial(material, "clouds.jpg", {
+      time: {value: 0}
+    }, CloudsMorphShader.vertex, CloudsMorphShader.fragment);
   }
 
   public rotateFromGeolocationRaw(controls: OrbitControls, latitude: number,  longitude: number): void {
@@ -135,5 +159,17 @@ export class Earth extends Mesh {
 
     this.rotation.y += angularSpeed * delta;
     this.lastTimeStamp = timeStamp;
+  }
+
+  public getMaterial(): MeshStandardMaterial {
+    return this.material as MeshStandardMaterial;
+  }
+
+  public getCloudsMaterial(): MeshStandardMaterial {
+    return this.clouds.material as MeshStandardMaterial;
+  }
+
+  private getCloudsTexture(): Texture {
+    return this.getCloudsMaterial().map as Texture;
   }
 }

@@ -8,6 +8,10 @@ const environment: Environment = new Environment((timeStamp: DOMHighResTimeStamp
   environment.controls.update();
   environment.updateRadar();
   environment.earth.rotate(timeStamp);
+
+  if(environment.earth.shaders[environment.earth.getCloudsMaterial().uuid]) {
+    environment.earth.shaders[environment.earth.getCloudsMaterial().uuid].uniforms.time.value = timeStamp;
+  }
 });
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
