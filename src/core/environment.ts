@@ -36,7 +36,7 @@ export class Environment {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.directionalLight = new DirectionalLight(0xffffff, 2.5);
     this.earth = new Earth(this.textureLoader);
-    this.ambientLight = new AmbientLight(0xffffff, 0.5);
+    this.ambientLight = new AmbientLight(0xffffff, 0.1);
     this.radar = new MapLibre({
       container: "radarContainer",
       style: "/radar/getStyle",
