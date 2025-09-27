@@ -1,13 +1,15 @@
 import { Camera, MathUtils, Mesh, MeshStandardMaterial, SphereGeometry, SRGBColorSpace, Texture, TextureLoader, Vector3 } from "three";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 import { SETTINGS } from "../core/Settings";
-import CelestialBody from "../components/CelestialBody";
 
-export class Earth extends CelestialBody {
+const SIDE_ROT_PER_SEC = 0.00007292115;
+
+export class Earth extends Mesh {
   public radius: number;
   private customTexture: Texture;
 
   constructor(textureLoader: TextureLoader) {
+    super();
     this.radius = 6371 / SETTINGS.SIZE_SCALE;
     this.geometry = new SphereGeometry(
       this.radius, 200, 200
@@ -21,8 +23,14 @@ export class Earth extends CelestialBody {
     this.customTexture.colorSpace = SRGBColorSpace;
   }
 
-  public update() {
+  public update(date: Date) {
+    this.rotateObject(date);
+  }
 
+  public rotateObject(date: Date): void {
+    let secondsElapsed = date.getTime() / 1000;
+
+    this.rotation.y = SIDE_ROT_PER_SEC * secondsElapsed;
   }
 
   public getGeolocalization(camera: Camera, controls: OrbitControls): { longitude: number, latitude: number } {

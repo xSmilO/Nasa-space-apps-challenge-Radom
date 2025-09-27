@@ -119,6 +119,7 @@ export class Environment {
 
     this.ui.update();
     this.ui.updateTimelineInfo(this.currentDate);
+    this.earth.update(this.currentDate);
 
     if (this.isLive && SETTINGS.simulationSpeed != 1) {
       this.isLive = false;
