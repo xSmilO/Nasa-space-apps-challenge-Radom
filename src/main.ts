@@ -12,7 +12,7 @@ const environment: Environment = new Environment(
 
         if (
             environment.earth.shaders[
-                environment.earth.getCloudsMaterial().uuid
+            environment.earth.getCloudsMaterial().uuid
             ]
         ) {
             environment.earth.shaders[
@@ -24,6 +24,7 @@ const environment: Environment = new Environment(
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
 import { EventListeners } from "./core/EventListeners";
+import { SETTINGS } from "./core/Settings";
 
 new EventListeners(environment);
 window.addEventListener("mousemove", (event) => {
@@ -47,7 +48,7 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
     currentZoomAnimation.kill();
 
     currentZoomAnimation = gsap.to(object, {
-        distance: 200,
+        distance: SETTINGS.CAMERA_START_DISTANCE,
         duration: 1,
         ease: "power1.inOut",
         onUpdate: () => {

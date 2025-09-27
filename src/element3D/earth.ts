@@ -15,6 +15,7 @@ import {
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import { EarthTextureBlendingShader } from "../shader/earthTextureBlending";
+import { SETTINGS } from "../core/Settings";
 
 export class Earth extends Mesh {
     private static longitudalOffset: number = 90.015;
@@ -24,19 +25,22 @@ export class Earth extends Mesh {
     public clouds: Mesh;
     private lastTimeStamp: DOMHighResTimeStamp = 0;
     public shaders: { [mesh: string]: WebGLProgramParametersWithUniforms } = {};
+    public radius: number;
 
     constructor(textureLoader: TextureLoader) {
         super();
 
+        this.radius = 6371 / SETTINGS.SIZE_SCALE;
+        // this.radius = 100.0;
         this.textureLoader = textureLoader;
         this.clouds = new Mesh();
 
-        this.geometry = this.makeSphere(100.0);
+        this.geometry = this.makeSphere(this.radius);
         this.material = new MeshStandardMaterial({
             map: this.initializeTexture("day.jpg"),
         });
 
-        this.clouds.geometry = this.makeSphere(101.0);
+        this.clouds.geometry = this.makeSphere(this.radius * (101.0 / 100.0));
         this.clouds.material = new MeshStandardMaterial({
             map: this.initializeTexture("clouds.jpg"),
             transparent: true,
