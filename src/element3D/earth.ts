@@ -31,7 +31,7 @@ export class Earth extends Mesh {
 
     constructor(textureLoader: TextureLoader) {
         super();
-        this.radius = 6731 / SETTINGS.SIZE_SCALE;
+        this.radius = 100.0;
 
         this.textureLoader = textureLoader;
         this.clouds = new Mesh();
@@ -41,7 +41,7 @@ export class Earth extends Mesh {
             map: this.initializeTexture("day.jpg"),
         });
 
-        this.clouds.geometry = this.makeSphere(this.radius * 1.1);
+        this.clouds.geometry = this.makeSphere(this.radius + 2.0);
         this.clouds.material = new MeshStandardMaterial({
             map: this.initializeTexture("clouds.jpg"),
             transparent: true,

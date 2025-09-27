@@ -2,7 +2,6 @@ import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathU
 import { Earth } from "../element3D/earth";
 import { Map as MapLibre } from "maplibre-gl";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { RadarHelper } from "../utility/radarHelper";
 import Loader from "./loader";
 import { SETTINGS } from './Settings';
 import type { AsteroidData } from "../utility/types";
@@ -56,7 +55,7 @@ export class Environment {
       this.updateRadar();
     });
 
-    this.camera.position.z = this.earth.radius * 1.5;
+    this.camera.position.z = 200;
     this.directionalLight.target = this.earth;
 
     this.earth.enableEffects(
@@ -157,7 +156,6 @@ export class Environment {
 
     this.ui.update();
     this.ui.updateTimelineInfo(this.currentDate);
-    this.earth.update(this.currentDate);
 
     if (this.isLive && SETTINGS.simulationSpeed != 1) {
       this.isLive = false;
