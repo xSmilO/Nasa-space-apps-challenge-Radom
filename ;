@@ -55,7 +55,7 @@ export class Environment {
       this.updateRadar();
     });
 
-    this.camera.position.z = SETTINGS.CAMERA_START_DISTANCE;
+    this.camera.position.z = 200;
 
     this.directionalLight.position.set(5, 3, 5);
     this.directionalLight.target = this.earth;
@@ -68,8 +68,8 @@ export class Environment {
       this.camera
     );
 
-    this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;
-    this.controls.maxDistance = SETTINGS.CAMERA_MAX_DISTANCE;
+    this.controls.minDistance = 115;
+    this.controls.maxDistance = 1200;
     console.log(this.controls.getDistance())
     this.controls.enablePan = false;
     this.controls.enableDamping = true;
