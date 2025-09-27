@@ -40,8 +40,8 @@ export function resolveRadarZoom(controls: OrbitControls): number {
 
   const anchors: [number, number][] = [
     [minDistance, maxZoom],
-    [150, 8],
-    [200, 2],
+    [9, 8],
+    [13, 2],
     [maxDistance, minZoom],
   ];
 
