@@ -70,7 +70,6 @@ export class Environment {
 
     this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;
     this.controls.maxDistance = SETTINGS.CAMERA_MAX_DISTANCE;
-    console.log(this.controls.getDistance())
     this.controls.enablePan = false;
     this.controls.enableDamping = true;
 
