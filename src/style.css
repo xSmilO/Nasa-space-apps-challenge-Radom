@@ -57,6 +57,8 @@ div#radar>button {
     left: auto;
     position: relative;
     margin-bottom: 5px;
+    padding: 0.5em 1em;
+    z-index: 100;
 }
 
 div#radar>div#radarContainer {
