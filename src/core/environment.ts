@@ -32,7 +32,7 @@ export class Environment {
     this.textureLoader = new TextureLoader();
     this.scene = new Scene();
     this.renderer = new WebGLRenderer();
-    this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.0001, SETTINGS.CAMERA_MAX_DISTANCE);
+    this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.directionalLight = new DirectionalLight(0xffffff, 2.5);
     this.earth = new Earth(this.textureLoader);
