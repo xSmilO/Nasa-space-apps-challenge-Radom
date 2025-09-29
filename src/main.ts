@@ -3,13 +3,15 @@ import gsap from "gsap";
 import { Vector3 } from "three";
 import { EventListeners } from "./core/EventListeners";
 import { SETTINGS } from "./core/Settings";
+import type { MapMouseEvent } from "maplibre-gl";
 
 const environment: Environment = new Environment(
     (timeStamp: DOMHighResTimeStamp) => {
-        environment.earth.clouds.rotation.y = environment.currentDate.getTime() * 0.000001;
+        environment.earth.clouds.rotation.y =
+            environment.currentDate.getTime() * 0.000001;
 
         environment.controls.update();
-        environment.updateRadar();
+        environment.radar.update();
 
         if (
             environment.earth.shaders[
@@ -27,6 +29,7 @@ environment.init();
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
 
 new EventListeners(environment);
+
 window.addEventListener("mousemove", (event) => {
     environment.updateControlsState(event);
 });
@@ -64,10 +67,20 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
                     .clone()
                     .add(direction.multiplyScalar(object.distance))
             );
-            environment.updateRadar();
+            environment.radar.update();
         },
         onComplete: () => {
             environment.updateControlsSpeed();
         },
     });
+});
+
+environment.radar.on("click", (event: MapMouseEvent) => {
+    environment.radar.markImpactSpot(
+        {
+            latitude: event.lngLat.lat,
+            longitude: event.lngLat.lng,
+        },
+        1000
+    );
 });
