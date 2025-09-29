@@ -40,7 +40,7 @@ export class Radar extends Map {
     } catch (exception: any) { }
   }
 
-  public clearImpactSpot(): void {
+  public removeImpactSpotMarking(): void {
     if(this.getSource(Radar.imapctCircleSourceID)) {
       this.removeLayer(Radar.impactCircleLayerID);
       this.removeSource(Radar.imapctCircleSourceID);
@@ -75,7 +75,7 @@ export class Radar extends Map {
       properties: {}
     };
 
-    this.clearImpactSpot();
+    this.removeImpactSpotMarking();
 
     this.addSource(Radar.imapctCircleSourceID, {
       type: "geojson",
