@@ -22,6 +22,7 @@ const environment: Environment = new Environment((timeStamp: DOMHighResTimeStamp
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
 
 new EventListeners(environment);
+
 window.addEventListener("mousemove", (event) => {
   environment.updateControlsState(event);
 });
