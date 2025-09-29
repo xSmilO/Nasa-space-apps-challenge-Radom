@@ -1,14 +1,15 @@
-import { Environment } from "./core/environment";
+import Environment from "./core/environment";
 import gsap from "gsap";
 import { Vector3 } from "three";
+import { EventListeners } from "./core/EventListeners";
+import { SETTINGS } from "./core/Settings";
 
 const environment: Environment = new Environment(
     (timeStamp: DOMHighResTimeStamp) => {
-        environment.earth.clouds.rotation.y += 0.0001;
+        environment.earth.clouds.rotation.y = environment.currentDate.getTime() * 0.000001;
 
         environment.controls.update();
         environment.updateRadar();
-        environment.earth.rotate(timeStamp);
 
         if (
             environment.earth.shaders[
@@ -21,10 +22,9 @@ const environment: Environment = new Environment(
         }
     }
 );
+environment.init();
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
-import { EventListeners } from "./core/EventListeners";
-import { SETTINGS } from "./core/Settings";
 
 new EventListeners(environment);
 window.addEventListener("mousemove", (event) => {

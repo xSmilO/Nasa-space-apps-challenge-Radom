@@ -1,7 +1,7 @@
 import MeteorCreator from "../ui/MeteeorCreator";
 import TimeSlider from "../ui/TimeSlider";
 import { getMonthShortName } from "../utility/dateConverter";
-import { Environment } from "./environment";
+import Environment from "./environment";
 
 export class UI {
     private date: HTMLDivElement | null = null;

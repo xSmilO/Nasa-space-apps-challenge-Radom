@@ -15,7 +15,6 @@ import {
 import type { orbitElements } from "../utility/types";
 import { SETTINGS } from "../core/Settings";
 import { UnixToJulianDate } from "../utility/dateConverter";
-import type Asteroid from "./Asteroid";
 
 class Orbit {
     public semiMajorAxis: number; // in AU
@@ -30,7 +29,7 @@ class Orbit {
     public period: number; // in years
     public changesPerCentury: orbitElements | null;
     public currentOrbitElements: orbitElements;
-    public celestialObject: CelestialObject | Asteroid;
+    public celestialObject: CelestialObject | null = null;
 
     public orbitLine: Line;
 
@@ -41,7 +40,7 @@ class Orbit {
     private unhoveredMaterial: LineBasicMaterial;
     private hoveredMaterial: LineBasicMaterial;
 
-    public earthPos: Vector3;
+    private earthPos: Vector3;
 
     constructor(
         meanAnomaly: number,
@@ -52,13 +51,14 @@ class Orbit {
         ascentingNode: number,
         period: number,
         dataFrom: Date | number,
-        celestialObject: CelestialObject | Asteroid,
+        celestialObject: CelestialObject | null,
         color: string,
         changesPerCentury: orbitElements | null = null,
         layer: number
     ) {
         this.meanAnomaly = meanAnomaly;
-        this.celestialObject = celestialObject;
+        if (celestialObject)
+            this.celestialObject = celestialObject;
         this.semiMajorAxis = semiMajorAxis;
         this.eccentricity = eccentricity;
         this.inclination = inclination * 0.0174532925; // convert to RAD
@@ -117,6 +117,7 @@ class Orbit {
         if (!this.changesPerCentury) return;
 
         const T = (this.epoch - this.dataFrom) / 36525;
+        // console.log(T);
         if (this.centuriesPast != T) {
             this.centuriesPast = T;
             this.currentOrbitElements.eccentricity =
@@ -165,9 +166,8 @@ class Orbit {
     }
 
     public trace(_earthPos: Vector3): void {
-        if (!this.orbitLine || !this.celestialObject) return;
+        if (!this.orbitLine) return;
         this.earthPos = _earthPos;
-
 
         let startAngle = this.celestialObject.trueAnomaly;
 
@@ -179,7 +179,7 @@ class Orbit {
         let points: Vector3[] = [];
         let opacity: number = 0;
         while (offset < TAU + step) {
-            points.push(this.calculatePosition(angle));
+            points.push(this.calculatePosition(angle, this.earthPos));
             opacity = 1 - offset / TAU - 0.1;
             if (opacity < 0) opacity = 0;
             colors.push(this.color.r, this.color.g, this.color.b, opacity);
@@ -235,8 +235,10 @@ class Orbit {
 
         pos.y = r * (Math.sin(pA + theta) * Math.sin(i));
 
+        // convert them to km and scale down to simulation
         pos.multiplyScalar(scale);
         pos.sub(this.earthPos);
+        // tutaj trzeba pozycje ziemi obliczyc 
 
         if (origin) pos.add(origin);
 

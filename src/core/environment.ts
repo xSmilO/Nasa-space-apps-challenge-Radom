@@ -1,39 +1,49 @@
 import { AmbientLight, DirectionalLight, EquirectangularReflectionMapping, MathUtils, PerspectiveCamera, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer, Clock } from "three";
 import { Earth } from "../element3D/earth";
 import { Map as MapLibre } from "maplibre-gl";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js";
 import Loader from "./loader";
 import { SETTINGS } from './Settings';
 import type { AsteroidData } from "../utility/types";
+import Orbit from "../components/Orbit.ts";
 import { UI } from "./UI";
 
 const clock = new Clock();
 import { resolveRadarZoom } from "../utility/radarHelper";
+import { UnixToJulianDate } from "../utility/dateConverter";
+import Asteroid from "../components/Asteroid.ts";
+import CelestialBody from "../components/CelestialBody.ts";
 
-export class Environment {
+export default class Environment {
   public textureLoader: TextureLoader;
   public scene: Scene;
   public renderer: WebGLRenderer;
+  public cssRenderer: CSS2DRenderer;
   public camera: PerspectiveCamera;
   public controls: OrbitControls;
   public directionalLight: DirectionalLight;
   public earth: Earth;
   public ambientLight: AmbientLight;
   public radar: MapLibre;
+  public currentDate: Date;
   public phas: Map<string, AsteroidData>;
 
   private ui: UI;
-  private currentDate: Date;
   private isLive: boolean;
-  public radarHTMLElement: HTMLDivElement;
+  private earthOrbit: Orbit;
+  private earthObject: CelestialBody;
+  private phaBodies: Map<string, Asteroid>
 
+  public radarHTMLElement: HTMLDivElement;
+  public earthPos: Vector3;
   constructor(animator?: (timeStamp: DOMHighResTimeStamp, frame: XRFrame) => void) {
     this.ui = new UI(this);
     this.textureLoader = new TextureLoader();
     this.scene = new Scene();
-    this.renderer = new WebGLRenderer();
-    this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight);
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
+    this.cssRenderer = new CSS2DRenderer();
+    this.camera = new PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.001, SETTINGS.CAMERA_RENDER_DISTANCE);
+    this.controls = new OrbitControls(this.camera, this.cssRenderer.domElement);
     this.directionalLight = new DirectionalLight(0xffffff, 2.5);
     this.earth = new Earth(this.textureLoader);
     this.ambientLight = new AmbientLight(0xffffff, 0.1);
@@ -44,11 +54,21 @@ export class Environment {
       zoom: 0,
       interactive: false
     });
-    this.phas = new Map<string, AsteroidData>;
+    this.phas = new Map<string, AsteroidData>();
+    this.phaBodies = new Map<string, Asteroid>();
     this.currentDate = new Date();
     this.isLive = true;
+    this.earthObject = new CelestialBody(this, "Earth", 6371 / SETTINGS.SIZE_SCALE, 23.439, 0.0000729115, "#4A8BD5");
+    this.earthPos = new Vector3();
+    this.earthOrbit = new Orbit(6.2398516, 1.00000261, 0.01671123, 102.93768193, 0, 0.0, 1.000702364394, new Date("2000-01-01"), this.earthObject, SETTINGS.ORBIT_COLOR, null, SETTINGS.ORBIT_LAYER);
 
+    this.camera.layers.enableAll();
+
+    this.cssRenderer.domElement.style.position = "absolute";
+    this.cssRenderer.domElement.style.top = "0px";
+    this.cssRenderer.setSize(window.innerWidth, window.innerHeight);
     this.radarHTMLElement = document.getElementById("radar") as HTMLDivElement;
+    document.body.appendChild(this.cssRenderer.domElement)
 
     this.radar.on("load", () => {
       this.earth.rotateFromClientsGeolocation(this.controls);
@@ -70,7 +90,6 @@ export class Environment {
 
     this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;
     this.controls.maxDistance = SETTINGS.CAMERA_MAX_DISTANCE;
-    console.log(this.controls.getDistance())
     this.controls.enablePan = false;
     this.controls.enableDamping = true;
 
@@ -92,6 +111,7 @@ export class Environment {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setAnimationLoop((timeStamp: DOMHighResTimeStamp, frame: XRFrame) => {
       this.renderer.render(this.scene, this.camera);
+      this.cssRenderer.render(this.scene, this.camera);
 
       if (animator != undefined) {
         animator(timeStamp, frame);
@@ -106,7 +126,16 @@ export class Environment {
   }
 
   public async init(): Promise<void> {
+    const currentDate = new Date();
     this.phas = await Loader.loadPHAData();
+    this.earthObject.setOrbit(this.earthOrbit);
+    this.earthObject.init(currentDate);
+
+    this.phaBodies = await Loader.loadPHA(this, this.phas, currentDate);
+
+    for (let [_, pha] of this.phaBodies) {
+      this.scene.add(pha.group);
+    }
   }
 
   public updateRadar(): void {
@@ -151,6 +180,7 @@ export class Environment {
     this.camera.aspect = window.innerWidth / window.innerHeight;
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.cssRenderer.setSize(window.innerWidth, window.innerHeight);
     this.camera.updateProjectionMatrix();
   }
 
@@ -160,10 +190,25 @@ export class Environment {
     this.ui.update();
     this.ui.updateTimelineInfo(this.currentDate);
 
+    this.calculateEarthPosition(this.currentDate, deltaTime);
+
+    for (let [_, phaBody] of this.phaBodies) {
+      phaBody.hide();
+      phaBody.updatePosition(this.currentDate, deltaTime, SETTINGS.simulationSpeed / 86400)
+      if (this.controls.getDistance() > SETTINGS.MIN_DISTANCE_ASTEROID_RENDER) {
+        if (phaBody.calcDistanceToEarth(this.earthPos)) {
+          phaBody.show();
+        }
+      }
+    }
+
+
+
     if (this.isLive && SETTINGS.simulationSpeed != 1) {
       this.isLive = false;
       this.ui.noLive();
     }
+
   }
   public setUpEventListeners(): void {
     this.ui.setUpEventListeners();
@@ -171,12 +216,18 @@ export class Environment {
   public setLiveDate(): void {
     this.currentDate = new Date();
     this.isLive = true;
-    // for (let [_, celestialBody] of this.celestialBodies) {
-    //   celestialBody.setLivePosition(this.currentDate);
-    // }
 
-    // for (let [_, phaBody] of this.phaBodies) {
-    //   phaBody.setLivePosition(this.currentDate);
-    // }
+    for (let [_, phaBody] of this.phaBodies) {
+      phaBody.setLivePosition(this.currentDate);
+    }
+  }
+
+  private calculateEarthPosition(date: Date, deltaTime: number): void {
+    this.earthObject.updatePosition(date, deltaTime, SETTINGS.simulationSpeed / 86400);
+    if (this.earthObject.mesh?.position != null) {
+      this.earthPos = this.earthObject.mesh.position;
+      this.earth.rotation.y = this.earthObject.mesh.rotation.y;
+    }
+
   }
 }

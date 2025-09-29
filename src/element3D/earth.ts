@@ -23,7 +23,6 @@ export class Earth extends Mesh {
 
     public textureLoader: TextureLoader;
     public clouds: Mesh;
-    private lastTimeStamp: DOMHighResTimeStamp = 0;
     public shaders: { [mesh: string]: WebGLProgramParametersWithUniforms } = {};
     public radius: number;
 
@@ -216,14 +215,6 @@ export class Earth extends Mesh {
         return new Vector3()
             .subVectors(controls.object.position, controls.target)
             .normalize();
-    }
-
-    public rotate(timeStamp: DOMHighResTimeStamp) {
-        const delta: number = (timeStamp - this.lastTimeStamp) / 1000.0;
-        const angularSpeed = (2.0 * Math.PI) / 86400;
-
-        this.rotation.y += angularSpeed * delta;
-        this.lastTimeStamp = timeStamp;
     }
 
     public getMaterial(): MeshStandardMaterial {

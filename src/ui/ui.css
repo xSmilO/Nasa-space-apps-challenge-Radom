@@ -11,6 +11,7 @@
     left: 50%;
     transform: translate(-50%);
     color: white;
+    z-index: 999;
 }
 
 .time-slider .slider {
@@ -98,4 +99,45 @@
     text-transform: uppercase;
     color: white;
     opacity: 0;
+}
+
+.planet-label {
+    color: var(--color);
+    font-family: sans-serif;
+    padding: 2px;
+    background: transparent;
+    top: -1em;
+    opacity: 0.5;
+    transition: top 200ms ease;
+}
+
+.planet-icon {
+    background-color: var(--color);
+    opacity: 0.8;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+}
+
+.planet-label.hovered,
+.planet-icon.hovered,
+.asteroid-icon.hovered {
+    opacity: 1 !important;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.planet-label.hovered {
+    top: -1.25em;
+}
+
+.asteroid-icon {
+    width: 1em;
+    height: 1em;
+    opacity: 0.5;
+}
+
+.asteroid-icon img {
+    width: 100%;
+    height: 100%;
 }
