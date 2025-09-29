@@ -4,78 +4,60 @@ import { Vector3 } from "three";
 import { EventListeners } from "./core/EventListeners";
 import { SETTINGS } from "./core/Settings";
 import type { MapMouseEvent } from "maplibre-gl";
-import { drawRadarImpactCircle } from "./utility/radarHelper";
 
-const environment: Environment = new Environment(
-    (timeStamp: DOMHighResTimeStamp) => {
-        environment.earth.clouds.rotation.y += 0.0001;
+const environment: Environment = new Environment((timeStamp: DOMHighResTimeStamp) => {
+  environment.earth.clouds.rotation.y += 0.0001;
 
-        environment.controls.update();
-        environment.updateRadar();
-        environment.earth.rotate(timeStamp);
+  environment.controls.update();
+  environment.radar.update();
+  environment.earth.rotate(timeStamp);
 
-        if (
-            environment.earth.shaders[
-            environment.earth.getCloudsMaterial().uuid
-            ]
-        ) {
-            environment.earth.shaders[
-                environment.earth.getCloudsMaterial().uuid
-            ].uniforms.time.value = timeStamp;
-        }
-    }
-);
+  if(environment.earth.shaders[environment.earth.getCloudsMaterial().uuid]) {
+    environment.earth.shaders[
+      environment.earth.getCloudsMaterial().uuid
+    ].uniforms.time.value = timeStamp;
+  }
+});
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
 
 new EventListeners(environment);
 window.addEventListener("mousemove", (event) => {
-    environment.updateControlsState(event);
+  environment.updateControlsState(event);
 });
 
 window.addEventListener("wheel", () => {
-    currentZoomAnimation.kill();
-    environment.updateControlsSpeed();
+  currentZoomAnimation.kill();
+  environment.updateControlsSpeed();
 });
 
 window.addEventListener("resize", () => {
-    environment.updateDimensions();
+  environment.updateDimensions();
 });
 
 document.getElementById("resetZoomButton")?.addEventListener("click", () => {
-    const object: { distance: number } = {
-        distance: environment.controls.getDistance(),
-    };
+  const object: {distance: number} = {distance: environment.controls.getDistance()};
 
-    currentZoomAnimation.kill();
+  currentZoomAnimation.kill();
 
-    currentZoomAnimation = gsap.to(object, {
-        distance: SETTINGS.CAMERA_START_DISTANCE,
-        duration: 1,
-        ease: "power1.inOut",
-        onUpdate: () => {
-            const direction = new Vector3()
-                .subVectors(
-                    environment.controls.object.position,
-                    environment.controls.target
-                )
-                .normalize();
+  currentZoomAnimation = gsap.to(object, {
+    distance: SETTINGS.CAMERA_START_DISTANCE,
+    duration: 1,
+    ease: "power1.inOut",
+    onUpdate: () => {
+      const direction = new Vector3().subVectors(environment.controls.object.position, environment.controls.target).normalize();
 
-            environment.controls.object.position.copy(
-                environment.controls.target
-                    .clone()
-                    .add(direction.multiplyScalar(object.distance))
-            );
-            environment.updateRadar();
-        },
-        onComplete: () => {
-            environment.updateControlsSpeed();
-        },
-    });
+      environment.controls.object.position.copy(environment.controls.target.clone().add(direction.multiplyScalar(object.distance)));
+      environment.radar.update();
+    },
+    onComplete: () => {
+      environment.updateControlsSpeed();
+    }
+  });
 });
 
 environment.radar.on("click", (event: MapMouseEvent) => {
-  drawRadarImpactCircle(environment.radar, {
+  environment.radar.markImpactSpot({
     latitude: event.lngLat.lat,
     longitude: event.lngLat.lng
   }, 1000);
