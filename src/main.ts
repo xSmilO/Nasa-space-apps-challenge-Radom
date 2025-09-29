@@ -62,6 +62,4 @@ environment.radar.on("click", (event: MapMouseEvent) => {
     latitude: event.lngLat.lat,
     longitude: event.lngLat.lng
   }, 1000);
-
-  console.log(event.lngLat);
 });
