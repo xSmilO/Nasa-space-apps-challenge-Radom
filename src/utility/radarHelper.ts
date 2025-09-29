@@ -1,4 +1,8 @@
+import type { Map } from "maplibre-gl";
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
+
+const imapctCircleSourceID = "fb98509c-425c-40a0-ae84-97e55fefe257";
+const impactCircleLayerID = "915fcb31-9dbd-4e01-bb9f-b8f030fff7ce";
 
 function resolveGoodZoomValue(zoom: number): number {
   return parseInt(zoom.toFixed());
@@ -59,4 +63,60 @@ export function resolveRadarZoom(controls: OrbitControls): number {
   }
 
   return resolveGoodZoomValue(minZoom);
+}
+
+export function drawRadarImpactCircle(radar: Map, center: {latitude: number, longitude: number}, radiusMeters: number, color: string = "#f00", opacity: number = 0.5): void {
+  const points: [number, number][] = [];
+  const earthRadiusMeters: number = 6371000;
+  const latitude = center.latitude * Math.PI / 180.0;
+  const longitude: number = center.longitude * Math.PI / 180.0;
+  const pointsCount: number = 64;
+
+  for(let i: number = 0; i < pointsCount; i++) {
+    const angle: number = (i / pointsCount) * 2 * Math.PI;
+    const deltaX: number = radiusMeters * Math.cos(angle);
+    const deltaY: number = radiusMeters * Math.sin(angle);
+    const deltaLatitude: number = deltaY / earthRadiusMeters;
+    const deltaLongitude: number = deltaX / (earthRadiusMeters * Math.cos(latitude));
+    const pointLatitude = latitude + deltaLatitude;
+    const pointLongitude = longitude + deltaLongitude;
+
+    points.push([pointLongitude * 180.0 / Math.PI, pointLatitude * 180.0 / Math.PI]);
+  }
+
+  const circle: GeoJSON.Feature<GeoJSON.Polygon> = {
+    type: "Feature",
+    geometry: {
+      type: "Polygon",
+      coordinates: [points]
+    },
+    properties: {}
+  };
+
+  if(radar.getSource(imapctCircleSourceID)) {
+    radar.removeLayer(impactCircleLayerID);
+    radar.removeSource(imapctCircleSourceID);
+  }
+
+  radar.addSource(imapctCircleSourceID, {
+    type: "geojson",
+    data: circle
+  });
+
+  radar.addLayer({
+    id: impactCircleLayerID,
+    type: "fill",
+    source: imapctCircleSourceID,
+    paint: {
+      "fill-color": color,
+      "fill-opacity": opacity
+    }
+  });
+}
+
+export function removeRadarImpactCircle(radar: Map): void {
+  if(radar.getSource(imapctCircleSourceID)) {
+    radar.removeLayer(impactCircleLayerID);
+    radar.removeSource(imapctCircleSourceID);
+  }
 }

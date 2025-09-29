@@ -1,6 +1,10 @@
 import { Environment } from "./core/environment";
 import gsap from "gsap";
 import { Vector3 } from "three";
+import { EventListeners } from "./core/EventListeners";
+import { SETTINGS } from "./core/Settings";
+import type { MapMouseEvent } from "maplibre-gl";
+import { drawRadarImpactCircle } from "./utility/radarHelper";
 
 const environment: Environment = new Environment(
     (timeStamp: DOMHighResTimeStamp) => {
@@ -23,8 +27,6 @@ const environment: Environment = new Environment(
 );
 
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
-import { EventListeners } from "./core/EventListeners";
-import { SETTINGS } from "./core/Settings";
 
 new EventListeners(environment);
 window.addEventListener("mousemove", (event) => {
@@ -70,4 +72,11 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
             environment.updateControlsSpeed();
         },
     });
+});
+
+environment.radar.on("click", (event: MapMouseEvent) => {
+  drawRadarImpactCircle(environment.radar, {
+    latitude: event.lngLat.lat,
+    longitude: event.lngLat.lng
+  }, 1000);
 });
