@@ -52,7 +52,7 @@ export class Radar extends Map {
     }
   }
 
-  private drawImpactSpotMarking(center: {latitude: number, longitude: number}, radiusMeters: number, color: string, opacity: number): void {
+  private drawImpactSpotMarking(center: {latitude: number, longitude: number}, radius: number, color: string, opacity: number): void {
     const points: [number, number][] = [];
     const earthRadiusMeters: number = 6371000;
     const latitude = center.latitude * Math.PI / 180.0;
@@ -61,8 +61,8 @@ export class Radar extends Map {
 
     for(let i: number = 0; i < pointsCount; i++) {
       const angle: number = (i / pointsCount) * 2 * Math.PI;
-      const deltaX: number = radiusMeters * Math.cos(angle);
-      const deltaY: number = radiusMeters * Math.sin(angle);
+      const deltaX: number = radius * Math.cos(angle);
+      const deltaY: number = radius * Math.sin(angle);
       const deltaLatitude: number = deltaY / earthRadiusMeters;
       const deltaLongitude: number = deltaX / (earthRadiusMeters * Math.cos(latitude));
       const pointLatitude = latitude + deltaLatitude;

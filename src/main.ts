@@ -61,5 +61,7 @@ environment.radar.on("click", (event: MapMouseEvent) => {
   environment.radar.markImpactSpot({
     latitude: event.lngLat.lat,
     longitude: event.lngLat.lng
-  }, 1000);
+  }, 315489);
+
+  console.log(event.lngLat);
 });
