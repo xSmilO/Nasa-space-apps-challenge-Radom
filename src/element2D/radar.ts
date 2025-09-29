@@ -1,9 +1,10 @@
-import { Map } from "maplibre-gl";
+import { GeoJSONSource, Map } from "maplibre-gl";
 import type { Environment } from "../core/environment";
+import gsap from "gsap";
 
 export class Radar extends Map {
-  private static readonly imapctCircleSourceID = "fb98509c-425c-40a0-ae84-97e55fefe257";
-  private static readonly impactCircleLayerID = "915fcb31-9dbd-4e01-bb9f-b8f030fff7ce";
+  private static readonly impactSpotMarkingSourceID = "fb98509c-425c-40a0-ae84-97e55fefe257";
+  private static readonly impactSpotMarkingLayerID = "915fcb31-9dbd-4e01-bb9f-b8f030fff7ce";
 
   private htmlElement: HTMLDivElement;
   private environment: Environment;
@@ -17,7 +18,7 @@ export class Radar extends Map {
       interactive: false
     });
 
-    this.htmlElement = document.getElementById("radarContainer") as HTMLDivElement;
+    this.htmlElement = document.getElementById("radar") as HTMLDivElement;
     this.environment = environment;
   }
 
@@ -30,24 +31,28 @@ export class Radar extends Map {
       this.setZoom(zoom);
       this.resize();
 
-      if (zoom == 10) {
+      if(zoom == 10) {
         this.htmlElement.classList.add("bigger");
-      } else if (zoom < 2) {
-        this.htmlElement.classList.add("smaller");
-      } else {
-        this.htmlElement.classList.remove("bigger", "smaller");
+        return;
       }
+
+      if(zoom < 2) {
+        this.htmlElement.classList.add("smaller");
+        return;
+      }
+
+      this.htmlElement.classList.remove("bigger", "smaller");
     } catch (exception: any) { }
   }
 
   public removeImpactSpotMarking(): void {
-    if(this.getSource(Radar.imapctCircleSourceID)) {
-      this.removeLayer(Radar.impactCircleLayerID);
-      this.removeSource(Radar.imapctCircleSourceID);
+    if(this.getSource(Radar.impactSpotMarkingSourceID)) {
+      this.removeLayer(Radar.impactSpotMarkingLayerID);
+      this.removeSource(Radar.impactSpotMarkingSourceID);
     }
   }
 
-  public markImpactSpot(center: {latitude: number, longitude: number}, radiusMeters: number, color: string = "#f00", opacity: number = 0.5): void {
+  private drawImpactSpotMarking(center: {latitude: number, longitude: number}, radiusMeters: number, color: string, opacity: number): void {
     const points: [number, number][] = [];
     const earthRadiusMeters: number = 6371000;
     const latitude = center.latitude * Math.PI / 180.0;
@@ -75,22 +80,44 @@ export class Radar extends Map {
       properties: {}
     };
 
-    this.removeImpactSpotMarking();
+    if(this.getSource(Radar.impactSpotMarkingSourceID)) {
+      (this.getSource(Radar.impactSpotMarkingSourceID) as GeoJSONSource).setData(circle);
+      return;
+    }
 
-    this.addSource(Radar.imapctCircleSourceID, {
+    this.addSource(Radar.impactSpotMarkingSourceID, {
       type: "geojson",
       data: circle
     });
 
     this.addLayer({
-      id: Radar.impactCircleLayerID,
+      id: Radar.impactSpotMarkingLayerID,
       type: "fill",
-      source: Radar.imapctCircleSourceID,
+      source: Radar.impactSpotMarkingSourceID,
       paint: {
         "fill-color": color,
         "fill-opacity": opacity
       }
     });
+  }
+
+  public markImpactSpot(center: {latitude: number, longitude: number}, radiusMeters: number, animate: boolean = true, animationDuration: number = 1.0, color: string = "#f00", opacity: number = 0.5): void {
+    if(animate) {
+      const object: {radius: number} = {radius: 0,};
+
+      gsap.to(object, {
+        radius: radiusMeters,
+        duration: animationDuration,
+        ease: "power1.inOut",
+        onUpdate: () => {
+          this.drawImpactSpotMarking(center, object.radius, color, opacity);
+        }
+      });
+
+      return;
+    }
+
+    this.drawImpactSpotMarking(center, radiusMeters, color, opacity);
   }
 
   private resolveGoodZoomValue(zoom: number): number {

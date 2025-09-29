@@ -39,7 +39,7 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
   const object: {distance: number} = {distance: environment.controls.getDistance()};
 
   currentZoomAnimation.kill();
-
+  
   currentZoomAnimation = gsap.to(object, {
     distance: SETTINGS.CAMERA_START_DISTANCE,
     duration: 1,
