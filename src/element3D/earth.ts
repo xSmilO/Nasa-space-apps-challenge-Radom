@@ -134,41 +134,29 @@ export class Earth extends Mesh {
         );
     } */
 
-    public rotateFromGeolocation(
-        controls: OrbitControls,
-        latitude: number,
-        longitude: number
-    ): void {
-        latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
-        longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
-        const directionVector: Vector3 = new Vector3(
-            Math.sin(longitude) * Math.cos(latitude),
-            Math.sin(latitude),
-            Math.cos(longitude) * Math.cos(latitude)
-        );
+    public rotateFromGeolocation(controls: OrbitControls, latitude: number, longitude: number): void {
+      latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
+      longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
 
-        const cameraPosition = directionVector.multiplyScalar(
-            controls.getDistance()
-        );
+      const directionVector: Vector3 = new Vector3(
+        Math.sin(longitude) * Math.cos(latitude),
+        Math.sin(latitude),
+        Math.cos(longitude) * Math.cos(latitude)
+      );
 
-        gsap.to(this.rotation, {
-            x: 0,
-            y: 0,
-            z: 0,
-            duration: 1,
-            ease: "power1.inOut",
-        });
+      const rotatedDirection = directionVector.clone().applyQuaternion(this.quaternion);
+      const cameraPosition = rotatedDirection.multiplyScalar(controls.getDistance());
 
-        gsap.to(controls.object.position, {
-            x: cameraPosition.x,
-            y: cameraPosition.y,
-            z: cameraPosition.z,
-            duration: 1,
-            ease: "power1.inOut",
-            onUpdate: () => {
-                controls.object.lookAt(controls.target);
-            },
-        });
+      gsap.to(controls.object.position, {
+        x: cameraPosition.x,
+        y: cameraPosition.y,
+        z: cameraPosition.z,
+        duration: 1,
+        ease: "power1.inOut",
+        onUpdate: () => {
+          controls.object.lookAt(controls.target);
+        },
+      });
     }
 
     public rotateFromClientsGeolocation(controls: OrbitControls): void {
