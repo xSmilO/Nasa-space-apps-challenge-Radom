@@ -12,7 +12,7 @@ export class Radar extends Map {
   constructor(environment: Environment) {
     super({
       container: "radarContainer",
-      style: "/radar/getStyle",
+      style: "/server/getStyle",
       center: [0.0, 0.0],
       zoom: 0,
       interactive: false

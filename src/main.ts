@@ -4,6 +4,7 @@ import { Vector3 } from "three";
 import { EventListeners } from "./core/EventListeners";
 import { SETTINGS } from "./core/Settings";
 import type { MapMouseEvent } from "maplibre-gl";
+import { SearchBar } from "./ui/searchBar";
 
 const environment: Environment = new Environment((timeStamp: DOMHighResTimeStamp) => {
   environment.earth.clouds.rotation.y += 0.0001;
@@ -22,6 +23,8 @@ const environment: Environment = new Environment((timeStamp: DOMHighResTimeStamp
 let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
 
 new EventListeners(environment);
+
+const searchBar: SearchBar = new SearchBar(environment);
 
 window.addEventListener("mousemove", (event) => {
   environment.updateControlsState(event);
@@ -55,6 +58,26 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
       environment.updateControlsSpeed();
     }
   });
+});
+
+searchBar.input.addEventListener("input", () => {
+  searchBar.updateSearchResults();
+});
+
+searchBar.container.addEventListener("focusout", (event: FocusEvent) => {
+  if(event.relatedTarget && (
+    searchBar.container.contains(event.relatedTarget as Node) ||
+    searchBar.searchResultsContainer.contains(event.relatedTarget as Node)
+  )) {
+    return;
+  }
+
+  searchBar.stopQuerying();
+  searchBar.clearSearchResults();
+});
+
+searchBar.input.addEventListener("focusin", () => {
+  searchBar.updateSearchResults();
 });
 
 environment.radar.on("click", (event: MapMouseEvent) => {

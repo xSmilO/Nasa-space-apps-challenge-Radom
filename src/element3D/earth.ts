@@ -146,7 +146,7 @@ export class Earth extends Mesh {
             Math.sin(longitude) * Math.cos(latitude),
             Math.sin(latitude),
             Math.cos(longitude) * Math.cos(latitude)
-        );
+        ).normalize();
 
         const cameraPosition = directionVector.multiplyScalar(
             controls.getDistance()
