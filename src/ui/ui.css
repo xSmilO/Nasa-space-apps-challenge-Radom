@@ -123,13 +123,13 @@
 .planet-icon.hovered,
 .asteroid-icon.hovered {
     opacity: 1 !important;
-    cursor: pointer;
+    /* cursor: pointer; */
     font-weight: bold;
 }
 
-.planet-label.hovered {
-    top: -1.25em;
-}
+/* .planet-label.hovered { */
+/*     top: -1.25em; */
+/* } */
 
 .asteroid-icon {
     width: 1em;

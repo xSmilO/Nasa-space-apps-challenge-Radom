@@ -84,6 +84,7 @@ export default class TimeSlider {
             // });
 
             window.addEventListener("mousemove", (e) => {
+                if (SETTINGS.METEOR_MODE) return;
                 const containerRect = this.container!.getBoundingClientRect();
                 const dragRect = this.drag!.getBoundingClientRect();
                 if (!this.mouseDown) return;

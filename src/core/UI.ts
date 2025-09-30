@@ -2,6 +2,7 @@ import MeteorCreator from "../ui/MeteeorCreator";
 import TimeSlider from "../ui/TimeSlider";
 import { getMonthShortName } from "../utility/dateConverter";
 import Environment from "./environment";
+import { SETTINGS } from "./Settings";
 
 export class UI {
     private date: HTMLDivElement | null = null;
@@ -11,11 +12,9 @@ export class UI {
     private environment: Environment;
     private timeSlider: TimeSlider;
 
-    private meteorCreatorBtn: HTMLButtonElement | null;
     constructor(environment: Environment) {
         this.environment = environment;
-        this.meteorCreator = new MeteorCreator();
-        this.meteorCreatorBtn = document.querySelector<HTMLButtonElement>(".meteorCreatorBtn");
+        this.meteorCreator = new MeteorCreator(this);
         this.clock = document.querySelector<HTMLDivElement>(
             ".time-slider .info .clock"
         );
@@ -37,12 +36,12 @@ export class UI {
     }
 
     public setUpEventListeners(): void {
-        this.meteorCreatorBtn?.addEventListener("click", () => {
-            this.meteorCreator.active ? this.meteorCreator.disable() : this.meteorCreator.enable();
-        })
+        this.meteorCreator.setEventListeners();
+
         this.timeSlider.setEventListeners();
         if (this.liveBtn)
             this.liveBtn.addEventListener("click", () => {
+                if (SETTINGS.METEOR_MODE) return;
                 this.environment.setLiveDate();
                 this.live();
                 this.timeSlider.reset();
@@ -72,10 +71,22 @@ export class UI {
         }
     }
 
-    private live(): void {
+    public live(): void {
         if (this.liveBtn) {
             this.liveBtn.classList.remove("no-live");
         }
     }
 
+    public onResize(): void {
+        // this.meteorCreator.onResize();
+    }
+
+    public enableMeteorMode(): void {
+        this.timeSlider.reset();
+        this.environment.enableMeteorMode();
+    }
+
+    public disableMeteorMode(): void {
+        this.environment.disableMeteorMode();
+    }
 }

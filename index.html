@@ -10,82 +10,67 @@
 </head>
 
 <body>
-    <div id="searchBarContainer" tabindex="0">
-      <input id="searchBar" type="text" placeholder="Search for different places"/>
-      <div id="searchResultsContainer"></div>
-    </div>
-    <div id="radar">
-        <button id="resetZoomButton">Reset zoom</button>
-        <!-- <img src="./assets/test/crosshair.png" style="position: absolute; width: 100%; height: 100%; user-select: none; pointer-events: none; opacity: 25%;"/> -->
-        <div id="radarContainer"></div>
-    </div>
-    <button type="button" class="meteorCreatorBtn">Generate meteor</button>
-    <div class="meteor-creator">
-        <h2>Apophis</h2>
-        <div class="display-container">
-            <div class="left-arrow arrow">
-                <img src="/icons/left-arrow.svg" alt="" />
-            </div>
-            <div class="display"></div>
-            <div class="left-arrow arrow">
-                <img src="/icons/right-arrow.svg" alt="" />
+    <div class="UI">
+        <div id="searchBarContainer" tabindex="0">
+            <input id="searchBar" type="text" placeholder="Search for different places" />
+            <div id="searchResultsContainer"></div>
+        </div>
+        <div id="radar">
+            <button id="resetZoomButton">Reset zoom</button>
+            <!-- <img src="./assets/test/crosshair.png" style="position: absolute; width: 100%; height: 100%; user-select: none; pointer-events: none; opacity: 25%;"/> -->
+            <div id="radarContainer"></div>
+        </div>
+        <button type="button" class="meteorCreatorBtn">Generate meteor</button>
+        <div class="meteorCreator">
+            <h2 id="meteorName">Impactor 2025</h2>
+            <div class="displayContainer">
+                <div class="left-arrow arrow">
+                    <img src="/icons/left-arrow.svg" alt="" />
+                </div>
+                <div class="display"></div>
+                <div class="left-arrow arrow">
+                    <img src="/icons/right-arrow.svg" alt="" />
+                </div>
             </div>
             <div class="parameters">
                 <h3>Parameters</h3>
-                <div class="close-btn">
+                <div class="closeBtn">
                     <img src="/icons/cross.svg" alt="" />
                 </div>
-                <button type="button" class="meteor-btn">Generate meteor</button>
-                <div class="meteor-creator">
-                    <h2>Apophis</h2>
-                    <div class="display-container">
-                        <div class="left-arrow arrow">
-                            <img src="/assets/icons/left-arrow.svg" alt="" />
-                        </div>
-                        <div class="display"></div>
-                        <div class="left-arrow arrow">
-                            <img src="/assets/icons/right-arrow.svg" alt="" />
-                        </div>
-                    </div>
-                    <div class="parameters">
-                        <h3>Parameters</h3>
-                        <div class="close-btn">
-                            <img src="/assets/icons/cross.svg" alt="" />
-                        </div>
 
-                        <div class="inputs">
-                            <div class="variant" id="size-inputs">
-                                <label for="diameter">Diameter (m)</label>
-                                <input type="number" name="diameter" value="50" min="0" max="1000" />
-                                <label for="density">Density (kg/m<sup>3</sup>)</label>
-                                <input type="number" name="density" value="50" min="0" max="1000" />
-                            </div>
-                            <div class="variant" id="entry-inputs">
-                                <label for="angle">Angle: 20&deg;</label>
-                                <input type="range" name="angle" value="20" min="0" max="70" />
-                                <label for="velocity">Velocity: 40 km/s</label>
-                                <input type="range" name="velocity" value="40" min="0" max="150" />
-                            </div>
-                        </div>
+                <div class="inputs">
+                    <div class="variant" id="size-inputs">
+                        <label for="diameter">Diameter (m)</label>
+                        <input type="number" name="diameter" value="50" min="0" max="1000" />
+                        <label for="density">Density (kg/m<sup>3</sup>)</label>
+                        <input type="number" name="density" value="50" min="0" max="1000" />
+                    </div>
+                    <div class="variant" id="entry-inputs">
+                        <label for="angle">Angle: 20&deg;</label>
+                        <input type="range" name="angle" value="20" min="0" max="70" />
+                        <label for="velocity">Velocity: 40 km/s</label>
+                        <input type="range" name="velocity" value="40" min="0" max="150" />
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="time-slider">
-        <div class="info">
-            <div class="live-btn">
-                <div class="circle"></div>
-                <p>LIVE</p>
-            </div>
-            <div class="date"></div>
-            <div class="clock"></div>
-        </div>
 
-        <div class="slider">
-            <div class="drag"></div>
+                <button type="button" class="hitBtn">Hit the earth</button>
+            </div>
         </div>
-        <div class="simulation-speed">real-time</div>
+        <div class="time-slider">
+            <div class="info">
+                <div class="live-btn">
+                    <div class="circle"></div>
+                    <p>LIVE</p>
+                </div>
+                <div class="date"></div>
+                <div class="clock"></div>
+            </div>
+
+            <div class="slider">
+                <div class="drag"></div>
+            </div>
+            <div class="simulation-speed">real-time</div>
+        </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
 </body>

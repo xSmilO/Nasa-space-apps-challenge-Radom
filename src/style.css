@@ -5,6 +5,7 @@
   margin: 0;
   box-sizing: border-box;
   font-family: "Saira", sans-serif;
+  font-size: 16px;
 }
 
 input::-webkit-outer-spin-button,
@@ -39,7 +40,19 @@ div#radar {
   transition: all 0.1s ease-in-out;
   display: flex;
   flex-direction: column;
-  z-index: 5;
+}
+
+.UI {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: white;
+  pointer-events: none;
+  /* padding: 3em; */
+  z-index: 9999;
 }
 
 div#radar.bigger {
@@ -60,7 +73,7 @@ div#radar>button {
   position: relative;
   margin-bottom: 5px;
   padding: 0.5em 1em;
-  z-index: 5;
+  pointer-events: all;
 }
 
 div#radar>div#radarContainer {
@@ -82,7 +95,7 @@ div#searchBarContainer {
   border-radius: 5px;
   width: 600px;
   max-width: 600px;
-  z-index: 5;
+  pointer-events: all;
 }
 
 div#searchBarContainer>input {
@@ -127,14 +140,31 @@ div#searchBarContainer>div#searchResultsContainer>div.searchResult:hover {
 }
 
 .meteorCreatorBtn {
-  padding: 0.5em 1em;
   position: absolute;
-  bottom: 5em;
-  left: 6em;
-  z-index: 6;
+  bottom: 5rem;
+  left: 6rem;
+  pointer-events: all;
+  background-color: transparent;
+  outline: none;
+  border: 2px solid white;
+  color: white;
+  border-radius: 1.25em;
+  padding: 0.5em 1.5em;
+  font-size: 1.15em;
+  transition: scale 300ms ease, transform 150ms ease, background-color 200ms ease;
+  cursor: pointer;
 }
 
-.meteor-creator {
+.meteorCreatorBtn:hover {
+  transform: scaleX(1.1);
+  background-color: hsla(0, 100%, 100%, 20%);
+}
+
+.meteorCreatorBtn.active {
+  scale: 0;
+}
+
+.meteorCreator {
   background-color: #40424750;
   color: white;
   position: absolute;
@@ -145,48 +175,51 @@ div#searchBarContainer>div#searchResultsContainer>div.searchResult:hover {
   flex-direction: column;
   gap: 1em;
   top: 10%;
-  display: none;
+  pointer-events: all;
+  display: flex;
+  transform: translate(-150%);
+  transition: transform 300ms ease-in;
 }
 
-.meteor-creator.active {
-  display: block;
+.meteorCreator.active {
+  transform: translate(0);
 }
 
-.meteor-creator h2 {
+.meteorCreator h2 {
   text-align: center;
   font-size: 1.25em;
 }
 
-.meteor-creator .display-container {
+.meteorCreator .displayContainer {
   display: flex;
   align-items: center;
   gap: 1em;
 }
 
-.meteor-creator .display-container .display {
+.meteorCreator .displayContainer .display {
   width: 100%;
-  height: 14em;
-  background-color: #121212;
+  height: 12em;
+  /* background-color: #121212; */
   border-radius: 0.5em;
 }
 
-.meteor-creator .display-container .arrow {
+.meteorCreator .displayContainer .arrow {
   width: 1.3em;
   height: 1.3em;
   cursor: pointer;
   transition: scale 250ms ease;
 }
 
-.meteor-creator .display-container .arrow:hover {
+.meteorCreator .displayContainer .arrow:hover {
   scale: 1.15;
 }
 
-.meteor-creator .display-container .arrow img {
+.meteorCreator .displayContainer .arrow img {
   width: 100%;
   height: 100%;
 }
 
-.meteor-creator .categories {
+.meteorCreator .categories {
   display: flex;
   width: 100%;
 }
@@ -195,6 +228,9 @@ div#searchBarContainer>div#searchResultsContainer>div.searchResult:hover {
   border-radius: 0.5em;
   padding: 0.5em 0;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .parameters h3 {
@@ -222,13 +258,17 @@ div#searchBarContainer>div#searchResultsContainer>div.searchResult:hover {
 }
 
 .parameters .inputs .variant {
-  flex-shrink: 0;
   transition: transform 0.5s ease;
   padding: 1em;
   display: flex;
   flex-direction: column;
   color: #afb0b6;
   font-weight: 500;
+  flex: 1;
+}
+
+.parameters .inputs .variant label {
+  user-select: none;
 }
 
 .parameters .inputs .variant input {
@@ -243,7 +283,27 @@ div#searchBarContainer>div#searchResultsContainer>div.searchResult:hover {
   text-align: right;
 }
 
-.meteor-creator .close-btn {
+.parameters .hitBtn {
+  padding: 0.5em 1.5em;
+  outline: none;
+  color: hsl(0, 0%, 80%);
+  background-color: hsla(0, 3%, 30%, 10%);
+  text-transform: uppercase;
+  border-radius: 0.9em;
+  font-size: 1.05em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 600ms ease;
+  border: 2px solid hsla(0, 3%, 70%, 10%);
+}
+
+.parameters .hitBtn:hover {
+  /* background-color: hsla(4, 89%, 60%, 60%); */
+  border: 2px solid red;
+  color: hsl(4, 89%, 48%);
+}
+
+.meteorCreator .closeBtn {
   cursor: pointer;
   position: absolute;
   top: 2em;
@@ -253,11 +313,11 @@ div#searchBarContainer>div#searchResultsContainer>div.searchResult:hover {
   transition: scale 250ms ease-out;
 }
 
-.meteor-creator .close-btn:hover {
+.meteorCreator .closeBtn:hover {
   scale: 1.1;
 }
 
-.meteor-creator .close-btn img {
+.meteorCreator .closeBtn img {
   width: 100%;
   height: 100%;
 }

@@ -218,6 +218,8 @@ export default class Environment {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.cssRenderer.setSize(window.innerWidth, window.innerHeight);
         this.camera.updateProjectionMatrix();
+
+        this.ui.onResize();
     }
 
     public update(deltaTime: number): void {
@@ -253,9 +255,11 @@ export default class Environment {
             this.ui.noLive();
         }
     }
+
     public setUpEventListeners(): void {
         this.ui.setUpEventListeners();
     }
+
     public setLiveDate(): void {
         this.currentDate = new Date();
         this.isLive = true;
@@ -263,6 +267,14 @@ export default class Environment {
         for (let [_, phaBody] of this.phaBodies) {
             phaBody.setLivePosition(this.currentDate);
         }
+    }
+
+    public enableMeteorMode(): void {
+        SETTINGS.METEOR_MODE = true;
+    }
+
+    public disableMeteorMode(): void {
+        SETTINGS.METEOR_MODE = false;
     }
 
     private calculateEarthPosition(date: Date, deltaTime: number): void {
