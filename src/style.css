@@ -39,6 +39,7 @@ div#radar {
   transition: all 0.1s ease-in-out;
   display: flex;
   flex-direction: column;
+  z-index: 100;
 }
 
 div#radar.bigger {
@@ -81,6 +82,7 @@ div#searchBarContainer {
   border-radius: 5px;
   width: 600px;
   max-width: 600px;
+  z-index: 100;
 }
 
 div#searchBarContainer>input {
