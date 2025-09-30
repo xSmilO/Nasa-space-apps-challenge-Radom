@@ -137,12 +137,11 @@ export class Earth extends Mesh {
     public rotateFromGeolocation(controls: OrbitControls, latitude: number, longitude: number): void {
       latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
       longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
-
       const directionVector: Vector3 = new Vector3(
-        Math.sin(longitude) * Math.cos(latitude),
-        Math.sin(latitude),
-        Math.cos(longitude) * Math.cos(latitude)
-      );
+          Math.sin(longitude) * Math.cos(latitude),
+          Math.sin(latitude),
+          Math.cos(longitude) * Math.cos(latitude)
+      ).normalize();
 
       const rotatedDirection = directionVector.clone().applyQuaternion(this.quaternion);
       const cameraPosition = rotatedDirection.multiplyScalar(controls.getDistance());

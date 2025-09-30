@@ -7,10 +7,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "radar": "ts-node src/radarserver.ts",
-    "test": "concurrently \"npm run radar\" \"npm run dev\"",
-    "radar-linux": "node --loader ts-node/esm src/radarserver.ts",
-    "test-linux": "concurrently \"npm run radar-linux\" \"npm run dev\""
+    "server": "ts-node src/server.ts",
+    "test": "concurrently \"npm run server\" \"npm run dev\"",
+    "server-linux": "node --loader ts-node/esm src/server.ts",
+    "test-linux": "concurrently \"npm run server-linux\" \"npm run dev\""
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

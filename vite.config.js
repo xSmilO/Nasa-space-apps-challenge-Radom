@@ -3,10 +3,10 @@ import { defineConfig } from "vite";
 export default defineConfig({
   server: {
     proxy: {
-      "/radar": {
+      "/server": {
         target: "http://localhost:3001",
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/radar/, "")
+        rewrite: path => path.replace(/^\/server/, "")
       }
     }
   }
