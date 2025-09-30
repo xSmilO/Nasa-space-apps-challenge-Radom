@@ -79,9 +79,6 @@ div#searchBarContainer {
   background-color: #0a0a0a;
   padding: 5px;
   border-radius: 5px;
-  max-height: 300px;
-  overflow-y: auto;
-  overflow-x: hidden;
   width: 600px;
   max-width: 600px;
 }
@@ -101,6 +98,14 @@ div#searchBarContainer>input::placeholder {
   color: #807f8b;
 }
 
+div#searchBarContainer>div#searchResultsContainer {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+}
+
 div#searchBarContainer>div#searchResultsContainer>div.searchResult {
   padding: 15px;
   color: #807f8b;
@@ -114,8 +119,8 @@ div#searchBarContainer>div#searchResultsContainer>div.searchResult {
 }
 
 div#searchBarContainer>div#searchResultsContainer>div.searchResult:hover {
-  background-color: #807f8b;
-  color: #0a0a0a;
+  background-color: #e9e9ed;
+  color: black;
 }
 
 .meteorCreatorBtn {
