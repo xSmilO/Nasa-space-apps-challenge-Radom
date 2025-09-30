@@ -79,31 +79,21 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
 });
 
 searchBar.input.addEventListener("input", () => {
-  searchBar.updateSearchResults();
+    searchBar.updateSearchResults();
 });
 
 searchBar.container.addEventListener("focusout", (event: FocusEvent) => {
-  if(event.relatedTarget && (
-    searchBar.container.contains(event.relatedTarget as Node) ||
-    searchBar.searchResultsContainer.contains(event.relatedTarget as Node)
-  )) {
-    return;
-  }
+    if (event.relatedTarget && (
+        searchBar.container.contains(event.relatedTarget as Node) ||
+        searchBar.searchResultsContainer.contains(event.relatedTarget as Node)
+    )) {
+        return;
+    }
 
-  searchBar.stopQuerying();
-  searchBar.clearSearchResults();
+    searchBar.stopQuerying();
+    searchBar.clearSearchResults();
 });
 
 searchBar.input.addEventListener("focusin", () => {
-  searchBar.updateSearchResults();
-});
-
-environment.radar.on("click", (event: MapMouseEvent) => {
-    environment.radar.markImpactSpot(
-        {
-            latitude: event.lngLat.lat,
-            longitude: event.lngLat.lng,
-        },
-        1000
-    );
+    searchBar.updateSearchResults();
 });

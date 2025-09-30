@@ -1,6 +1,8 @@
 import { AmbientLight, DirectionalLight, Mesh, MeshStandardMaterial, PerspectiveCamera, Scene, SphereGeometry, WebGLRenderer } from "three";
 import { OBJLoader } from "three/examples/jsm/Addons.js";
 import type { UI } from "../core/UI";
+import type { CraterResult } from "../utility/types";
+import { craterFromImpactor } from "../utility/math";
 
 
 export default class MeteorCreator {
@@ -186,6 +188,12 @@ export default class MeteorCreator {
         this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
         this.camera.aspect = this.canvas.clientWidth / this.canvas.clientHeight;
         this.camera.updateProjectionMatrix();
+    }
+
+    calculateMeteorCrater(): CraterResult {
+        return craterFromImpactor(this._diameter, this._velocity * 1000, this._angle, {
+            rho_imp: this._density
+        })
     }
 }
 

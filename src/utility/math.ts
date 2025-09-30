@@ -1,4 +1,4 @@
-import type { CraterResult } from "./types";
+import type { CraterResult, FireballResult } from "./types";
 
 
 export function degToRad(d: number) { return d * Math.PI / 180; }
@@ -63,4 +63,39 @@ export function craterFromImpactor(
         regime
     };
 }
+
+/**
+ * compute fireball properties
+ * @param E_J kinetic energy in joules
+ * @param opts.K luminous/thermal efficiency (default 3e-3)
+ * @param opts.transparencyTemp_K transparency temp for Stefan-Boltzmann based duration (default 3000 K)
+ */
+export function estimateFireball(E_J: number, opts?: { K?: number; transparencyTemp_K?: number; impactVelocity_ms?: number }): FireballResult {
+    const K = opts?.K ?? 3e-3; // default luminous/thermal efficiency (Collins example)
+    const Rf_m = 0.002 * Math.pow(E_J, 1 / 3); // Collins Eqn (32*)
+    const Erad_J = K * E_J;
+
+    // hemisphere area at radius r: 2 * PI * r^2
+    const thermalFluxAt_r = (r_m: number) => {
+        if (r_m <= 0) return Infinity;
+        return Erad_J / (2 * Math.PI * r_m * r_m); // J/m^2 assuming isotropic hemisphere
+    };
+
+    // duration estimate (rough): use Stefan-Boltzmann at T* to estimate time Wt:
+    // Wt ≈ (Erad_J / (2 * PI * Rf_m^2)) / (sigma * T*^4)
+    // but Erad_J/(2*pi*Rf^2) is the average radiant energy per unit area;
+    // we use T*=opts.transparencyTemp_K (Collins uses ~3000 K)
+    const sigma = 5.670374419e-8;
+    const Tstar = opts?.transparencyTemp_K ?? 3000;
+    const avgFluxAtFireballSurface = (Erad_J) / (2 * Math.PI * Rf_m * Rf_m);
+    const duration_s = avgFluxAtFireballSurface / (sigma * Math.pow(Tstar, 4));
+
+    return {
+        E_J,
+        Rf_m,
+        Erad_J,
+        thermalFluxAt_r,
+        duration_s,
+        K_used: K
+    };
 }

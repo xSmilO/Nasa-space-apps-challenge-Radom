@@ -18,12 +18,13 @@ import { Earth } from "../element3D/earth";
 import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js";
 import Loader from "./loader";
 import { SETTINGS } from "./Settings";
-import type { AsteroidData } from "../utility/types";
+import type { AsteroidData, CraterResult } from "../utility/types";
 import Orbit from "../components/Orbit.ts";
 import { UI } from "./UI";
 import { Radar } from "../element2D/radar";
 import Asteroid from "../components/Asteroid.ts";
 import CelestialBody from "../components/CelestialBody.ts";
+import type { MapMouseEvent } from "maplibre-gl";
 
 const clock = new Clock();
 
@@ -108,11 +109,6 @@ export default class Environment {
             "radar"
         ) as HTMLDivElement;
         document.body.appendChild(this.cssRenderer.domElement);
-
-        this.radar.on("load", () => {
-            this.earth.rotateFromClientsGeolocation(this.controls);
-            this.radar.update();
-        });
 
         this.camera.position.z = SETTINGS.CAMERA_START_DISTANCE;
 
@@ -258,6 +254,26 @@ export default class Environment {
 
     public setUpEventListeners(): void {
         this.ui.setUpEventListeners();
+
+        this.radar.on("load", () => {
+            this.earth.rotateFromClientsGeolocation(this.controls);
+            this.radar.update();
+        });
+
+        this.radar.on("click", (event: MapMouseEvent) => {
+            if (!SETTINGS.METEOR_MODE) return;
+            const result: CraterResult = this.ui.launchMeteor();
+            this.radar.markImpactSpot(
+                {
+                    latitude: event.lngLat.lat,
+                    longitude: event.lngLat.lng,
+                },
+                result.Dtc_m
+            );
+
+            console.log(result)
+            this.ui.disableMeteorMode();
+        });
     }
 
     public setLiveDate(): void {

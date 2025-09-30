@@ -6,6 +6,15 @@ export type CraterResult = {
     regime: 'simple' | 'complex';
 };
 
+export type FireballResult = {
+    E_J: number;            // kinetic energy (J)
+    Rf_m: number;           // fireball radius at max radiation (m)
+    Erad_J: number;         // assumed radiated thermal energy (J) = K * E
+    thermalFluxAt_r: (r_m: number) => number; // function returning J/m^2 at distance r
+    duration_s?: number;    // rough irradiation duration estimate (s)
+    K_used: number;         // luminous/thermal efficiency used
+};
+
 export interface orbitElements {
     semiMajor: number;
     eccentricity: number;

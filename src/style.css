@@ -40,6 +40,7 @@ div#radar {
   transition: all 0.1s ease-in-out;
   display: flex;
   flex-direction: column;
+  pointer-events: all;
 }
 
 .UI {

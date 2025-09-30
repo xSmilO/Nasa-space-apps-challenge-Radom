@@ -1,6 +1,7 @@
 import MeteorCreator from "../ui/MeteeorCreator";
 import TimeSlider from "../ui/TimeSlider";
 import { getMonthShortName } from "../utility/dateConverter";
+import type { CraterResult } from "../utility/types";
 import Environment from "./environment";
 import { SETTINGS } from "./Settings";
 
@@ -88,5 +89,9 @@ export class UI {
 
     public disableMeteorMode(): void {
         this.environment.disableMeteorMode();
+    }
+
+    public launchMeteor(): CraterResult {
+        return this.meteorCreator.calculateMeteorCrater();
     }
 }
