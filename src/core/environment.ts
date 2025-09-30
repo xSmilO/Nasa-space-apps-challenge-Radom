@@ -15,7 +15,6 @@ import {
     Clock,
 } from "three";
 import { Earth } from "../element3D/earth";
-import { Map as MapLibre } from "maplibre-gl";
 import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js";
 import Loader from "./loader";
 import { SETTINGS } from "./Settings";
@@ -23,11 +22,10 @@ import type { AsteroidData } from "../utility/types";
 import Orbit from "../components/Orbit.ts";
 import { UI } from "./UI";
 import { Radar } from "../element2D/radar";
-
-const clock = new Clock();
-import { UnixToJulianDate } from "../utility/dateConverter";
 import Asteroid from "../components/Asteroid.ts";
 import CelestialBody from "../components/CelestialBody.ts";
+
+const clock = new Clock();
 
 export default class Environment {
     public textureLoader: TextureLoader;
