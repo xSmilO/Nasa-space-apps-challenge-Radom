@@ -1,4 +1,5 @@
 import MeteorCreator from "../ui/MeteeorCreator";
+import { SearchBar } from "../ui/searchBar";
 import TimeSlider from "../ui/TimeSlider";
 import { getMonthShortName } from "../utility/dateConverter";
 import type { CraterResult } from "../utility/types";
@@ -12,10 +13,12 @@ export class UI {
     private meteorCreator: MeteorCreator;
     private environment: Environment;
     private timeSlider: TimeSlider;
+    private searchBar: SearchBar;
 
     constructor(environment: Environment) {
         this.environment = environment;
         this.meteorCreator = new MeteorCreator(this);
+        this.searchBar = new SearchBar(environment);
         this.clock = document.querySelector<HTMLDivElement>(
             ".time-slider .info .clock"
         );
@@ -28,6 +31,26 @@ export class UI {
         this.timeSlider = new TimeSlider();
 
         this.meteorCreator.disable();
+
+        this.searchBar.input.addEventListener("input", () => {
+            this.searchBar.updateSearchResults();
+        });
+
+        this.searchBar.container.addEventListener("focusout", (event: FocusEvent) => {
+            if (event.relatedTarget && (
+                this.searchBar.container.contains(event.relatedTarget as Node) ||
+                this.searchBar.searchResultsContainer.contains(event.relatedTarget as Node)
+            )) {
+                return;
+            }
+
+            this.searchBar.stopQuerying();
+            this.searchBar.clearSearchResults();
+        });
+
+        this.searchBar.input.addEventListener("focusin", () => {
+            this.searchBar.updateSearchResults();
+        });
     }
 
     public update(): void {
@@ -47,6 +70,10 @@ export class UI {
                 this.live();
                 this.timeSlider.reset();
             });
+        document.querySelector(".tempReset")?.addEventListener("click", () => {
+            this.environment.resetCamera();
+            this.environment.showUI();
+        })
     }
 
     public updateTimelineInfo(date: Date): void {
@@ -93,5 +120,16 @@ export class UI {
 
     public launchMeteor(): CraterResult {
         return this.meteorCreator.calculateMeteorCrater();
+    }
+
+    public show(): void {
+        this.meteorCreator.showButton();
+        this.searchBar.show();
+    }
+
+    public hide(): void {
+        this.meteorCreator.hideButton();
+        this.meteorCreator.disable();
+        this.searchBar.hide();
     }
 }

@@ -135,27 +135,36 @@ export class Earth extends Mesh {
     } */
 
     public rotateFromGeolocation(controls: OrbitControls, latitude: number, longitude: number): void {
-      latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
-      longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
-      const directionVector: Vector3 = new Vector3(
-          Math.sin(longitude) * Math.cos(latitude),
-          Math.sin(latitude),
-          Math.cos(longitude) * Math.cos(latitude)
-      ).normalize();
+        latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
+        longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
+        const directionVector: Vector3 = new Vector3(
+            Math.sin(longitude) * Math.cos(latitude),
+            Math.sin(latitude),
+            Math.cos(longitude) * Math.cos(latitude)
+        ).normalize();
+        const rotatedDirection = directionVector.clone().applyQuaternion(this.quaternion);
+        const cameraPosition = rotatedDirection.multiplyScalar(controls.getDistance());
 
-      const rotatedDirection = directionVector.clone().applyQuaternion(this.quaternion);
-      const cameraPosition = rotatedDirection.multiplyScalar(controls.getDistance());
+        gsap.to(controls.object.position, {
+            x: cameraPosition.x,
+            y: cameraPosition.y,
+            z: cameraPosition.z,
+            duration: 1,
+            ease: "power1.inOut",
+            onUpdate: () => {
+                controls.object.lookAt(controls.target);
+            },
+        });
+    }
 
-      gsap.to(controls.object.position, {
-        x: cameraPosition.x,
-        y: cameraPosition.y,
-        z: cameraPosition.z,
-        duration: 1,
-        ease: "power1.inOut",
-        onUpdate: () => {
-          controls.object.lookAt(controls.target);
-        },
-      });
+    public getPositionFromGeoLocation(latitude: number, longitude: number): Vector3 {
+        latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
+        longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
+        return new Vector3(
+            Math.sin(longitude) * Math.cos(latitude),
+            Math.sin(latitude),
+            Math.cos(longitude) * Math.cos(latitude)
+        ).normalize().clone().applyQuaternion(this.quaternion);
     }
 
     public rotateFromClientsGeolocation(controls: OrbitControls): void {

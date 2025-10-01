@@ -25,6 +25,14 @@ body {
   position: relative;
 }
 
+.tempReset {
+  pointer-events: all;
+}
+
+.tempReset.hidden {
+  display: none;
+}
+
 .UI {
   position: absolute;
   top: 0;
@@ -53,6 +61,10 @@ body {
   display: flex;
   flex-direction: column;
   pointer-events: all;
+}
+
+#radar.hidden {
+  display: none;
 }
 
 #radar.bigger {
@@ -117,6 +129,10 @@ body {
   pointer-events: all;
 }
 
+#searchBarContainer.hidden {
+  display: none;
+}
+
 #searchBarContainer input {
   border: none;
   outline: none;
@@ -172,6 +188,10 @@ body {
   font-size: 1.15em;
   transition: scale 300ms ease, transform 150ms ease, background-color 200ms ease;
   cursor: pointer;
+}
+
+.meteorCreatorBtn.hidden {
+  display: none;
 }
 
 .meteorCreatorBtn:hover {

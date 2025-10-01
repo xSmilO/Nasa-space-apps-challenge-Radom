@@ -1,11 +1,12 @@
 import Environment from "./core/environment";
-import gsap from "gsap";
-import { Vector3 } from "three";
+import { Clock, Vector3 } from "three";
 import { EventListeners } from "./core/EventListeners";
 import { SETTINGS } from "./core/Settings";
-import type { MapMouseEvent } from "maplibre-gl";
-import { SearchBar } from "./ui/searchBar";
+import gsap from "gsap";
 
+const clock: Clock = new Clock();
+
+clock.start();
 const environment: Environment = new Environment(
     (timeStamp: DOMHighResTimeStamp) => {
         environment.earth.clouds.rotation.y =
@@ -13,6 +14,7 @@ const environment: Environment = new Environment(
 
         environment.controls.update();
         environment.radar.update();
+        environment.update(clock.getDelta())
 
         if (
             environment.earth.shaders[
@@ -25,35 +27,19 @@ const environment: Environment = new Environment(
         }
     }
 );
+
 environment.init();
 
-let currentZoomAnimation: gsap.core.Tween = gsap.to({}, {});
-
 new EventListeners(environment);
-
-const searchBar: SearchBar = new SearchBar(environment);
-
-window.addEventListener("mousemove", (event) => {
-    environment.updateControlsState(event);
-});
-
-window.addEventListener("wheel", () => {
-    currentZoomAnimation.kill();
-    environment.updateControlsSpeed();
-});
-
-window.addEventListener("resize", () => {
-    environment.updateDimensions();
-});
 
 document.getElementById("resetZoomButton")?.addEventListener("click", () => {
     const object: { distance: number } = {
         distance: environment.controls.getDistance(),
     };
 
-    currentZoomAnimation.kill();
+    environment.currentZoomAnimation.kill();
 
-    currentZoomAnimation = gsap.to(object, {
+    environment.currentZoomAnimation = gsap.to(object, {
         distance: SETTINGS.CAMERA_START_DISTANCE,
         duration: 1,
         ease: "power1.inOut",
@@ -78,22 +64,3 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
     });
 });
 
-searchBar.input.addEventListener("input", () => {
-    searchBar.updateSearchResults();
-});
-
-searchBar.container.addEventListener("focusout", (event: FocusEvent) => {
-    if (event.relatedTarget && (
-        searchBar.container.contains(event.relatedTarget as Node) ||
-        searchBar.searchResultsContainer.contains(event.relatedTarget as Node)
-    )) {
-        return;
-    }
-
-    searchBar.stopQuerying();
-    searchBar.clearSearchResults();
-});
-
-searchBar.input.addEventListener("focusin", () => {
-    searchBar.updateSearchResults();
-});

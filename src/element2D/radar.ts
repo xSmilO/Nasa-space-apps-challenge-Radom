@@ -52,6 +52,14 @@ export class Radar extends Map {
     }
   }
 
+  public show(): void {
+    this.htmlElement.classList.remove("hidden");
+  }
+
+  public hide(): void {
+    this.htmlElement.classList.add("hidden");
+  }
+
   private drawImpactSpotMarking(center: { latitude: number, longitude: number }, radius: number, color: string, opacity: number): void {
     const points: [number, number][] = [];
     const earthRadiusMeters: number = 6371000;

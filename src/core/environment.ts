@@ -11,8 +11,7 @@ import {
     TextureLoader,
     Vector2,
     Vector3,
-    WebGLRenderer,
-    Clock,
+    WebGLRenderer
 } from "three";
 import { Earth } from "../element3D/earth";
 import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js";
@@ -25,8 +24,8 @@ import { Radar } from "../element2D/radar";
 import Asteroid from "../components/Asteroid.ts";
 import CelestialBody from "../components/CelestialBody.ts";
 import type { MapMouseEvent } from "maplibre-gl";
-
-const clock = new Clock();
+import gsap from "gsap";
+import HitScene from "../components/HitScene.ts";
 
 export default class Environment {
     public textureLoader: TextureLoader;
@@ -41,12 +40,14 @@ export default class Environment {
     public currentDate: Date;
     public radar: Radar;
     public phas: Map<string, AsteroidData>;
-
+    public currentZoomAnimation: gsap.core.Tween;
+    public hidePHAs: boolean;
     private ui: UI;
     private isLive: boolean;
     private earthOrbit: Orbit;
     private earthObject: CelestialBody;
     private phaBodies: Map<string, Asteroid>;
+    private hitScene: HitScene;
 
     public radarHTMLElement: HTMLDivElement;
     public earthPos: Vector3;
@@ -64,6 +65,8 @@ export default class Environment {
             0.001,
             SETTINGS.CAMERA_RENDER_DISTANCE
         );
+
+        this.currentZoomAnimation = gsap.to({}, {});
         this.controls = new OrbitControls(
             this.camera,
             this.cssRenderer.domElement
@@ -76,6 +79,8 @@ export default class Environment {
         this.phaBodies = new Map<string, Asteroid>();
         this.currentDate = new Date();
         this.isLive = true;
+        this.hitScene = new HitScene(this);
+        this.hidePHAs = false;
         this.earthObject = new CelestialBody(
             this,
             "Earth",
@@ -157,12 +162,9 @@ export default class Environment {
                 if (animator != undefined) {
                     animator(timeStamp, frame);
                 }
-
-                this.update(clock.getDelta());
             }
         );
 
-        clock.start();
 
         document.body.appendChild(this.renderer.domElement);
     }
@@ -229,6 +231,8 @@ export default class Environment {
 
         this.calculateEarthPosition(this.currentDate, deltaTime);
 
+        if (this.hitScene.isActive) this.hitScene.update(deltaTime);
+
         for (let [_, phaBody] of this.phaBodies) {
             phaBody.hide();
             phaBody.updatePosition(
@@ -238,7 +242,7 @@ export default class Environment {
             );
             if (
                 this.controls.getDistance() >
-                SETTINGS.MIN_DISTANCE_ASTEROID_RENDER
+                SETTINGS.MIN_DISTANCE_ASTEROID_RENDER && this.hidePHAs == false
             ) {
                 if (phaBody.calcDistanceToEarth(this.earthPos)) {
                     phaBody.show();
@@ -271,9 +275,17 @@ export default class Environment {
                 result.Dtc_m
             );
 
-            console.log(result)
-            this.ui.disableMeteorMode();
+            const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(event.lngLat.lat, event.lngLat.lng);
+
+            this.hitScene.playScene(hitNormalVec);
         });
+    }
+
+    public resetCamera() {
+        this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;
+        this.controls.target.copy(new Vector3(0, 0, 0));
+        this.camera.lookAt(this.controls.target);
+        this.controls.update();
     }
 
     public setLiveDate(): void {
@@ -291,6 +303,16 @@ export default class Environment {
 
     public disableMeteorMode(): void {
         SETTINGS.METEOR_MODE = false;
+    }
+
+    public showUI(): void {
+        this.radar.show();
+        this.ui.show();
+    }
+
+    public hideUI(): void {
+        this.radar.hide();
+        this.ui.hide();
     }
 
     private calculateEarthPosition(date: Date, deltaTime: number): void {

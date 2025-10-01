@@ -130,17 +130,48 @@ export default class MeteorCreator {
         return this._active;
     }
 
-    onInputChange(): void {
-        this._diameter = parseInt(this.diameterInput!.value);
-        this._density = parseInt(this.densityInput!.value);
-        this._angle = parseInt(this.angleInput!.value);
-        this._velocity = parseInt(this.velocityInput!.value);
+    public setEventListeners(): void {
+        this.diameterInput?.addEventListener("input", () => this.onInputChange());
+        this.densityInput?.addEventListener("input", () => this.onInputChange());
+        this.angleInput?.addEventListener("input", () => this.onInputChange());
+        this.velocityInput?.addEventListener("input", () => this.onInputChange());
 
-        this.angleLabel!.innerHTML = `Angle: ${this._angle ? this._angle : 0}&deg`
-        this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
+        this.meteorCreatorBtn?.addEventListener("click", () => {
+            this.active ? this.disable() : this.enable();
+        })
+
+        this.closeBtn?.addEventListener("click", () => {
+            this.disable();
+            this.ui.disableMeteorMode();
+        })
+
+        this.hitBtn?.addEventListener("click", () => {
+            this.ui.enableMeteorMode();
+        })
     }
 
-    fetchHTMLElements(): void {
+    public onResize(): void {
+        if (!this.canvas) return;
+        this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+        this.camera.aspect = this.canvas.clientWidth / this.canvas.clientHeight;
+        this.camera.updateProjectionMatrix();
+    }
+
+    public calculateMeteorCrater(): CraterResult {
+        return craterFromImpactor(this._diameter, this._velocity * 1000, this._angle, {
+            rho_imp: this._density
+        })
+    }
+
+    public showButton(): void {
+        this.meteorCreatorBtn?.classList.remove("hidden");
+    }
+
+    public hideButton(): void {
+        this.meteorCreatorBtn?.classList.add("hidden");
+    }
+
+    private fetchHTMLElements(): void {
         this.diameterInput = document.querySelector<HTMLInputElement>("input[name='diameter']");
         this.densityInput = document.querySelector<HTMLInputElement>("input[name='density']");
         this.angleInput = document.querySelector<HTMLInputElement>("input[name='angle']");
@@ -163,37 +194,14 @@ export default class MeteorCreator {
         this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
     }
 
-    setEventListeners(): void {
-        this.diameterInput?.addEventListener("input", () => this.onInputChange());
-        this.densityInput?.addEventListener("input", () => this.onInputChange());
-        this.angleInput?.addEventListener("input", () => this.onInputChange());
-        this.velocityInput?.addEventListener("input", () => this.onInputChange());
+    private onInputChange(): void {
+        this._diameter = parseInt(this.diameterInput!.value);
+        this._density = parseInt(this.densityInput!.value);
+        this._angle = parseInt(this.angleInput!.value);
+        this._velocity = parseInt(this.velocityInput!.value);
 
-        this.meteorCreatorBtn?.addEventListener("click", () => {
-            this.active ? this.disable() : this.enable();
-        })
-
-        this.closeBtn?.addEventListener("click", () => {
-            this.disable();
-            this.ui.disableMeteorMode();
-        })
-
-        this.hitBtn?.addEventListener("click", () => {
-            this.ui.enableMeteorMode();
-        })
-    }
-
-    onResize(): void {
-        if (!this.canvas) return;
-        this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-        this.camera.aspect = this.canvas.clientWidth / this.canvas.clientHeight;
-        this.camera.updateProjectionMatrix();
-    }
-
-    calculateMeteorCrater(): CraterResult {
-        return craterFromImpactor(this._diameter, this._velocity * 1000, this._angle, {
-            rho_imp: this._density
-        })
+        this.angleLabel!.innerHTML = `Angle: ${this._angle ? this._angle : 0}&deg`
+        this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
     }
 }
 
