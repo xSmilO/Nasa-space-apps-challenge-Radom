@@ -1,15 +1,29 @@
 import { Vector3 } from "three";
 import type Environment from "../core/environment";
+import Meteor from "../element3D/meteor";
 import { SETTINGS } from "../core/Settings";
+import gsap from "gsap";
+import Courtains from "../ui/courtains";
 
 export default class HitScene {
     public isActive: boolean;
     private environment: Environment;
     private hitNormalVec: Vector3;
+    private meteor: Meteor;
+    private pointPos: Vector3;
+    private courtains: Courtains;
+    private meteorSpawned: boolean;
+
     constructor(environment: Environment) {
         this.isActive = false;
         this.environment = environment;
         this.hitNormalVec = new Vector3(0, 0, 0);
+        this.meteor = new Meteor(environment);
+        this.pointPos = new Vector3(0, 0, 0);
+        this.courtains = new Courtains();
+        this.meteorSpawned = false;
+
+        this.meteor.init();
     }
 
     public playScene(hitNormalVec: Vector3): void {
@@ -34,30 +48,66 @@ export default class HitScene {
         //1.
 
         this.goToSurface();
-        this.spawnMeteor();
+    }
+
+    public resetScene(): void {
+        this.meteorSpawned = false;
+        this.meteor.hide();
     }
 
     public update(deltaTime: number): void {
+        this.environment.controls.update();
 
+        // if (this.meteorSpawned) this.moveToTarget(deltaTime);
     }
 
     private goToSurface(): void {
-        const pointPos = this.hitNormalVec.clone().multiplyScalar(this.environment.earth.radius * 1.000001);
+        const object = { distance: this.environment.controls.getDistance() };
+        this.pointPos = this.hitNormalVec.clone().multiplyScalar(this.environment.earth.radius);
         const lookAtTarget = this.hitNormalVec.clone().multiplyScalar(this.environment.earth.radius * 10);
-        this.environment.camera.position.copy(pointPos);
-        this.environment.camera.lookAt(lookAtTarget);
-
+        // this.environment.camera.position.copy(this.pointPos);
         this.environment.controls.minDistance = 0;
-        this.environment.controls.target.copy(lookAtTarget);
+        this.environment.camera.lookAt(lookAtTarget);
+        this.environment.controls.target.copy(this.pointPos);
+        this.environment.controls.enabled = false;
 
-        this.environment.controls.update();
+        this.courtains.close();
+        gsap.to(object, {
+            distance: 0,
+            duration: 2,
+            ease: "power1.inOut",
+            onUpdate: () => {
+                const direction = new Vector3().subVectors(this.environment.controls.object.position, this.pointPos).normalize();
 
-        // setTimeout(() => {
-        //     this.resetCamera();
-        // }, 2000);
+                this.environment.controls.object.position.copy(
+                    this.environment.controls.target.clone().add(direction.multiplyScalar(object.distance))
+                );
+            },
+            onComplete: () => {
+                this.environment.camera.position.copy(this.pointPos);
+                this.environment.controls.target.copy(lookAtTarget);
+                this.environment.camera.lookAt(lookAtTarget);
+                this.courtains.open();
+
+                this.spawnMeteor();
+            }
+        })
     }
 
     private spawnMeteor(): void {
+        const meteorPos: Vector3 = this.environment.camera.position.clone().add(this.hitNormalVec.clone().multiplyScalar(2));
+        const radius = 50 / SETTINGS.SIZE_SCALE;
 
+        this.meteor.spawn(radius, meteorPos);
+
+        this.meteorSpawned = true;
+    }
+
+    private moveToTarget(deltaTime: number): void {
+        if (this.meteor.mesh!.position.distanceTo(this.environment.camera.position) < 0.15) return;
+        const direction = new Vector3().subVectors(this.environment.camera.position, this.meteor.mesh!.position);
+        const speed = 70;
+        console.log("zapierdalam: " + this.meteor.mesh!.position.distanceTo(this.environment.camera.position));
+        this.meteor.mesh?.position.add(direction.multiplyScalar((1 / SETTINGS.DISTANCE_SCALE) * speed));
     }
 }

@@ -60,7 +60,7 @@ export default class Environment {
         this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
         this.cssRenderer = new CSS2DRenderer();
         this.camera = new PerspectiveCamera(
-            90,
+            SETTINGS.CAMERA_FOV,
             window.innerWidth / window.innerHeight,
             0.001,
             SETTINGS.CAMERA_RENDER_DISTANCE
@@ -183,6 +183,8 @@ export default class Environment {
     }
 
     public updateControlsState(event: MouseEvent): void {
+        if (this.hitScene.isActive) return;
+
         const mousePos: Vector2 = new Vector2(
             (event.clientX / window.innerWidth) * 2 - 1,
             -(event.clientY / window.innerHeight) * 2 + 1
@@ -191,6 +193,7 @@ export default class Environment {
         const isLMBDown: boolean = (event.buttons & 1) === 1;
         const raycaster: Raycaster = new Raycaster();
         raycaster.setFromCamera(mousePos, this.camera);
+
         this.controls.enabled =
             raycaster.intersectObject(this.earth).length > 0 || isLMBDown;
     }
@@ -282,7 +285,25 @@ export default class Environment {
     }
 
     public resetCamera() {
+        this.hitScene.resetScene();
+        this.hitScene.isActive = false;
+
+        this.disableMeteorMode();
+        this.hidePHAs = false;
         this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;
+
+        const direction = new Vector3()
+            .subVectors(
+                this.controls.object.position,
+                this.controls.target
+            )
+            .normalize();
+
+        this.controls.object.position.copy(
+            this.controls.target
+                .clone()
+                .add(direction.multiplyScalar(SETTINGS.CAMERA_START_DISTANCE))
+        );
         this.controls.target.copy(new Vector3(0, 0, 0));
         this.camera.lookAt(this.controls.target);
         this.controls.update();
@@ -299,15 +320,17 @@ export default class Environment {
 
     public enableMeteorMode(): void {
         SETTINGS.METEOR_MODE = true;
+        this.radar.enableMeteorMode();
     }
 
     public disableMeteorMode(): void {
         SETTINGS.METEOR_MODE = false;
+        this.radar.disableMeteorMode();
     }
 
     public showUI(): void {
         this.radar.show();
-        this.ui.show();
+        this.ui.show()
     }
 
     public hideUI(): void {

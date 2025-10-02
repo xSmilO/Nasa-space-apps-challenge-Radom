@@ -1,4 +1,6 @@
+import { Vector3 } from "three";
 import Environment from "./environment";
+import { SETTINGS } from "./Settings";
 
 export class EventListeners {
     private environment: Environment;
@@ -28,6 +30,38 @@ export class EventListeners {
 
         window.addEventListener("resize", () => {
             environment.updateDimensions();
+        });
+
+        document.getElementById("resetZoomButton")?.addEventListener("click", () => {
+            const object: { distance: number } = {
+                distance: this.environment.controls.getDistance(),
+            };
+
+            this.environment.currentZoomAnimation.kill();
+
+            environment.currentZoomAnimation = gsap.to(object, {
+                distance: SETTINGS.CAMERA_START_DISTANCE,
+                duration: 1,
+                ease: "power1.inOut",
+                onUpdate: () => {
+                    const direction = new Vector3()
+                        .subVectors(
+                            this.environment.controls.object.position,
+                            this.environment.controls.target
+                        )
+                        .normalize();
+
+                    this.environment.controls.object.position.copy(
+                        this.environment.controls.target
+                            .clone()
+                            .add(direction.multiplyScalar(object.distance))
+                    );
+                    this.environment.radar.update();
+                },
+                onComplete: () => {
+                    this.environment.updateControlsSpeed();
+                },
+            });
         });
     }
 }

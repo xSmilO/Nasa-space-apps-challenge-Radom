@@ -1,5 +1,8 @@
 import type { CraterResult, FireballResult } from "./types";
 
+export function randomNumber(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+}
 
 export function degToRad(d: number) { return d * Math.PI / 180; }
 

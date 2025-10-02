@@ -1,6 +1,7 @@
 const CAMERA_DIST_MULT = 0.06371;
 export let SETTINGS = {
     simulationSpeed: 0,
+    CAMERA_FOV: 70,
     DISTANCE_SCALE: 1000,
     SIZE_SCALE: 1000,
     SUN_SCALE: 1000,
