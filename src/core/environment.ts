@@ -285,9 +285,7 @@ export default class Environment {
     }
 
     public resetCamera() {
-        this.hitScene.resetScene();
         this.hitScene.isActive = false;
-
         this.disableMeteorMode();
         this.hidePHAs = false;
         this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;

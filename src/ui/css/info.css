@@ -1,0 +1,11 @@
+.info {
+    display: none;
+}
+
+.info.show {
+    display: block;
+}
+
+.info button {
+    pointer-events: all;
+}

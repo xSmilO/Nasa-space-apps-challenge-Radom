@@ -70,10 +70,6 @@ export class UI {
                 this.live();
                 this.timeSlider.reset();
             });
-        document.querySelector(".tempReset")?.addEventListener("click", () => {
-            this.environment.resetCamera();
-            this.environment.showUI();
-        })
     }
 
     public updateTimelineInfo(date: Date): void {
