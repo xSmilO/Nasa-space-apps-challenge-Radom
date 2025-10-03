@@ -30,7 +30,7 @@ export default class Meteor {
         this.mesh.scale.copy(new Vector3(size, size, size));
 
         const axis = new Vector3(Math.random(), Math.random(), Math.random()).normalize();
-        const angle = randomNumber(0, Math.PI * 0.08);
+        const angle = randomNumber(0, Math.PI * 0.1);
         const q = new Quaternion().setFromAxisAngle(axis, angle);
 
 

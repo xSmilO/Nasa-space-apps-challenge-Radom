@@ -58,7 +58,7 @@ export default class HitScene {
     public update(deltaTime: number): void {
         this.environment.controls.update();
 
-        // if (this.meteorSpawned) this.moveToTarget(deltaTime);
+        if (this.meteorSpawned) this.moveToTarget(deltaTime);
     }
 
     private goToSurface(): void {
@@ -95,7 +95,7 @@ export default class HitScene {
     }
 
     private spawnMeteor(): void {
-        const meteorPos: Vector3 = this.environment.camera.position.clone().add(this.hitNormalVec.clone().multiplyScalar(2));
+        const meteorPos: Vector3 = this.environment.camera.position.clone().add(this.hitNormalVec.clone().multiplyScalar(SETTINGS.DISTANCE_SCALE));
         const radius = 50 / SETTINGS.SIZE_SCALE;
 
         this.meteor.spawn(radius, meteorPos);
@@ -104,10 +104,10 @@ export default class HitScene {
     }
 
     private moveToTarget(deltaTime: number): void {
-        if (this.meteor.mesh!.position.distanceTo(this.environment.camera.position) < 0.15) return;
+        if (this.meteor.mesh!.position.distanceTo(this.environment.camera.position) < 0.05) return;
         const direction = new Vector3().subVectors(this.environment.camera.position, this.meteor.mesh!.position);
-        const speed = 70;
-        console.log("zapierdalam: " + this.meteor.mesh!.position.distanceTo(this.environment.camera.position));
-        this.meteor.mesh?.position.add(direction.multiplyScalar((1 / SETTINGS.DISTANCE_SCALE) * speed));
+        const speed = 70 * 100;
+        console.log(this.meteor.mesh!.position.distanceTo(this.environment.camera.position));
+        this.meteor.mesh?.position.add(direction.multiplyScalar((1 / SETTINGS.DISTANCE_SCALE) * speed * deltaTime));
     }
 }

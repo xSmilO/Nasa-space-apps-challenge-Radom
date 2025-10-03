@@ -76,7 +76,7 @@ export default class CelestialBody extends Mesh {
     public rotateObject(date: Date): void {
         let secondsElapsed = date.getTime() / 1000;
         if (this.mesh)
-            this.mesh.rotation.y = (this.sidRotPerSec * secondsElapsed) + (Math.PI * 0.7);
+            this.mesh.rotation.y = (this.sidRotPerSec * secondsElapsed) + (Math.PI * 0.75);
     }
 
     public updatePosition(
