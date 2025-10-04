@@ -56,7 +56,7 @@ export class AIExpert {
     this.htmlElement.classList.remove("hidden");
     this.htmlElement.classList.add("noFlex");
 
-    this.addLabel("AI expert says that: ", "awaiting server response...", document.createElement("i"));
+    this.addLabel("AI expert says that: ", "thinking...", document.createElement("i"));
 
     fetch(`/server/askAI?latitude=${this.latitude}&longitude=${this.longitude}&craterRadiusMeters=${this.craterRadiusMeters}`).then((response: Response) => {
       response.text().then((aiResponse: string) => {
