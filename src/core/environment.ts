@@ -25,7 +25,8 @@ import CelestialBody from "../components/CelestialBody.ts";
 import type { MapMouseEvent } from "maplibre-gl";
 import gsap from "gsap";
 import HitScene from "../components/HitScene.ts";
-import { Radar } from "../shader/element2D/radar.ts";
+import { Radar } from "./../element2D/radar.ts";
+import { AIExpert } from "../element2D/aiExpert.ts";
 
 export default class Environment {
     public textureLoader: TextureLoader;
@@ -48,6 +49,7 @@ export default class Environment {
     private earthObject: CelestialBody;
     private phaBodies: Map<string, Asteroid>;
     private hitScene: HitScene;
+    public aiExpert: AIExpert;
 
     public radarHTMLElement: HTMLDivElement;
     public earthPos: Vector3;
@@ -80,6 +82,7 @@ export default class Environment {
         this.currentDate = new Date();
         this.isLive = true;
         this.hitScene = new HitScene(this);
+        this.aiExpert = new AIExpert();
         this.hidePHAs = false;
         this.earthObject = new CelestialBody(
             this,
@@ -278,12 +281,13 @@ export default class Environment {
                     longitude: event.lngLat.lng,
                 },
                 result.Dtc_m,
-
             );
 
             const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(event.lngLat.lat, event.lngLat.lng);
 
             this.hitScene.playScene(hitNormalVec, event.lngLat.lat, event.lngLat.lng, result.Dtc_m);
+        
+            this.aiExpert.setup(event.lngLat.lat, event.lngLat.lng, result.Dtc_m);
         });
     }
 

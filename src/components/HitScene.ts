@@ -61,6 +61,7 @@ export default class HitScene {
         this.isActive = false;
         this.info.hide();
         this.environment.showUI();
+        this.environment.aiExpert.reset();
     }
 
     public update(deltaTime: number): void {
@@ -127,6 +128,7 @@ export default class HitScene {
 
         setTimeout(() => {
             this.environment.radar.fullscreen();
+            this.environment.aiExpert.show();
         }, 1000);
         setTimeout(() => {
             this.environment.resetCamera();

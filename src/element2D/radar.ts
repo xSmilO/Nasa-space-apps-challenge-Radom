@@ -1,5 +1,5 @@
 import { GeoJSONSource, Map } from "maplibre-gl";
-import Environment from "../../core/environment";
+import Environment from "./../core/environment";
 import gsap from "gsap";
 import * as turf from "@turf/turf";
 
@@ -139,9 +139,9 @@ export class Radar extends Map {
         layerID: string,
         sourceID: string,
         center: { latitude: number; longitude: number },
+        radiusMeters: number,
         color: string = "#f00",
         opacity: number = 0.5,
-        radiusMeters: number,
         animate: boolean = true,
         animationDuration: number = 1.0
     ): void {

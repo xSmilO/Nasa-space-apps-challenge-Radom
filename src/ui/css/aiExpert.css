@@ -1,0 +1,26 @@
+div#aiExpert {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 4em;
+  border: 1px solid #807f8b;
+  background-color: #40424750;
+  padding: 15px;
+  border-radius: 8px;
+  width: 400px;
+  height: 600px;
+  color: #dcdbee;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  pointer-events: all;
+}
+
+div#aiExpert.hidden {
+  display: none;
+}
+
+div#aiExpert.noFlex {
+  display: block;
+}
