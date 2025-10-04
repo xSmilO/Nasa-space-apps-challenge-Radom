@@ -20,12 +20,12 @@ import { SETTINGS } from "./Settings";
 import type { AsteroidData, CraterResult } from "../utility/types";
 import Orbit from "../components/Orbit.ts";
 import { UI } from "./UI";
-import { Radar } from "../element2D/radar";
 import Asteroid from "../components/Asteroid.ts";
 import CelestialBody from "../components/CelestialBody.ts";
 import type { MapMouseEvent } from "maplibre-gl";
 import gsap from "gsap";
 import HitScene from "../components/HitScene.ts";
+import { Radar } from "../shader/element2D/radar.ts";
 
 export default class Environment {
     public textureLoader: TextureLoader;
@@ -270,12 +270,15 @@ export default class Environment {
         this.radar.on("click", (event: MapMouseEvent) => {
             if (!SETTINGS.METEOR_MODE) return;
             const result: CraterResult = this.ui.launchMeteor();
-            this.radar.markImpactSpot(
+            this.radar.markSpot(
+                Radar.impactSpotMarkingLayerID,
+                Radar.impactSpotMarkingSourceID,
                 {
                     latitude: event.lngLat.lat,
                     longitude: event.lngLat.lng,
                 },
-                result.Dtc_m
+                result.Dtc_m,
+
             );
 
             const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(event.lngLat.lat, event.lngLat.lng);
