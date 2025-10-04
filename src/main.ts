@@ -63,10 +63,3 @@ document.getElementById("resetZoomButton")?.addEventListener("click", () => {
         },
     });
 });
-
-environment.radar.on("click", (event) => {
-  environment.radar.markImpactSpot({
-    latitude: event.lngLat.lat,
-    longitude: event.lngLat.lng
-  }, 1000000);
-});
