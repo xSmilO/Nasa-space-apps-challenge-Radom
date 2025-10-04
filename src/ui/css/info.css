@@ -1,11 +1,13 @@
-.info {
-    display: none;
-}
+.Meteors {
+    .info {
+        display: none;
+    }
 
-.info.show {
-    display: block;
-}
+    .info.show {
+        display: block;
+    }
 
-.info button {
-    pointer-events: all;
+    .info button {
+        pointer-events: all;
+    }
 }

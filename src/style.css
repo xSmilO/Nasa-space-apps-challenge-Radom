@@ -22,373 +22,428 @@ input[type="number"] {
 body {
     background-color: #0d0d0f;
     margin: 0;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+.Meteors {
+    width: 100%;
+    height: 100%;
     position: relative;
+    transform: translateX(-100%);
+    transition: transform 300ms ease;
 }
 
-.UI {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    color: white;
-    pointer-events: none;
-    /* padding: 3em; */
-    z-index: 9999;
-}
-
-#radar {
-    width: 400px;
-    height: 300px;
-    border: 1px solid #807f8b;
-    background-color: #0a0a0a;
-    position: absolute;
-    right: 6em;
-    bottom: 5em;
-    overflow: hidden;
-    box-sizing: border-box;
-    border-radius: 16px;
-    transition: all 0.1s ease-in-out;
-    display: flex;
-    flex-direction: column;
-}
-
-#radar.hidden {
-    display: none;
-}
-
-#radar.bigger {
-    width: 600px;
-    height: 450px;
-}
-
-#radar.smaller {
-    width: 200px;
-    height: 150px;
-}
-
-#radar.fullscreen {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 800px;
-    height: 600px;
-}
-
-#radar button {
-    width: 100%;
-    outline: none;
-    border: none;
-    position: absolute;
-    pointer-events: all;
-    width: 2.5em;
-    height: 2.5em;
-    bottom: 1.25em;
-    right: 1.25em;
-    padding: 0.5em;
-    border-radius: 100%;
-    background-color: hsla(0, 3%, 30%, 60%);
-    transition: all 300ms ease;
-    cursor: pointer;
-}
-
-#radar button:hover {
-    scale: 1.2;
-}
-
-#radar.bigger button {
-    font-size: 1.25em;
-}
-
-#radar button img {
-    width: 100%;
-    height: 100%;
-}
-
-#radar #radarContainer {
-    width: 100%;
-    flex: 1;
-    overflow: hidden;
-}
-
-#radar .selectHitLocation {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    user-select: none;
-    pointer-events: none;
-    top: 0px;
-    left: 0px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: hsla(0, 100%, 50%, 20%);
-    color: red;
-    opacity: 0;
-    transition: all 300ms ease;
-}
-
-#radar:hover .selectHitLocation {
-    opacity: 0 !important;
-}
-
-#radar .selectHitLocation h2 {
-    font-size: 1.25em;
-    letter-spacing: 2px;
-}
-
-#radar.meteorMode .selectHitLocation {
-    opacity: 1;
-}
-
-#radar.meteorMode:hover {
-    cursor: pointer;
-}
-
-#radar.meteorMode #radarContainer {
+.Meteors.active {
+    transform: translateX(0);
     pointer-events: all;
 }
 
-.meteorCreatorBtn {
-    position: absolute;
-    bottom: 5rem;
-    left: 6rem;
+.SolarDestiny {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 300ms ease;
+}
+
+.SolarDestiny.active {
+    transform: translateX(-100%);
     pointer-events: all;
-    background-color: #40424750;
-    outline: none;
-    border: 2px solid white;
-    color: white;
-    border-radius: 1.25em;
-    padding: 0.5em 1.5em;
-    font-size: 1.15em;
-    transition: scale 300ms ease, transform 150ms ease,
-        background-color 200ms ease;
-    cursor: pointer;
 }
 
-.meteorCreatorBtn.hidden {
-    display: none;
-}
+.Meteors {
+    .UI {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        color: white;
+        pointer-events: none;
+        /* padding: 3em; */
+        z-index: 9999;
+    }
 
-.meteorCreatorBtn:hover {
-    transform: scaleX(1.1);
-    background-color: hsla(0, 100%, 100%, 20%);
-}
+    #radar {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #807f8b;
+        background-color: #0a0a0a;
+        position: absolute;
+        right: 6em;
+        bottom: 5em;
+        overflow: hidden;
+        box-sizing: border-box;
+        border-radius: 16px;
+        transition: all 0.1s ease-in-out;
+        display: flex;
+        flex-direction: column;
+    }
 
-.meteorCreatorBtn.active {
-    scale: 0;
-}
+    #radar.hidden {
+        display: none;
+    }
 
-.meteorCreator {
-    background-color: #40424750;
-    color: white;
-    position: absolute;
-    border-radius: 0.5em;
-    left: 5em;
-    padding: 2em 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    top: 10%;
-    pointer-events: all;
-    display: flex;
-    transform: translate(-150%);
-    transition: transform 300ms ease-in;
-}
+    #radar.bigger {
+        width: 600px;
+        height: 450px;
+    }
 
-.meteorCreator.active {
-    transform: translate(0);
-}
+    #radar.smaller {
+        width: 200px;
+        height: 150px;
+    }
 
-.meteorCreator h2 {
-    text-align: center;
-    font-size: 1.25em;
-}
+    #radar.fullscreen {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 600px;
+    }
 
-.meteorCreator .displayContainer {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-}
+    #radar button {
+        width: 100%;
+        outline: none;
+        border: none;
+        position: absolute;
+        pointer-events: all;
+        width: 2.5em;
+        height: 2.5em;
+        bottom: 1.25em;
+        right: 1.25em;
+        padding: 0.5em;
+        border-radius: 100%;
+        background-color: hsla(0, 3%, 30%, 60%);
+        transition: all 300ms ease;
+        cursor: pointer;
+    }
 
-.meteorCreator .displayContainer .display {
-    width: 100%;
-    height: 12em;
-    /* background-color: #121212; */
-    border-radius: 0.5em;
-}
+    #radar button:hover {
+        scale: 1.2;
+    }
 
-.meteorCreator .displayContainer .arrow {
-    width: 1.3em;
-    height: 1.3em;
-    cursor: pointer;
-    transition: scale 250ms ease;
-}
+    #radar.bigger button {
+        font-size: 1.25em;
+    }
 
-.meteorCreator .displayContainer .arrow:hover {
-    scale: 1.15;
-}
+    #radar button img {
+        width: 100%;
+        height: 100%;
+    }
 
-.meteorCreator .displayContainer .arrow img {
-    width: 100%;
-    height: 100%;
-}
+    #radar #radarContainer {
+        width: 100%;
+        flex: 1;
+        overflow: hidden;
+    }
 
-.meteorCreator .categories {
-    display: flex;
-    width: 100%;
-}
+    #radar .selectHitLocation {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        user-select: none;
+        pointer-events: none;
+        top: 0px;
+        left: 0px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: hsla(0, 100%, 50%, 20%);
+        color: red;
+        opacity: 0;
+        transition: all 300ms ease;
+    }
 
-.parameters {
-    border-radius: 0.5em;
-    padding: 0.5em 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    #radar:hover .selectHitLocation {
+        opacity: 0 !important;
+    }
 
-.parameters h3 {
-    text-align: center;
-}
+    #radar .selectHitLocation h2 {
+        font-size: 1.25em;
+        letter-spacing: 2px;
+    }
 
-.parameters .categories .category {
-    padding: 0px 1em;
-    padding-bottom: 0.5em;
-    border-bottom: 2px solid black;
-    cursor: pointer;
-    transition: border-bottom 0.5s ease;
-    width: 50%;
-    text-align: center;
-}
+    #radar.meteorMode .selectHitLocation {
+        opacity: 1;
+    }
 
-.parameters .categories .category.active {
-    border-bottom: 2px solid white;
-}
+    #radar.meteorMode:hover {
+        cursor: pointer;
+    }
 
-.parameters .inputs {
-    width: 100%;
-    display: flex;
-    overflow: hidden;
-}
+    #radar.meteorMode #radarContainer {
+        pointer-events: all;
+    }
 
-.parameters .inputs .variant {
-    transition: transform 0.5s ease;
-    padding: 1em;
-    display: flex;
-    flex-direction: column;
-    color: #afb0b6;
-    font-weight: 500;
-    flex: 1;
-}
+    .meteorCreatorBtn {
+        position: absolute;
+        bottom: 5rem;
+        left: 6rem;
+        pointer-events: all;
+        background-color: #40424750;
+        outline: none;
+        border: 2px solid white;
+        color: white;
+        border-radius: 1.25em;
+        padding: 0.5em 1.5em;
+        font-size: 1.15em;
+        transition: scale 300ms ease, transform 150ms ease,
+            background-color 200ms ease;
+        cursor: pointer;
+    }
 
-.parameters .inputs .variant label {
-    user-select: none;
-}
+    .meteorCreatorBtn.hidden {
+        display: none;
+    }
 
-.parameters .inputs .variant input {
-    outline: none;
-    padding: 0.5em 1em;
-    width: 10em;
-    background: none;
-    border: 1px solid #afb0b628;
-    border-radius: 0.25em;
-    color: white;
-    font-size: 1em;
-    text-align: right;
-}
+    .meteorCreatorBtn:hover {
+        transform: scaleX(1.1);
+        background-color: hsla(0, 100%, 100%, 20%);
+    }
 
-.parameters .hitBtn {
-    padding: 0.5em 1.5em;
-    outline: none;
-    color: hsl(0, 0%, 80%);
-    background-color: hsla(0, 3%, 30%, 10%);
-    text-transform: uppercase;
-    border-radius: 0.9em;
-    font-size: 1.05em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 600ms ease;
-    border: 2px solid hsla(0, 3%, 70%, 10%);
-}
+    .meteorCreatorBtn.active {
+        scale: 0;
+    }
 
-.parameters .hitBtn:hover {
-    /* background-color: hsla(4, 89%, 60%, 60%); */
-    border: 2px solid red;
-    color: hsl(4, 89%, 48%);
-}
+    .meteorCreator {
+        background-color: #40424750;
+        color: white;
+        position: absolute;
+        border-radius: 0.5em;
+        left: 5em;
+        padding: 2em 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        top: 10%;
+        pointer-events: all;
+        display: flex;
+        transform: translate(-150%);
+        transition: transform 300ms ease-in;
+    }
 
-.meteorCreator .closeBtn {
-    cursor: pointer;
-    position: absolute;
-    top: 2em;
-    right: 2em;
-    width: 1.25em;
-    height: 1.25em;
-    transition: scale 250ms ease-out;
-}
+    .meteorCreator.active {
+        transform: translate(0);
+    }
 
-.meteorCreator .closeBtn:hover {
-    scale: 1.1;
-}
+    .meteorCreator h2 {
+        text-align: center;
+        font-size: 1.25em;
+    }
 
-.meteorCreator .closeBtn img {
-    width: 100%;
-    height: 100%;
-}
+    .meteorCreator .displayContainer {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+    }
 
-.courtains {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    pointer-events: none;
-}
+    .meteorCreator .displayContainer .display {
+        width: 100%;
+        height: 12em;
+        /* background-color: #121212; */
+        border-radius: 0.5em;
+    }
 
-.courtains div {
-    background-color: black;
-    height: 50%;
-    width: 100%;
-    transition: transform 500ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-}
+    .meteorCreator .displayContainer .arrow {
+        width: 1.3em;
+        height: 1.3em;
+        cursor: pointer;
+        transition: scale 250ms ease;
+    }
 
-.courtains .down {
-    transform: translateY(100%);
-}
+    .meteorCreator .displayContainer .arrow:hover {
+        scale: 1.15;
+    }
 
-.courtains .up {
-    transform: translateY(-100%);
-}
+    .meteorCreator .displayContainer .arrow img {
+        width: 100%;
+        height: 100%;
+    }
 
-.courtains.close .up,
-.courtains.close .down {
-    transform: translateY(0%);
-    transition-delay: 1300ms;
-}
+    .meteorCreator .categories {
+        display: flex;
+        width: 100%;
+    }
 
-.flashbang {
-    background-color: white;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    clip-path: circle(0% at 50% 50%);
-    opacity: 1;
-}
+    .parameters {
+        border-radius: 0.5em;
+        padding: 0.5em 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-.flashbang.boom {
-    transition: clip-path 500ms ease;
-    clip-path: circle(100% at 50% 50%);
-}
+    .parameters h3 {
+        text-align: center;
+    }
 
-.flashbang.fadeOut {
-    transition: opacity 1000ms ease-in;
-    opacity: 0;
+    .parameters .categories .category {
+        padding: 0px 1em;
+        padding-bottom: 0.5em;
+        border-bottom: 2px solid black;
+        cursor: pointer;
+        transition: border-bottom 0.5s ease;
+        width: 50%;
+        text-align: center;
+    }
+
+    .parameters .categories .category.active {
+        border-bottom: 2px solid white;
+    }
+
+    .parameters .inputs {
+        width: 100%;
+        display: flex;
+        overflow: hidden;
+    }
+
+    .parameters .inputs .variant {
+        transition: transform 0.5s ease;
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
+        color: #afb0b6;
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .parameters .inputs .variant label {
+        user-select: none;
+    }
+
+    .parameters .inputs .variant input {
+        outline: none;
+        padding: 0.5em 1em;
+        width: 10em;
+        background: none;
+        border: 1px solid #afb0b628;
+        border-radius: 0.25em;
+        color: white;
+        font-size: 1em;
+        text-align: right;
+    }
+
+    .parameters .hitBtn {
+        padding: 0.5em 1.5em;
+        outline: none;
+        color: hsl(0, 0%, 80%);
+        background-color: hsla(0, 3%, 30%, 10%);
+        text-transform: uppercase;
+        border-radius: 0.9em;
+        font-size: 1.05em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 600ms ease;
+        border: 2px solid hsla(0, 3%, 70%, 10%);
+    }
+
+    .parameters .hitBtn:hover {
+        /* background-color: hsla(4, 89%, 60%, 60%); */
+        border: 2px solid red;
+        color: hsl(4, 89%, 48%);
+    }
+
+    .meteorCreator .closeBtn {
+        cursor: pointer;
+        position: absolute;
+        top: 2em;
+        right: 2em;
+        width: 1.25em;
+        height: 1.25em;
+        transition: scale 250ms ease-out;
+    }
+
+    .meteorCreator .closeBtn:hover {
+        scale: 1.1;
+    }
+
+    .meteorCreator .closeBtn img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .courtains {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .courtains div {
+        background-color: black;
+        height: 50%;
+        width: 100%;
+        transition: transform 500ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    }
+
+    .courtains .down {
+        transform: translateY(100%);
+    }
+
+    .courtains .up {
+        transform: translateY(-100%);
+    }
+
+    .courtains.close .up,
+    .courtains.close .down {
+        transform: translateY(0%);
+        transition-delay: 1300ms;
+    }
+
+    .flashbang {
+        background-color: white;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        clip-path: circle(0% at 50% 50%);
+        opacity: 1;
+    }
+
+    .flashbang.boom {
+        transition: clip-path 500ms ease;
+        clip-path: circle(100% at 50% 50%);
+    }
+
+    .flashbang.fadeOut {
+        transition: opacity 1000ms ease-in;
+        opacity: 0;
+    }
+
+    .MoveToSolarDestiny {
+        pointer-events: all;
+        display: flex;
+        background-color: transparent;
+        outline: none;
+        border: none;
+        gap: 0.5em;
+        color: white;
+        font-weight: bold;
+        align-items: center;
+        position: absolute;
+        top: 2em;
+        right: 2em;
+        cursor: pointer;
+    }
+
+    .MoveToSolarDestiny:hover img {
+        transform: rotate(180deg) translateX(-4px);
+    }
+
+    .MoveToSolarDestiny img {
+        width: 1.1em;
+        transform: rotate(180deg);
+        transition: transform 200ms ease-in;
+    }
 }

@@ -11,13 +11,11 @@ export class EventListeners {
 
         this.environment.controls.addEventListener("change", () => {
             // this.solarSystem.getDistancesToObjects();
-
         });
 
         this.environment.controls.addEventListener("start", () => {
             // this.solarSystem.hideSearchBar();
         });
-
 
         window.addEventListener("mousemove", (event) => {
             environment.updateControlsState(event);
@@ -32,36 +30,51 @@ export class EventListeners {
             environment.updateDimensions();
         });
 
-        document.getElementById("resetZoomButton")?.addEventListener("click", () => {
-            const object: { distance: number } = {
-                distance: this.environment.controls.getDistance(),
-            };
+        document
+            .getElementById("resetZoomButton")
+            ?.addEventListener("click", () => {
+                const object: { distance: number } = {
+                    distance: this.environment.controls.getDistance(),
+                };
 
-            this.environment.currentZoomAnimation.kill();
+                this.environment.currentZoomAnimation.kill();
 
-            environment.currentZoomAnimation = gsap.to(object, {
-                distance: SETTINGS.CAMERA_START_DISTANCE,
-                duration: 1,
-                ease: "power1.inOut",
-                onUpdate: () => {
-                    const direction = new Vector3()
-                        .subVectors(
-                            this.environment.controls.object.position,
+                environment.currentZoomAnimation = gsap.to(object, {
+                    distance: SETTINGS.CAMERA_START_DISTANCE,
+                    duration: 1,
+                    ease: "power1.inOut",
+                    onUpdate: () => {
+                        const direction = new Vector3()
+                            .subVectors(
+                                this.environment.controls.object.position,
+                                this.environment.controls.target
+                            )
+                            .normalize();
+
+                        this.environment.controls.object.position.copy(
                             this.environment.controls.target
-                        )
-                        .normalize();
-
-                    this.environment.controls.object.position.copy(
-                        this.environment.controls.target
-                            .clone()
-                            .add(direction.multiplyScalar(object.distance))
-                    );
-                    this.environment.radar.update();
-                },
-                onComplete: () => {
-                    this.environment.updateControlsSpeed();
-                },
+                                .clone()
+                                .add(direction.multiplyScalar(object.distance))
+                        );
+                        this.environment.radar.update();
+                    },
+                    onComplete: () => {
+                        this.environment.updateControlsSpeed();
+                    },
+                });
             });
-        });
+
+        document
+            .querySelector<HTMLButtonElement>(
+                ".Meteors .UI .MoveToSolarDestiny"
+            )
+            ?.addEventListener("click", () => {
+                SETTINGS.SOLAR_DESTINY_ACTIVE = true;
+
+                document.querySelector(".Meteors")?.classList.remove("active");
+                document
+                    .querySelector(".SolarDestiny")
+                    ?.classList.add("active");
+            });
     }
 }
