@@ -5,6 +5,7 @@ import { SETTINGS } from "../core/Settings";
 import gsap from "gsap";
 import Courtains from "../ui/courtains";
 import Info from "../ui/info";
+import Api from "../utility/api";
 
 export default class HitScene {
     public isActive: boolean;
@@ -14,6 +15,7 @@ export default class HitScene {
     private pointPos: Vector3;
     private courtains: Courtains;
     private info: Info;
+    private api: Api;
     private meteorSpawned: boolean;
 
     constructor(environment: Environment) {
@@ -24,12 +26,13 @@ export default class HitScene {
         this.pointPos = new Vector3(0, 0, 0);
         this.courtains = new Courtains();
         this.info = new Info(this);
+        this.api = new Api(this.info);
         this.meteorSpawned = false;
 
         this.meteor.init();
     }
 
-    public playScene(hitNormalVec: Vector3): void {
+    public playScene(hitNormalVec: Vector3, lan: number, long: number, craterRadius: number): void {
         this.isActive = true;
         this.hitNormalVec = hitNormalVec;
         this.environment.hidePHAs = true;
@@ -51,6 +54,7 @@ export default class HitScene {
         //1.
 
         this.goToSurface();
+        this.api.calculatePopulation(lan, long, craterRadius);
     }
 
     public resetScene(): void {
@@ -112,7 +116,7 @@ export default class HitScene {
         if (this.meteor.mesh!.position.distanceTo(this.environment.camera.position) < 0.06) return this.flashbang();
         const direction = new Vector3().subVectors(this.environment.camera.position, this.meteor.mesh!.position);
         const speed = 70 * 70;
-        console.log(this.meteor.mesh!.position.distanceTo(this.environment.camera.position));
+        // console.log(this.meteor.mesh!.position.distanceTo(this.environment.camera.position));
         this.meteor.mesh?.position.add(direction.multiplyScalar((1 / SETTINGS.DISTANCE_SCALE) * speed * deltaTime));
     }
 

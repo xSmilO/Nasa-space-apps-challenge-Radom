@@ -280,7 +280,7 @@ export default class Environment {
 
             const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(event.lngLat.lat, event.lngLat.lng);
 
-            this.hitScene.playScene(hitNormalVec);
+            this.hitScene.playScene(hitNormalVec, event.lngLat.lat, event.lngLat.lng, result.Dtc_m);
         });
     }
 

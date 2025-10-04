@@ -1,3 +1,7 @@
+export type ApiPoplationResult = {
+    populations: Array<number>;
+};
+
 export type CraterResult = {
     Dtc_m: number;    // transient crater diameter (m)
     Dfr_m: number;    // final rim-to-rim diameter (m)
