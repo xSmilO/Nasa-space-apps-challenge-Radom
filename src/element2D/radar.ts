@@ -1,5 +1,5 @@
 import { GeoJSONSource, Map } from "maplibre-gl";
-import Environment from "../../core/environment";
+import Environment from "../core/environment";
 import gsap from "gsap";
 import * as turf from "@turf/turf";
 
@@ -69,7 +69,7 @@ export class Radar extends Map {
             }
 
             this.htmlElement.classList.remove("bigger", "smaller");
-        } catch (exception: any) { }
+        } catch (exception: any) {}
     }
 
     public removeImpactSpotMarking(): void {
@@ -113,9 +113,7 @@ export class Radar extends Map {
         );
 
         if (this.getSource(sourceID)) {
-            (
-                this.getSource(sourceID) as GeoJSONSource
-            ).setData(circle);
+            (this.getSource(sourceID) as GeoJSONSource).setData(circle);
             return;
         }
 
@@ -139,9 +137,9 @@ export class Radar extends Map {
         layerID: string,
         sourceID: string,
         center: { latitude: number; longitude: number },
+        radiusMeters: number,
         color: string = "#f00",
         opacity: number = 0.5,
-        radiusMeters: number,
         animate: boolean = true,
         animationDuration: number = 1.0
     ): void {
@@ -167,7 +165,14 @@ export class Radar extends Map {
             return;
         }
 
-        this.drawImpactSpotMarking(center, radiusMeters, color, opacity, layerID, sourceID);
+        this.drawImpactSpotMarking(
+            center,
+            radiusMeters,
+            color,
+            opacity,
+            layerID,
+            sourceID
+        );
     }
 
     private resolveGoodZoomValue(zoom: number): number {
@@ -209,4 +214,3 @@ export class Radar extends Map {
         return this.resolveGoodZoomValue(minZoom);
     }
 }
-

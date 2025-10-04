@@ -32,7 +32,12 @@ export default class HitScene {
         this.meteor.init();
     }
 
-    public playScene(hitNormalVec: Vector3, lan: number, long: number, craterRadius: number): void {
+    public playScene(
+        hitNormalVec: Vector3,
+        lan: number,
+        long: number,
+        craterRadius: number
+    ): void {
         this.isActive = true;
         this.hitNormalVec = hitNormalVec;
         this.environment.hidePHAs = true;
@@ -61,6 +66,7 @@ export default class HitScene {
         this.isActive = false;
         this.info.hide();
         this.environment.showUI();
+        this.environment.aiExpert.reset();
     }
 
     public update(deltaTime: number): void {
@@ -72,8 +78,12 @@ export default class HitScene {
     private goToSurface(): void {
         this.info.hide();
         const object = { distance: this.environment.controls.getDistance() };
-        this.pointPos = this.hitNormalVec.clone().multiplyScalar(this.environment.earth.radius);
-        const lookAtTarget = this.hitNormalVec.clone().multiplyScalar(this.environment.earth.radius * 10);
+        this.pointPos = this.hitNormalVec
+            .clone()
+            .multiplyScalar(this.environment.earth.radius);
+        const lookAtTarget = this.hitNormalVec
+            .clone()
+            .multiplyScalar(this.environment.earth.radius * 10);
         // this.environment.camera.position.copy(this.pointPos);
         this.environment.controls.minDistance = 0;
         this.environment.camera.lookAt(lookAtTarget);
@@ -86,10 +96,17 @@ export default class HitScene {
             duration: 2,
             ease: "power1.inOut",
             onUpdate: () => {
-                const direction = new Vector3().subVectors(this.environment.controls.object.position, this.pointPos).normalize();
+                const direction = new Vector3()
+                    .subVectors(
+                        this.environment.controls.object.position,
+                        this.pointPos
+                    )
+                    .normalize();
 
                 this.environment.controls.object.position.copy(
-                    this.environment.controls.target.clone().add(direction.multiplyScalar(object.distance))
+                    this.environment.controls.target
+                        .clone()
+                        .add(direction.multiplyScalar(object.distance))
                 );
             },
             onComplete: () => {
@@ -99,12 +116,18 @@ export default class HitScene {
                 this.courtains.open();
 
                 this.spawnMeteor();
-            }
-        })
+            },
+        });
     }
 
     private spawnMeteor(): void {
-        const meteorPos: Vector3 = this.environment.camera.position.clone().add(this.hitNormalVec.clone().multiplyScalar(SETTINGS.DISTANCE_SCALE));
+        const meteorPos: Vector3 = this.environment.camera.position
+            .clone()
+            .add(
+                this.hitNormalVec
+                    .clone()
+                    .multiplyScalar(SETTINGS.DISTANCE_SCALE)
+            );
         const radius = 50 / SETTINGS.SIZE_SCALE;
 
         this.meteor.spawn(radius, meteorPos);
@@ -113,11 +136,23 @@ export default class HitScene {
     }
 
     private moveToTarget(deltaTime: number): void {
-        if (this.meteor.mesh!.position.distanceTo(this.environment.camera.position) < 0.06) return this.flashbang();
-        const direction = new Vector3().subVectors(this.environment.camera.position, this.meteor.mesh!.position);
+        if (
+            this.meteor.mesh!.position.distanceTo(
+                this.environment.camera.position
+            ) < 0.06
+        )
+            return this.flashbang();
+        const direction = new Vector3().subVectors(
+            this.environment.camera.position,
+            this.meteor.mesh!.position
+        );
         const speed = 70 * 70;
         // console.log(this.meteor.mesh!.position.distanceTo(this.environment.camera.position));
-        this.meteor.mesh?.position.add(direction.multiplyScalar((1 / SETTINGS.DISTANCE_SCALE) * speed * deltaTime));
+        this.meteor.mesh?.position.add(
+            direction.multiplyScalar(
+                (1 / SETTINGS.DISTANCE_SCALE) * speed * deltaTime
+            )
+        );
     }
 
     private flashbang(): void {
@@ -127,6 +162,7 @@ export default class HitScene {
 
         setTimeout(() => {
             this.environment.radar.fullscreen();
+            this.environment.aiExpert.show();
         }, 1000);
         setTimeout(() => {
             this.environment.resetCamera();
