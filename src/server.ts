@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 const mistralClient = new mistral.Mistral({
-  apiKey: process.env.MISTAL_API_KEY
+  apiKey: process.env.MISTRAL_API_KEY
 });
 
 app.use(cors({
