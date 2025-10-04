@@ -179,3 +179,48 @@ export interface AdditionalInfo {
     name: string;
     description: string;
 }
+
+export interface TsunamiParams {
+  craterRadius: number;     // R_c [m]
+  craterDepth: number;      // d_c [m]
+  displacedFraction?: number; // k_V (0.1–1)
+  dispersalFactor?: number; // β (3–10)
+  runupFactor?: number;     // μ (1–5)
+  shoreSlopeDeg?: number;   // s [°]
+  shoreDistance?: number;   // r_shore [m] — odległość od krateru do brzegu
+  craterShapeFactor?: number; // C_v — 1/3 (stożek) lub 1/2 (paraboloida)
+}
+
+export interface TsunamiResults {
+  craterVolume: number;        // m³
+  displacedVolume: number;     // m³
+  initialWaveHeight: number;   // H₀ [m]
+  waveHeightAtShore: number;   // H(r) [m]
+  runup: number;               // Ru [m]
+  inundationDistance: number;  // D_inund [m]
+}
+
+export interface DustParams {
+  impactEnergy: number; // energia uderzenia (J)
+  atmosphereHeight?: number; // [m] – wysokość troposfery (domyślnie 12e3)
+}
+
+export interface DustSpreadResult {
+  dustRadius: number;     // promień zasięgu pyłów [m]
+  dustArea: number;       // powierzchnia zasięgu [m²]
+  classification: string; // lokalny / regionalny / globalny
+}
+
+export interface LossParams {
+  destroyedAreaKm2: number;    // zniszczony obszar [km²]
+  costPerKm2?: number;         // koszt zniszczeń [USD/km²]
+  populationDensity?: number;  // ludzie/km²
+  gdpPerCapita?: number;       // USD/osoba
+}
+
+export interface LossEstimate {
+  totalEconomicLoss: number; // USD
+  populationAffected: number;
+  humanLossesValue: number;  // USD
+  totalLossWithHumans: number; // USD
+}
