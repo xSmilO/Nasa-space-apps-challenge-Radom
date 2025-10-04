@@ -25,14 +25,6 @@ body {
   position: relative;
 }
 
-.tempReset {
-  pointer-events: all;
-}
-
-.tempReset.hidden {
-  display: none;
-}
-
 .UI {
   position: absolute;
   top: 0;
@@ -147,73 +139,12 @@ body {
   cursor: pointer;
 }
 
-#searchBarContainer {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 2.5em;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #807f8b;
-  background-color: #0a0a0a;
-  padding: 5px;
-  border-radius: 5px;
-  width: 600px;
-  max-width: 600px;
-  pointer-events: all;
-}
-
-#searchBarContainer.hidden {
-  display: none;
-}
-
-#searchBarContainer input {
-  border: none;
-  outline: none;
-  background-color: #0a0a0a;
-  color: #dcdbee;
-  width: 100%;
-  height: 50px;
-  padding: 10px 15px 10px 15px;
-  margin-right: 5px;
-}
-
-#searchBarContainer input::placeholder {
-  color: #807f8b;
-}
-
-#searchBarContainer #searchResultsContainer {
-  max-height: 300px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-width: 100%;
-  width: 100%;
-}
-
-#searchBarContainer #searchResultsContainer .searchResult {
-  padding: 15px;
-  color: #807f8b;
-  font-size: 14px;
-  width: calc(100% - 5px);
-  display: flex;
-  cursor: pointer;
-  transition-duration: 0.5s;
-  border-radius: 5px;
-  user-select: none;
-  margin-right: 5px;
-}
-
-#searchBarContainer #searchResultsContainer .searchResult:hover {
-  background-color: #e9e9ed;
-  color: black;
-}
-
 .meteorCreatorBtn {
   position: absolute;
   bottom: 5rem;
   left: 6rem;
   pointer-events: all;
-  background-color: transparent;
+  background-color: #40424750;
   outline: none;
   border: 2px solid white;
   color: white;
@@ -426,4 +357,26 @@ body {
 .courtains.close .down {
   transform: translateY(0%);
   transition-delay: 1300ms;
+}
+
+.flashbang {
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  clip-path: circle(0% at 50% 50%);
+  opacity: 1;
+}
+
+.flashbang.boom {
+  transition: clip-path 500ms ease;
+  clip-path: circle(100% at 50% 50%);
+}
+
+.flashbang.fadeOut {
+  transition: opacity 1000ms ease-in;
+  opacity: 0;
 }

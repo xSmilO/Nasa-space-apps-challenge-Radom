@@ -1,5 +1,6 @@
 import type { OrbitControls } from "three/examples/jsm/Addons.js";
 import type { Earth } from "../element3D/earth";
+import type { SearchBar } from "./searchBar";
 
 export class SearchResult {
   public htmlElement: HTMLDivElement;

@@ -280,14 +280,12 @@ export default class Environment {
 
             const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(event.lngLat.lat, event.lngLat.lng);
 
-            this.hitScene.playScene(hitNormalVec);
+            this.hitScene.playScene(hitNormalVec, event.lngLat.lat, event.lngLat.lng, result.Dtc_m);
         });
     }
 
     public resetCamera() {
-        this.hitScene.resetScene();
         this.hitScene.isActive = false;
-
         this.disableMeteorMode();
         this.hidePHAs = false;
         this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;

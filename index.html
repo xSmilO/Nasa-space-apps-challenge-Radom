@@ -5,21 +5,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/src/style.css" />
-    <link rel="stylesheet" href="/src/ui/ui.css" />
+    <link rel="stylesheet" href="/src/ui/css/ui.css" />
+    <link rel="stylesheet" href="/src/ui/css/info.css" />
+    <link rel="stylesheet" href="/src/ui/css/searchBar.css" />
     <title>Dobra nazwa apki dayuuum</title>
 </head>
 
 <body>
     <div class="UI">
-        <!-- TEMP RESET BUTTON -->
-        <button type="button" class="tempReset">
-            RESET SCENE
-        </button>
+        <div class="info">
+            INFO
+            <button type="button" class="reset">RESET</button>
+        </div>
 
         <div class="courtains">
             <div class="up"></div>
             <div class="down"></div>
         </div>
+        <div class="flashbang"></div>
         <div id="searchBarContainer" tabindex="0">
             <input id="searchBar" type="text" placeholder="Search for different places" />
             <div id="searchResultsContainer"></div>
