@@ -263,11 +263,15 @@ export default class Environment {
         this.ui.setUpEventListeners();
 
         this.radar.on("load", () => {
+            this.radar.setProjection({
+              type: "mercator"
+            });
+
             this.earth.rotateFromClientsGeolocation(this.controls);
             this.radar.update();
         });
 
-        this.radar.on("click", (event: MapMouseEvent) => {
+        /* this.radar.on("click", (event: MapMouseEvent) => {
             if (!SETTINGS.METEOR_MODE) return;
             const result: CraterResult = this.ui.launchMeteor();
             this.radar.markImpactSpot(
@@ -281,7 +285,7 @@ export default class Environment {
             const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(event.lngLat.lat, event.lngLat.lng);
 
             this.hitScene.playScene(hitNormalVec);
-        });
+        }); */
     }
 
     public resetCamera() {

@@ -1,6 +1,7 @@
 import { GeoJSONSource, Map } from "maplibre-gl";
 import Environment from "../core/environment";
 import gsap from "gsap";
+import * as turf from "@turf/turf";
 
 export class Radar extends Map {
   private static readonly impactSpotMarkingSourceID = "fb98509c-425c-40a0-ae84-97e55fefe257";
@@ -69,32 +70,9 @@ export class Radar extends Map {
   }
 
   private drawImpactSpotMarking(center: { latitude: number, longitude: number }, radius: number, color: string, opacity: number): void {
-    const points: [number, number][] = [];
-    const earthRadiusMeters: number = 6371000;
-    const latitude = center.latitude * Math.PI / 180.0;
-    const longitude: number = center.longitude * Math.PI / 180.0;
-    const pointsCount: number = 64;
-
-    for (let i: number = 0; i < pointsCount; i++) {
-      const angle: number = (i / pointsCount) * 2 * Math.PI;
-      const deltaX: number = radius * Math.cos(angle);
-      const deltaY: number = radius * Math.sin(angle);
-      const deltaLatitude: number = deltaY / earthRadiusMeters;
-      const deltaLongitude: number = deltaX / (earthRadiusMeters * Math.cos(latitude));
-      const pointLatitude = latitude + deltaLatitude;
-      const pointLongitude = longitude + deltaLongitude;
-
-      points.push([pointLongitude * 180.0 / Math.PI, pointLatitude * 180.0 / Math.PI]);
-    }
-
-    const circle: GeoJSON.Feature<GeoJSON.Polygon> = {
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [points]
-      },
-      properties: {}
-    };
+    const circle = turf.circle(turf.point([center.longitude, center.latitude]), radius, {
+      units: "meters"
+    });
 
     if (this.getSource(Radar.impactSpotMarkingSourceID)) {
       (this.getSource(Radar.impactSpotMarkingSourceID) as GeoJSONSource).setData(circle);
