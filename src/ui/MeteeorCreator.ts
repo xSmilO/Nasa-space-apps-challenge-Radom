@@ -3,6 +3,7 @@ import { OBJLoader } from "three/examples/jsm/Addons.js";
 import type { UI } from "../core/UI";
 import type { CraterResult } from "../utility/types";
 import { craterFromImpactor } from "../utility/math";
+import { SETTINGS } from "../core/Settings";
 
 
 export default class MeteorCreator {
@@ -132,7 +133,9 @@ export default class MeteorCreator {
 
     public setEventListeners(): void {
         this.diameterInput?.addEventListener("input", () => this.onInputChange());
+        this.diameterInput?.addEventListener("blur", () => this.onBlur());
         this.densityInput?.addEventListener("input", () => this.onInputChange());
+        this.densityInput?.addEventListener("blur", () => this.onBlur());
         this.angleInput?.addEventListener("input", () => this.onInputChange());
         this.velocityInput?.addEventListener("input", () => this.onInputChange());
 
@@ -202,6 +205,17 @@ export default class MeteorCreator {
 
         this.angleLabel!.innerHTML = `Angle: ${this._angle ? this._angle : 0}&deg`
         this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
+    }
+
+    private onBlur(): void {
+        if (parseInt(this.diameterInput!.value) > SETTINGS.MAX_DIAMETER) {
+            this.diameterInput!.value = `${SETTINGS.MAX_DIAMETER}`;
+            this._diameter = SETTINGS.MAX_DIAMETER;
+        }
+        if (parseInt(this.densityInput!.value) > SETTINGS.MAX_DENSITY) {
+            this.densityInput!.value = `${SETTINGS.MAX_DENSITY}`;
+            this._density = SETTINGS.MAX_DENSITY;
+        }
     }
 }
 

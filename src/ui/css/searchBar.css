@@ -1,60 +1,62 @@
-#searchBarContainer {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 2.5em;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #807f8b;
-    background-color: #40424750;
-    padding: 5px;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 600px;
-    pointer-events: all;
-}
+.Meteors {
+    #searchBarContainer {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 2.5em;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #807f8b;
+        background-color: #40424750;
+        padding: 5px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 600px;
+        pointer-events: all;
+    }
 
-#searchBarContainer.hidden {
-    display: none;
-}
+    #searchBarContainer.hidden {
+        display: none;
+    }
 
-#searchBarContainer input {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    color: #dcdbee;
-    width: 100%;
-    height: 50px;
-    padding: 10px 15px 10px 15px;
-    margin-right: 5px;
-}
+    #searchBarContainer input {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        color: #dcdbee;
+        width: 100%;
+        height: 50px;
+        padding: 10px 15px 10px 15px;
+        margin-right: 5px;
+    }
 
-#searchBarContainer input::placeholder {
-    color: #807f8b;
-}
+    #searchBarContainer input::placeholder {
+        color: #807f8b;
+    }
 
-#searchBarContainer #searchResultsContainer {
-    max-height: 300px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-width: 100%;
-    width: 100%;
-}
+    #searchBarContainer #searchResultsContainer {
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-width: 100%;
+        width: 100%;
+    }
 
-#searchBarContainer #searchResultsContainer .searchResult {
-    padding: 15px;
-    color: white;
-    font-size: 14px;
-    width: calc(100% - 5px);
-    display: flex;
-    cursor: pointer;
-    transition-duration: 0.5s;
-    border-radius: 5px;
-    user-select: none;
-    margin-right: 5px;
-}
+    #searchBarContainer #searchResultsContainer .searchResult {
+        padding: 15px;
+        color: white;
+        font-size: 14px;
+        width: calc(100% - 5px);
+        display: flex;
+        cursor: pointer;
+        transition-duration: 0.5s;
+        border-radius: 5px;
+        user-select: none;
+        margin-right: 5px;
+    }
 
-#searchBarContainer #searchResultsContainer .searchResult:hover {
-    background-color: #e9e9ed;
-    color: black;
+    #searchBarContainer #searchResultsContainer .searchResult:hover {
+        background-color: #e9e9ed;
+        color: black;
+    }
 }

@@ -198,8 +198,10 @@ export default class Asteroid {
     }
 
     public show(): void {
-        // this.hidden = false;
+        this.label!.element.style.fontSize = `${(this.distanceToEarth / SETTINGS.PHA_MAX_RENDER) * 32}px`;
 
+        this.label!.element.style.opacity = `${(this.distanceToEarth / SETTINGS.PHA_MAX_RENDER) * 2}`;
+        this.icon!.element.style.opacity = `${(this.distanceToEarth / SETTINGS.PHA_MAX_RENDER) * 2}`;
         if (this.mesh) this.mesh.visible = true;
 
         if (this.orbit) this.orbit.show();

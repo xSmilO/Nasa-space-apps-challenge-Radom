@@ -8,6 +8,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: path => path.replace(/^\/server/, "")
       }
-    }
+    },
+    cors: {
+      origin: "*", // Allows any origin
+      methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
+    },
   }
 });

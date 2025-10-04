@@ -37,6 +37,7 @@ export class Earth extends Mesh {
         this.geometry = this.makeSphere(this.radius);
         this.material = new MeshStandardMaterial({
             map: this.initializeTexture("day.jpg"),
+            normalMap: this.textureLoader.load("../../assets/textures/earth/normal.png")
         });
 
         this.clouds.geometry = this.makeSphere(this.radius * (101.0 / 100.0));

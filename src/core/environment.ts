@@ -11,7 +11,7 @@ import {
     TextureLoader,
     Vector2,
     Vector3,
-    WebGLRenderer
+    WebGLRenderer,
 } from "three";
 import { Earth } from "../element3D/earth";
 import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js";
@@ -20,12 +20,12 @@ import { SETTINGS } from "./Settings";
 import type { AsteroidData, CraterResult } from "../utility/types";
 import Orbit from "../components/Orbit.ts";
 import { UI } from "./UI";
-import { Radar } from "../element2D/radar";
 import Asteroid from "../components/Asteroid.ts";
 import CelestialBody from "../components/CelestialBody.ts";
 import type { MapMouseEvent } from "maplibre-gl";
 import gsap from "gsap";
 import HitScene from "../components/HitScene.ts";
+import { Radar } from "../shader/element2D/radar.ts";
 
 export default class Environment {
     public textureLoader: TextureLoader;
@@ -113,7 +113,6 @@ export default class Environment {
         this.radarHTMLElement = document.getElementById(
             "radar"
         ) as HTMLDivElement;
-        document.body.appendChild(this.cssRenderer.domElement);
 
         this.camera.position.z = SETTINGS.CAMERA_START_DISTANCE;
 
@@ -165,8 +164,12 @@ export default class Environment {
             }
         );
 
+        const container = document.querySelector(".Meteors");
 
-        document.body.appendChild(this.renderer.domElement);
+        if (container) {
+            container.appendChild(this.renderer.domElement);
+            container.appendChild(this.cssRenderer.domElement);
+        }
     }
 
     public async init(): Promise<void> {
@@ -205,7 +208,7 @@ export default class Environment {
         const delta: number = Math.min(
             Math.max(
                 (distance - this.controls.minDistance) /
-                (this.controls.maxDistance - this.controls.minDistance),
+                    (this.controls.maxDistance - this.controls.minDistance),
                 0
             ),
             1
@@ -226,7 +229,7 @@ export default class Environment {
     public update(deltaTime: number): void {
         this.currentDate = new Date(
             this.currentDate.getTime() +
-            1000 * SETTINGS.simulationSpeed * deltaTime
+                1000 * SETTINGS.simulationSpeed * deltaTime
         );
 
         this.ui.update();
@@ -245,7 +248,8 @@ export default class Environment {
             );
             if (
                 this.controls.getDistance() >
-                SETTINGS.MIN_DISTANCE_ASTEROID_RENDER && this.hidePHAs == false
+                    SETTINGS.MIN_DISTANCE_ASTEROID_RENDER &&
+                this.hidePHAs == false
             ) {
                 if (phaBody.calcDistanceToEarth(this.earthPos)) {
                     phaBody.show();
@@ -270,7 +274,9 @@ export default class Environment {
         this.radar.on("click", (event: MapMouseEvent) => {
             if (!SETTINGS.METEOR_MODE) return;
             const result: CraterResult = this.ui.launchMeteor();
-            this.radar.markImpactSpot(
+            this.radar.markSpot(
+                Radar.impactSpotMarkingLayerID,
+                Radar.impactSpotMarkingSourceID,
                 {
                     latitude: event.lngLat.lat,
                     longitude: event.lngLat.lng,
@@ -278,9 +284,17 @@ export default class Environment {
                 result.Dtc_m
             );
 
-            const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(event.lngLat.lat, event.lngLat.lng);
+            const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(
+                event.lngLat.lat,
+                event.lngLat.lng
+            );
 
-            this.hitScene.playScene(hitNormalVec, event.lngLat.lat, event.lngLat.lng, result.Dtc_m);
+            this.hitScene.playScene(
+                hitNormalVec,
+                event.lngLat.lat,
+                event.lngLat.lng,
+                result.Dtc_m
+            );
         });
     }
 
@@ -291,10 +305,7 @@ export default class Environment {
         this.controls.minDistance = SETTINGS.CAMERA_MIN_DISTANCE;
 
         const direction = new Vector3()
-            .subVectors(
-                this.controls.object.position,
-                this.controls.target
-            )
+            .subVectors(this.controls.object.position, this.controls.target)
             .normalize();
 
         this.controls.object.position.copy(
@@ -328,7 +339,7 @@ export default class Environment {
 
     public showUI(): void {
         this.radar.show();
-        this.ui.show()
+        this.ui.show();
     }
 
     public hideUI(): void {
@@ -348,4 +359,3 @@ export default class Environment {
         }
     }
 }
-

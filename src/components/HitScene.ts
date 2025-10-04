@@ -126,6 +126,9 @@ export default class HitScene {
         this.courtains.boom();
 
         setTimeout(() => {
+            this.environment.radar.fullscreen();
+        }, 1000);
+        setTimeout(() => {
             this.environment.resetCamera();
             this.environment.resetCamera();
             this.courtains.boomFade();

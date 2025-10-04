@@ -9,16 +9,17 @@ const clock: Clock = new Clock();
 clock.start();
 const environment: Environment = new Environment(
     (timeStamp: DOMHighResTimeStamp) => {
+        if (SETTINGS.SOLAR_DESTINY_ACTIVE) return;
         environment.earth.clouds.rotation.y =
             environment.currentDate.getTime() * 0.000001;
 
         environment.controls.update();
         environment.radar.update();
-        environment.update(clock.getDelta())
+        environment.update(clock.getDelta());
 
         if (
             environment.earth.shaders[
-            environment.earth.getCloudsMaterial().uuid
+                environment.earth.getCloudsMaterial().uuid
             ]
         ) {
             environment.earth.shaders[
