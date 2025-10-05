@@ -82,7 +82,7 @@ export class AIExpert {
 
         this.addLabel(
             "AI expert says that: ",
-            "awaiting server response...",
+            "thinking...",
             document.createElement("i")
         );
 

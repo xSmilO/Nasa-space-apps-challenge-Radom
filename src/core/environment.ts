@@ -329,7 +329,9 @@ export default class Environment {
                 event.lngLat.lat,
                 event.lngLat.lng,
                 craterResult,
-                fireballParams
+                fireballParams,
+                mass,
+                this.ui.meteorCreator._velocity * 1000
             );
         });
     }
@@ -347,7 +349,7 @@ export default class Environment {
         this.controls.object.position.copy(
             this.controls.target
                 .clone()
-                .add(direction.multiplyScalar(SETTINGS.CAMERA_START_DISTANCE))
+                .add(direction.multiplyScalar(SETTINGS.CAMERA_START_AFTER_HIT))
         );
         this.controls.target.copy(new Vector3(0, 0, 0));
         this.camera.lookAt(this.controls.target);

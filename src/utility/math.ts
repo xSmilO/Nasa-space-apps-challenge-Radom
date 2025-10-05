@@ -220,7 +220,7 @@ export function computeDustSpread(params: DustParams): DustSpreadResult {
 export function estimateImpactLosses(params: LossParams): LossEstimate {
     const {
         destroyedAreaKm2,
-        costPerKm2 = 5e9, // domyślnie 5 mld USD/km² (duże miasta)
+        costPerKm2 = 5e6, // domyślnie 5 mld USD/km² (duże miasta)
         populationDensity = 500,
         gdpPerCapita = 20_000,
     } = params;

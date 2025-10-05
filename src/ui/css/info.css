@@ -27,7 +27,28 @@
         flex-direction: column;
     }
 
-    .infoContainer button {
+    .resetBtn {
         pointer-events: all;
+        position: absolute;
+        left: 50%;
+        top: 2em;
+        transform: translateX(-50%);
+        padding: 0.25em 1.25em;
+        background-color: #40424750;
+        outline: none;
+        border: 2px solid white;
+        color: white;
+        border-radius: 1.25em;
+        cursor: pointer;
+        scale: 0;
+        transition: all 200ms ease;
+    }
+
+    .resetBtn.show {
+        scale: 1;
+    }
+
+    .resetBtn:hover {
+        background-color: hsla(0, 100%, 100%, 20%);
     }
 }

@@ -16,7 +16,6 @@ export default class Api {
         fireballRadius: number
     ) {
         // https://lobster-app-bhpix.ondigitalocean.app/?lat=40.71383629321172&lng=-74.04596655907675&radii=4848
-        console.log("radiusy: " + craterRadius + " " + fireballRadius);
         const res = await axios.get<ApiPoplationResult>(
             `https://lobster-app-bhpix.ondigitalocean.app/?lat=${lan}&lng=${long}&radii=${craterRadius}&radii=${fireballRadius}`
         );

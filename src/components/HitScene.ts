@@ -21,6 +21,8 @@ export default class HitScene {
 
     public craterResult: CraterResult | null = null;
     public fireballResult: FireballResult | null = null;
+    public mass: number;
+    public vel: number;
 
     constructor(environment: Environment) {
         this.isActive = false;
@@ -32,6 +34,8 @@ export default class HitScene {
         this.info = new Info(this);
         this.api = new Api(this.info);
         this.meteorSpawned = false;
+        this.mass = 0;
+        this.vel = 0;
 
         this.meteor.init();
     }
@@ -40,14 +44,16 @@ export default class HitScene {
         hitNormalVec: Vector3,
         lan: number,
         long: number,
-        craterRadius: CraterResult,
-        fireballParams: FireballResult
+        craterResult: CraterResult,
+        fireballResult: FireballResult,
+        mass: number,
+        vel: number
     ): void {
         this.isActive = true;
         this.hitNormalVec = hitNormalVec;
         this.environment.hidePHAs = true;
-        this.craterResult = this.craterResult;
-        this.fireballResult = this.fireballResult;
+        this.craterResult = craterResult;
+        this.fireballResult = fireballResult;
 
         this.environment.hideUI();
 
@@ -55,10 +61,12 @@ export default class HitScene {
         this.api.calculatePopulation(
             lan,
             long,
-            craterRadius.Dfr_m,
-            fireballParams.Rf_m
+            craterResult.Dfr_m,
+            fireballResult.Rf_m
         );
         this.api.isItWater(lan, long);
+        this.mass = mass;
+        this.vel = vel;
     }
 
     public resetScene(): void {
