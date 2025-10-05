@@ -67,7 +67,6 @@ export class UI {
         document
             .querySelector(".Meteors .UI .missionsBtn")
             ?.addEventListener("click", () => {
-                console.log("kruwa");
                 document
                     .querySelector(".Meteors .missions")
                     ?.classList.toggle("show");
