@@ -447,20 +447,66 @@ body {
         transition: transform 200ms ease-in;
     }
 
-    .missions {
-        background-color: blue;
+    .missionsBtn {
         position: absolute;
         top: 50%;
         left: 1em;
         transform: translate(0, -50%);
-        width: 2em;
-        height: 2em;
-        display: none;
+        width: 2.25em;
+        height: 2.25em;
+        pointer-events: all;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 16px;
+        background-color: #40424750;
+        outline: none;
+        border: 1px solid white;
+        cursor: pointer;
+        transition: all 400ms ease;
     }
 
-    .missions .btn {
-        width: 100%;
-        height: 100%;
+    .missionsBtn:hover {
+        background-color: hsla(0, 11%, 91%, 60%);
+        transform: translate(0, -50%) scale(1.2);
+    }
+
+    .missions {
+        position: absolute;
+        top: 50%;
+        background-color: #40424750;
+        left: 5em;
+        height: 20em;
+        width: 28em;
+        display: flex;
+        flex-direction: column;
+        padding: 1em;
+        border-radius: 16px;
+        overflow-y: scroll;
         pointer-events: all;
+        gap: 0.25em;
+        transform: translateX(-150%);
+        transition: all 200ms ease-in;
+    }
+
+    .missions.show {
+        transform: translateX(0);
+    }
+
+    .missions .mission {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid gray;
+        padding-bottom: 4px;
+    }
+
+    .missions .mission:last-child {
+        border-bottom: none;
+    }
+
+    .missions .mission .points {
+        display: flex;
+        align-items: center;
+        gap: 0.25em;
     }
 }

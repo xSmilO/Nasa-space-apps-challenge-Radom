@@ -57,6 +57,16 @@ export class UI {
         this.searchBar.input.addEventListener("focusin", () => {
             this.searchBar.updateSearchResults();
         });
+
+        // missions
+        document
+            .querySelector(".Meteors .UI .missionsBtn")
+            ?.addEventListener("click", () => {
+                console.log("kruwa");
+                document
+                    .querySelector(".Meteors .missions")
+                    ?.classList.toggle("show");
+            });
     }
 
     public update(): void {
