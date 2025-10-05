@@ -1,13 +1,10 @@
 import { defineConfig } from "vite";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export default defineConfig({
     server: {
         proxy: {
             "/server": {
-                target: process.env.SERVER_URL,
+                target: "https://nasa-space-apps-challenge-radom-bac.vercel.app/",
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/server/, ""),
                 secure: true,

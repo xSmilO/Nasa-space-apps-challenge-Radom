@@ -2,9 +2,6 @@ import { GeoJSONSource, Map } from "maplibre-gl";
 import Environment from "../core/environment";
 import gsap from "gsap";
 import * as turf from "@turf/turf";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export class Radar extends Map {
     public static readonly impactSpotMarkingSourceID =
@@ -29,7 +26,7 @@ export class Radar extends Map {
     constructor(environment: Environment) {
         super({
             container: "radarContainer",
-            style: `https://nasa-space-apps-challenge-radom-bac.vercel.app/getStyle`,
+            style: `/server/getStyle`,
             center: [0.0, 0.0],
             zoom: 0,
             interactive: false,
