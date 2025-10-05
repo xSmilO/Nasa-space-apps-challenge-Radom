@@ -9,8 +9,8 @@ export default class Camera {
     private defaultPosition: Vector3;
     private camera: PerspectiveCamera;
     private aspect: number;
-    private positionAnim: Tween | null = null;
-    private targetAnim: Tween | null = null;
+    private positionAnim: Tween<any> | null = null;
+    private targetAnim: Tween<any> | null = null;
 
     constructor(scene: Scene, renderer: Renderer) {
         this.camera = new PerspectiveCamera(
@@ -42,7 +42,6 @@ export default class Camera {
         this.controls.maxDistance = SETTINGS.CAMERA_MAX_DISTANCE;
 
         // this.controls.keys = {LEFT: 'ArrowLeft', RIGHT: "ArrowRight", UP: 'ArrowUp', BOTTOM: 'ArrowDown' }
-
 
         // this.controls.listenToKeyEvents(window)
 

@@ -153,8 +153,6 @@ export function computeTsunamiImpact(params: TsunamiParams): TsunamiResults {
         craterShapeFactor = 1 / 3, // stożek
     } = params;
 
-    const g = 9.80665;
-
     // --- Objętość krateru (stożek/paraboloida)
     const craterVolume =
         craterShapeFactor * Math.PI * craterRadius ** 2 * craterDepth;
@@ -191,7 +189,7 @@ export function computeTsunamiImpact(params: TsunamiParams): TsunamiResults {
 }
 
 export function computeDustSpread(params: DustParams): DustSpreadResult {
-    const { impactEnergy, atmosphereHeight = 12_000 } = params;
+    const { impactEnergy } = params;
 
     // klasyfikacja i promień na podstawie energii (logarytmicznie)
     const logE = Math.log10(impactEnergy);
