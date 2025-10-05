@@ -14,6 +14,5 @@ export default defineConfig({
             origin: "*", // Allows any origin
             methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
         },
-        open: true,
     },
 });
