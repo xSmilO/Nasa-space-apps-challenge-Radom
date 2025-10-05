@@ -62,7 +62,7 @@ export default class HitScene {
             lan,
             long,
             craterResult.Dfr_m,
-            fireballResult.Rf_m
+            fireballResult.Rf_m + craterResult.Dfr_m
         );
         this.api.isItWater(lan, long);
         this.mass = mass;

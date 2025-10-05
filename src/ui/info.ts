@@ -90,8 +90,8 @@ export default class Info {
             this.hitScene.fireballResult!.E_J / 1000
         ).toFixed(2)} kJ`;
         fireballCategory!.querySelector(".radius")!.innerHTML = `Radius: ${(
-            this.hitScene.fireballResult!.Rf_m / 1000000
-        ).toFixed(2)} km<sup>2</sup>`;
+            this.hitScene.fireballResult!.Rf_m / 1000
+        ).toFixed(2)} km`;
         fireballCategory!.querySelector(".KE")!.innerHTML = `Thermal energy: ${(
             this.hitScene.fireballResult!.Erad_J / 1000
         ).toFixed(2)} kJ`;
