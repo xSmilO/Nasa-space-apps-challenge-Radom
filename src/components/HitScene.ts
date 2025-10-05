@@ -155,6 +155,8 @@ export default class HitScene {
         );
         const speed = 70 * 70;
         // console.log(this.meteor.mesh!.position.distanceTo(this.environment.camera.position));
+        this.meteor.mesh!.rotation.x += 0.01;
+        this.meteor.mesh!.rotation.y += 0.03;
         this.meteor.mesh?.position.add(
             direction.multiplyScalar(
                 (1 / SETTINGS.DISTANCE_SCALE) * speed * deltaTime
