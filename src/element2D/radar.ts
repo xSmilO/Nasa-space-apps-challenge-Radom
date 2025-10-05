@@ -26,7 +26,7 @@ export class Radar extends Map {
     constructor(environment: Environment) {
         super({
             container: "radarContainer",
-            style: `https://api.maptiler.com/maps/openstreetmap/style.json?key=0Jxor5jLvByWSOY7OEmg`,
+            style: `https://api.maptiler.com/maps/openstreetmap/style.json?key=`,
             center: [0.0, 0.0],
             zoom: 0,
             interactive: false,
