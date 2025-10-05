@@ -15,6 +15,45 @@ import { craterFromImpactor } from "../utility/math";
 import { SETTINGS } from "../core/Settings";
 
 export default class MeteorCreator {
+    private static readonly asteroidPresets: {
+        label: string;
+        diameter: number;
+        density: number;
+        angle: number;
+        velocity: number;
+    }[] = [
+        {
+            label: "Impactor 2025",
+            diameter: 5000,
+            density: 7000,
+            angle: 90,
+            velocity: 150,
+        },
+        {
+            label: "99942 Apophis",
+            diameter: 370,
+            density: 3400,
+            angle: 20,
+            velocity: 40,
+        },
+        {
+            label: "101955 Bennu",
+            diameter: 490,
+            density: 1190,
+            angle: 20,
+            velocity: 40,
+        },
+        {
+            label: "25143 Itokawa",
+            diameter: 330,
+            density: 1900,
+            angle: 20,
+            velocity: 40,
+        },
+    ];
+
+    private static asteroidPreset: number = 0;
+
     private _active: boolean;
 
     private scene!: Scene;
@@ -41,6 +80,10 @@ export default class MeteorCreator {
 
     private modelUrl: string;
     private ui: UI;
+
+    private label: HTMLElement;
+    private leftArrow: HTMLDivElement;
+    private rightArrow: HTMLDivElement;
 
     constructor(ui: UI) {
         this.ui = ui;
@@ -79,6 +122,17 @@ export default class MeteorCreator {
             1000
         );
         this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
+
+        this.label = document.querySelector<HTMLElement>(
+            "#meteorName"
+        ) as HTMLElement;
+        this.leftArrow = document.querySelector<HTMLDivElement>(
+            ".left-arrow"
+        ) as HTMLDivElement;
+        this.rightArrow = document.querySelector<HTMLDivElement>(
+            ".right-arrow"
+        ) as HTMLDivElement;
+
         this.renderer.setSize(
             this.canvas.clientWidth,
             this.canvas.clientHeight
@@ -117,6 +171,9 @@ export default class MeteorCreator {
         this._active = true;
         this.container?.classList.add("active");
         this.meteorCreatorBtn?.classList.add("active");
+        document
+            .querySelector(".Meteors .UI .missions")
+            ?.classList.remove("show");
 
         // this.camera.aspect = this.canvas!.clientWidth / this.canvas!.clientHeight;
         // this.camera.updateProjectionMatrix();
@@ -152,6 +209,39 @@ export default class MeteorCreator {
         return this._active;
     }
 
+    private changePreset(delta: number): void {
+        MeteorCreator.asteroidPreset += delta;
+
+        if (
+            MeteorCreator.asteroidPreset >= MeteorCreator.asteroidPresets.length
+        ) {
+            MeteorCreator.asteroidPreset = 0;
+        }
+
+        if (MeteorCreator.asteroidPreset < 0) {
+            MeteorCreator.asteroidPreset =
+                MeteorCreator.asteroidPresets.length - 1;
+        }
+
+        const asteroidPreset: {
+            label: string;
+            diameter: number;
+            density: number;
+            angle: number;
+            velocity: number;
+        } = MeteorCreator.asteroidPresets[MeteorCreator.asteroidPreset];
+
+        this.label.textContent = asteroidPreset.label;
+        (this.diameterInput as HTMLInputElement).value =
+            asteroidPreset.diameter.toPrecision();
+        (this.densityInput as HTMLInputElement).value =
+            asteroidPreset.density.toPrecision();
+        (this.angleInput as HTMLInputElement).value =
+            asteroidPreset.angle.toPrecision();
+        (this.velocityInput as HTMLInputElement).value =
+            asteroidPreset.velocity.toPrecision();
+    }
+
     public setEventListeners(): void {
         this.diameterInput?.addEventListener("input", () =>
             this.onInputChange()
@@ -177,6 +267,14 @@ export default class MeteorCreator {
 
         this.hitBtn?.addEventListener("click", () => {
             this.ui.enableMeteorMode();
+        });
+
+        this.leftArrow.addEventListener("click", () => {
+            this.changePreset(-1);
+        });
+
+        this.rightArrow.addEventListener("click", () => {
+            this.changePreset(1);
         });
     }
 
