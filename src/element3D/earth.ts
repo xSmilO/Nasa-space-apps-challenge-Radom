@@ -37,7 +37,9 @@ export class Earth extends Mesh {
         this.geometry = this.makeSphere(this.radius);
         this.material = new MeshStandardMaterial({
             map: this.initializeTexture("day.jpg"),
-            normalMap: this.textureLoader.load("../../assets/textures/earth/normal.png")
+            normalMap: this.textureLoader.load(
+                "/assets/textures/earth/normal.png"
+            ),
         });
 
         this.clouds.geometry = this.makeSphere(this.radius * (101.0 / 100.0));
@@ -54,7 +56,7 @@ export class Earth extends Mesh {
         useSRGB: boolean = true
     ): Texture {
         const texture: Texture = this.textureLoader.load(
-            `./../../assets/textures/earth/${fileName}`
+            `/assets/textures/earth/${fileName}`
         );
 
         if (useSRGB) {
@@ -135,7 +137,11 @@ export class Earth extends Mesh {
         );
     } */
 
-    public rotateFromGeolocation(controls: OrbitControls, latitude: number, longitude: number): void {
+    public rotateFromGeolocation(
+        controls: OrbitControls,
+        latitude: number,
+        longitude: number
+    ): void {
         latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
         longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
         const directionVector: Vector3 = new Vector3(
@@ -143,8 +149,12 @@ export class Earth extends Mesh {
             Math.sin(latitude),
             Math.cos(longitude) * Math.cos(latitude)
         ).normalize();
-        const rotatedDirection = directionVector.clone().applyQuaternion(this.quaternion);
-        const cameraPosition = rotatedDirection.multiplyScalar(controls.getDistance());
+        const rotatedDirection = directionVector
+            .clone()
+            .applyQuaternion(this.quaternion);
+        const cameraPosition = rotatedDirection.multiplyScalar(
+            controls.getDistance()
+        );
 
         gsap.to(controls.object.position, {
             x: cameraPosition.x,
@@ -158,14 +168,20 @@ export class Earth extends Mesh {
         });
     }
 
-    public getPositionFromGeoLocation(latitude: number, longitude: number): Vector3 {
+    public getPositionFromGeoLocation(
+        latitude: number,
+        longitude: number
+    ): Vector3 {
         latitude = MathUtils.degToRad(latitude + Earth.latitudalOffset);
         longitude = MathUtils.degToRad(longitude + Earth.longitudalOffset);
         return new Vector3(
             Math.sin(longitude) * Math.cos(latitude),
             Math.sin(latitude),
             Math.cos(longitude) * Math.cos(latitude)
-        ).normalize().clone().applyQuaternion(this.quaternion);
+        )
+            .normalize()
+            .clone()
+            .applyQuaternion(this.quaternion);
     }
 
     public rotateFromClientsGeolocation(controls: OrbitControls): void {
@@ -226,4 +242,3 @@ export class Earth extends Mesh {
         return this.getCloudsMaterial().map as Texture;
     } */
 }
-

@@ -154,7 +154,7 @@ export default class Environment {
         this.scene.add(this.ambientLight);
 
         this.textureLoader.load(
-            "./../../assets/textures/skybox.png",
+            "/assets/textures/skybox.png",
             (texture: Texture) => {
                 texture.mapping = EquirectangularReflectionMapping;
                 texture.colorSpace = SRGBColorSpace;
