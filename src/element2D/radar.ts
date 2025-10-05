@@ -26,7 +26,7 @@ export class Radar extends Map {
     constructor(environment: Environment) {
         super({
             container: "radarContainer",
-            style: `/server/getStyle`,
+            style: `https://nasa-space-apps-challenge-radom-bac.vercel.app/getStyle`,
             center: [0.0, 0.0],
             zoom: 0,
             interactive: false,
