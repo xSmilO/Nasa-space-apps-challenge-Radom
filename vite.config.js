@@ -10,6 +10,7 @@ export default defineConfig({
                 target: process.env.SERVER_URL,
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/server/, ""),
+                secure: true,
             },
         },
         cors: {
