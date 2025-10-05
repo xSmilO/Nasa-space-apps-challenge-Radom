@@ -20,7 +20,7 @@ export class SearchBar {
     this.stopQuerying();
 
     this.timeout = setTimeout(() => {
-      fetch(`/server/getSearchResults?query=${this.input.value}`, {}).then((response: Response) => {
+      fetch(`https://nominatim.openstreetmap.org/search?q=${this.input.value}&format=json&accept-language=en`, {}).then((response: Response) => {
         response.json().then((data: any) => {
           this.clearSearchResults();
 
