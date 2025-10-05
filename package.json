@@ -7,10 +7,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "server": "ts-node src/server.ts",
-        "test": "concurrently \"npm run server\" \"npm run dev\"",
-        "server-linux": "node --loader ts-node/esm src/server.ts",
-        "test-linux": "concurrently \"npm run server-linux\" \"npm run dev\""
+        "test": "concurrently \"npm run server\" \"npm run dev\""
     },
     "devDependencies": {
         "@types/cors": "^2.8.19",
@@ -21,7 +18,6 @@
         "concurrently": "^9.2.1",
         "cors": "^2.8.5",
         "dotenv": "^17.2.2",
-        "express": "^5.1.0",
         "ts-node": "^10.9.2",
         "typescript": "~5.8.3",
         "vite": "^7.1.7",
@@ -29,7 +25,6 @@
     },
     "dependencies": {
         "@turf/turf": "^7.2.0",
-        "@types/express": "^5.0.3",
         "gsap": "^3.13.0",
         "maplibre-gl": "^5.7.3",
         "three": "^0.180.0"

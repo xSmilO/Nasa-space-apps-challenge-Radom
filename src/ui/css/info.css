@@ -1,13 +1,33 @@
 .Meteors {
-    .info {
+    .infoContainer {
+        position: absolute;
         display: none;
+        background-color: #40424750;
+        width: 24em;
+        height: 28em;
+        padding: 1.25em;
+        overflow-y: scroll;
+        pointer-events: all;
+        left: 3em;
+        top: 50%;
+        transform: translate(0, -50%);
+        border-radius: 16px;
+        gap: 1em;
     }
 
-    .info.show {
-        display: block;
+    .infoContainer li {
+        list-style: none;
+        margin-left: 4px;
+        opacity: 0.8;
+        text-wrap: wrap;
     }
 
-    .info button {
+    .infoContainer.show {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .infoContainer button {
         pointer-events: all;
     }
 }

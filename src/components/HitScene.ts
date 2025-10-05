@@ -6,6 +6,7 @@ import gsap from "gsap";
 import Courtains from "../ui/courtains";
 import Info from "../ui/info";
 import Api from "../utility/api";
+import type { CraterResult, FireballResult } from "../utility/types";
 
 export default class HitScene {
     public isActive: boolean;
@@ -17,6 +18,9 @@ export default class HitScene {
     private info: Info;
     private api: Api;
     private meteorSpawned: boolean;
+
+    public craterResult: CraterResult | null = null;
+    public fireballResult: FireballResult | null = null;
 
     constructor(environment: Environment) {
         this.isActive = false;
@@ -36,30 +40,25 @@ export default class HitScene {
         hitNormalVec: Vector3,
         lan: number,
         long: number,
-        craterRadius: number
+        craterRadius: CraterResult,
+        fireballParams: FireballResult
     ): void {
         this.isActive = true;
         this.hitNormalVec = hitNormalVec;
         this.environment.hidePHAs = true;
+        this.craterResult = this.craterResult;
+        this.fireballResult = this.fireballResult;
 
         this.environment.hideUI();
 
-        // 1. go to the surface (check)
-        // 2. Spawn meteor      (check)
-        // 3. View this meteor  (check, chyba)
-        // 4. Meteor is moving towards the camera (check)
-        // 5. when it's close (flashbang on screen) (check)
-        // 6. go to the default position (check, ale do poprawy chyba)
-        // 7. set bigger radar (zara)
-        // 8. show the statistics, like meteor parameters, zniszczenia, ile ludzi pierdyklo, (tera na to setup)
-        // parametru krateru itd
-        // 9. repeat
-        //
-
-        //1.
-
         this.goToSurface();
-        this.api.calculatePopulation(lan, long, craterRadius);
+        this.api.calculatePopulation(
+            lan,
+            long,
+            craterRadius.Dfr_m,
+            fireballParams.Rf_m
+        );
+        this.api.isItWater(lan, long);
     }
 
     public resetScene(): void {

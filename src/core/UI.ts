@@ -10,7 +10,7 @@ export class UI {
     private date: HTMLDivElement | null = null;
     private clock: HTMLDivElement | null = null;
     private liveBtn: HTMLDivElement | null = null;
-    private meteorCreator: MeteorCreator;
+    public meteorCreator: MeteorCreator;
     private environment: Environment;
     private timeSlider: TimeSlider;
     private searchBar: SearchBar;
@@ -25,9 +25,7 @@ export class UI {
         this.date = document.querySelector<HTMLDivElement>(
             ".time-slider .info .date"
         );
-        this.liveBtn = document.querySelector(
-            ".time-slider .info .live-btn"
-        );
+        this.liveBtn = document.querySelector(".time-slider .info .live-btn");
         this.timeSlider = new TimeSlider();
 
         this.meteorCreator.disable();
@@ -36,17 +34,25 @@ export class UI {
             this.searchBar.updateSearchResults();
         });
 
-        this.searchBar.container.addEventListener("focusout", (event: FocusEvent) => {
-            if (event.relatedTarget && (
-                this.searchBar.container.contains(event.relatedTarget as Node) ||
-                this.searchBar.searchResultsContainer.contains(event.relatedTarget as Node)
-            )) {
-                return;
-            }
+        this.searchBar.container.addEventListener(
+            "focusout",
+            (event: FocusEvent) => {
+                if (
+                    event.relatedTarget &&
+                    (this.searchBar.container.contains(
+                        event.relatedTarget as Node
+                    ) ||
+                        this.searchBar.searchResultsContainer.contains(
+                            event.relatedTarget as Node
+                        ))
+                ) {
+                    return;
+                }
 
-            this.searchBar.stopQuerying();
-            this.searchBar.clearSearchResults();
-        });
+                this.searchBar.stopQuerying();
+                this.searchBar.clearSearchResults();
+            }
+        );
 
         this.searchBar.input.addEventListener("focusin", () => {
             this.searchBar.updateSearchResults();
@@ -79,7 +85,6 @@ export class UI {
         if (hours < 10) hours = "0" + hours;
         if (minutes < 10) minutes = "0" + minutes;
         if (seconds < 10) seconds = "0" + seconds;
-
 
         if (this.clock) this.clock.innerText = `${hours}:${minutes}:${seconds}`;
 

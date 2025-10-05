@@ -2,21 +2,25 @@ export type ApiPoplationResult = {
     populations: Array<number>;
 };
 
+export type ApiIsWaterResult = {
+    isWater: boolean;
+};
+
 export type CraterResult = {
-    Dtc_m: number;    // transient crater diameter (m)
-    Dfr_m: number;    // final rim-to-rim diameter (m)
-    dtc_m: number;    // transient crater depth (m)
-    area_m2: number;  // area of final crater (m^2)
-    regime: 'simple' | 'complex';
+    Dtc_m: number; // transient crater diameter (m)
+    Dfr_m: number; // final rim-to-rim diameter (m)
+    dtc_m: number; // transient crater depth (m)
+    area_m2: number; // area of final crater (m^2)
+    regime: "simple" | "complex";
 };
 
 export type FireballResult = {
-    E_J: number;            // kinetic energy (J)
-    Rf_m: number;           // fireball radius at max radiation (m)
-    Erad_J: number;         // assumed radiated thermal energy (J) = K * E
+    E_J: number; // kinetic energy (J)
+    Rf_m: number; // fireball radius at max radiation (m)
+    Erad_J: number; // assumed radiated thermal energy (J) = K * E
     thermalFluxAt_r: (r_m: number) => number; // function returning J/m^2 at distance r
-    duration_s?: number;    // rough irradiation duration estimate (s)
-    K_used: number;         // luminous/thermal efficiency used
+    duration_s?: number; // rough irradiation duration estimate (s)
+    K_used: number; // luminous/thermal efficiency used
 };
 
 export interface orbitElements {
@@ -181,46 +185,46 @@ export interface AdditionalInfo {
 }
 
 export interface TsunamiParams {
-  craterRadius: number;     // R_c [m]
-  craterDepth: number;      // d_c [m]
-  displacedFraction?: number; // k_V (0.1–1)
-  dispersalFactor?: number; // β (3–10)
-  runupFactor?: number;     // μ (1–5)
-  shoreSlopeDeg?: number;   // s [°]
-  shoreDistance?: number;   // r_shore [m] — odległość od krateru do brzegu
-  craterShapeFactor?: number; // C_v — 1/3 (stożek) lub 1/2 (paraboloida)
+    craterRadius: number; // R_c [m]
+    craterDepth: number; // d_c [m]
+    displacedFraction?: number; // k_V (0.1–1)
+    dispersalFactor?: number; // β (3–10)
+    runupFactor?: number; // μ (1–5)
+    shoreSlopeDeg?: number; // s [°]
+    shoreDistance?: number; // r_shore [m] — odległość od krateru do brzegu
+    craterShapeFactor?: number; // C_v — 1/3 (stożek) lub 1/2 (paraboloida)
 }
 
 export interface TsunamiResults {
-  craterVolume: number;        // m³
-  displacedVolume: number;     // m³
-  initialWaveHeight: number;   // H₀ [m]
-  waveHeightAtShore: number;   // H(r) [m]
-  runup: number;               // Ru [m]
-  inundationDistance: number;  // D_inund [m]
+    craterVolume: number; // m³
+    displacedVolume: number; // m³
+    initialWaveHeight: number; // H₀ [m]
+    waveHeightAtShore: number; // H(r) [m]
+    runup: number; // Ru [m]
+    inundationDistance: number; // D_inund [m]
 }
 
 export interface DustParams {
-  impactEnergy: number; // energia uderzenia (J)
-  atmosphereHeight?: number; // [m] – wysokość troposfery (domyślnie 12e3)
+    impactEnergy: number; // energia uderzenia (J)
+    atmosphereHeight?: number; // [m] – wysokość troposfery (domyślnie 12e3)
 }
 
 export interface DustSpreadResult {
-  dustRadius: number;     // promień zasięgu pyłów [m]
-  dustArea: number;       // powierzchnia zasięgu [m²]
-  classification: string; // lokalny / regionalny / globalny
+    dustRadius: number; // promień zasięgu pyłów [m]
+    dustArea: number; // powierzchnia zasięgu [m²]
+    classification: string; // lokalny / regionalny / globalny
 }
 
 export interface LossParams {
-  destroyedAreaKm2: number;    // zniszczony obszar [km²]
-  costPerKm2?: number;         // koszt zniszczeń [USD/km²]
-  populationDensity?: number;  // ludzie/km²
-  gdpPerCapita?: number;       // USD/osoba
+    destroyedAreaKm2: number; // zniszczony obszar [km²]
+    costPerKm2?: number; // koszt zniszczeń [USD/km²]
+    populationDensity?: number; // ludzie/km²
+    gdpPerCapita?: number; // USD/osoba
 }
 
 export interface LossEstimate {
-  totalEconomicLoss: number; // USD
-  populationAffected: number;
-  humanLossesValue: number;  // USD
-  totalLossWithHumans: number; // USD
+    totalEconomicLoss: number; // USD
+    populationAffected: number;
+    humanLossesValue: number; // USD
+    totalLossWithHumans: number; // USD
 }

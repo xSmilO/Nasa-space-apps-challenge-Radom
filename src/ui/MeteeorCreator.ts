@@ -1,10 +1,18 @@
-import { AmbientLight, DirectionalLight, Mesh, MeshStandardMaterial, PerspectiveCamera, Scene, SphereGeometry, WebGLRenderer } from "three";
+import {
+    AmbientLight,
+    DirectionalLight,
+    Mesh,
+    MeshStandardMaterial,
+    PerspectiveCamera,
+    Scene,
+    SphereGeometry,
+    WebGLRenderer,
+} from "three";
 import { OBJLoader } from "three/examples/jsm/Addons.js";
 import type { UI } from "../core/UI";
 import type { CraterResult } from "../utility/types";
 import { craterFromImpactor } from "../utility/math";
 import { SETTINGS } from "../core/Settings";
-
 
 export default class MeteorCreator {
     private _active: boolean;
@@ -26,10 +34,10 @@ export default class MeteorCreator {
     private closeBtn: HTMLDivElement | null;
     private hitBtn: HTMLDivElement | null;
     private meteorCreatorBtn: HTMLButtonElement | null;
-    private _diameter: number;
-    private _density: number;
-    private _angle: number;
-    private _velocity: number;
+    public _diameter: number;
+    public _density: number;
+    public _angle: number;
+    public _velocity: number;
 
     private modelUrl: string;
     private ui: UI;
@@ -52,18 +60,31 @@ export default class MeteorCreator {
         this.modelUrl = "";
 
         this._active = false;
-        this.container = document.querySelector<HTMLDivElement>(".meteorCreator");
-        this.canvas = document.querySelector<HTMLDivElement>(".meteorCreator .displayContainer .display");
+        this.container =
+            document.querySelector<HTMLDivElement>(".meteorCreator");
+        this.canvas = document.querySelector<HTMLDivElement>(
+            ".meteorCreator .displayContainer .display"
+        );
 
-        if (!this.canvas) throw new Error("MeteorCreator: .meteorCreator .display doesn't not exist");
+        if (!this.canvas)
+            throw new Error(
+                "MeteorCreator: .meteorCreator .display doesn't not exist"
+            );
 
         this.scene = new Scene();
-        this.camera = new PerspectiveCamera(75, this.canvas.clientWidth / this.canvas.clientHeight, 0.1, 1000);
+        this.camera = new PerspectiveCamera(
+            75,
+            this.canvas.clientWidth / this.canvas.clientHeight,
+            0.1,
+            1000
+        );
         this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
-        this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+        this.renderer.setSize(
+            this.canvas.clientWidth,
+            this.canvas.clientHeight
+        );
 
         this.canvas.appendChild(this.renderer.domElement);
-
 
         this.camera.position.z = 2;
         this.fetchHTMLElements();
@@ -123,8 +144,8 @@ export default class MeteorCreator {
                         this.meteor.geometry = child.geometry;
                     }
                 }
-            })
-        })
+            });
+        });
     }
 
     get active(): boolean {
@@ -132,38 +153,52 @@ export default class MeteorCreator {
     }
 
     public setEventListeners(): void {
-        this.diameterInput?.addEventListener("input", () => this.onInputChange());
+        this.diameterInput?.addEventListener("input", () =>
+            this.onInputChange()
+        );
         this.diameterInput?.addEventListener("blur", () => this.onBlur());
-        this.densityInput?.addEventListener("input", () => this.onInputChange());
+        this.densityInput?.addEventListener("input", () =>
+            this.onInputChange()
+        );
         this.densityInput?.addEventListener("blur", () => this.onBlur());
         this.angleInput?.addEventListener("input", () => this.onInputChange());
-        this.velocityInput?.addEventListener("input", () => this.onInputChange());
+        this.velocityInput?.addEventListener("input", () =>
+            this.onInputChange()
+        );
 
         this.meteorCreatorBtn?.addEventListener("click", () => {
             this.active ? this.disable() : this.enable();
-        })
+        });
 
         this.closeBtn?.addEventListener("click", () => {
             this.disable();
             this.ui.disableMeteorMode();
-        })
+        });
 
         this.hitBtn?.addEventListener("click", () => {
             this.ui.enableMeteorMode();
-        })
+        });
     }
 
     public onResize(): void {
         if (!this.canvas) return;
-        this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+        this.renderer.setSize(
+            this.canvas.clientWidth,
+            this.canvas.clientHeight
+        );
         this.camera.aspect = this.canvas.clientWidth / this.canvas.clientHeight;
         this.camera.updateProjectionMatrix();
     }
 
     public calculateMeteorCrater(): CraterResult {
-        return craterFromImpactor(this._diameter, this._velocity * 1000, this._angle, {
-            rho_imp: this._density
-        })
+        return craterFromImpactor(
+            this._diameter,
+            this._velocity * 1000,
+            this._angle,
+            {
+                rho_imp: this._density,
+            }
+        );
     }
 
     public showButton(): void {
@@ -175,26 +210,45 @@ export default class MeteorCreator {
     }
 
     private fetchHTMLElements(): void {
-        this.diameterInput = document.querySelector<HTMLInputElement>("input[name='diameter']");
-        this.densityInput = document.querySelector<HTMLInputElement>("input[name='density']");
-        this.angleInput = document.querySelector<HTMLInputElement>("input[name='angle']");
-        this.velocityInput = document.querySelector<HTMLInputElement>("input[name='velocity']");
+        this.diameterInput = document.querySelector<HTMLInputElement>(
+            "input[name='diameter']"
+        );
+        this.densityInput = document.querySelector<HTMLInputElement>(
+            "input[name='density']"
+        );
+        this.angleInput = document.querySelector<HTMLInputElement>(
+            "input[name='angle']"
+        );
+        this.velocityInput = document.querySelector<HTMLInputElement>(
+            "input[name='velocity']"
+        );
 
-        this.angleLabel = document.querySelector<HTMLLabelElement>("label[for='angle']");
-        this.velocityLabel = document.querySelector<HTMLLabelElement>("label[for='velocity']");
+        this.angleLabel =
+            document.querySelector<HTMLLabelElement>("label[for='angle']");
+        this.velocityLabel = document.querySelector<HTMLLabelElement>(
+            "label[for='velocity']"
+        );
 
-        this.closeBtn = document.querySelector<HTMLDivElement>(".meteorCreator .closeBtn");
-        this.hitBtn = document.querySelector<HTMLDivElement>(".meteorCreator .hitBtn");
-        this.meteorCreatorBtn = document.querySelector<HTMLButtonElement>(".meteorCreatorBtn");
-
+        this.closeBtn = document.querySelector<HTMLDivElement>(
+            ".meteorCreator .closeBtn"
+        );
+        this.hitBtn = document.querySelector<HTMLDivElement>(
+            ".meteorCreator .hitBtn"
+        );
+        this.meteorCreatorBtn =
+            document.querySelector<HTMLButtonElement>(".meteorCreatorBtn");
 
         this._diameter = parseInt(this.diameterInput!.value);
         this._density = parseInt(this.densityInput!.value);
         this._angle = parseInt(this.angleInput!.value);
         this._velocity = parseInt(this.velocityInput!.value);
 
-        this.angleLabel!.innerHTML = `Angle: ${this._angle ? this._angle : 0}&deg`
-        this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
+        this.angleLabel!.innerHTML = `Angle: ${
+            this._angle ? this._angle : 0
+        }&deg`;
+        this.velocityLabel!.innerHTML = `Velocity: ${
+            this._velocity ? this._velocity : 0
+        } km/s`;
     }
 
     private onInputChange(): void {
@@ -203,8 +257,12 @@ export default class MeteorCreator {
         this._angle = parseInt(this.angleInput!.value);
         this._velocity = parseInt(this.velocityInput!.value);
 
-        this.angleLabel!.innerHTML = `Angle: ${this._angle ? this._angle : 0}&deg`
-        this.velocityLabel!.innerHTML = `Velocity: ${this._velocity ? this._velocity : 0} km/s`;
+        this.angleLabel!.innerHTML = `Angle: ${
+            this._angle ? this._angle : 0
+        }&deg`;
+        this.velocityLabel!.innerHTML = `Velocity: ${
+            this._velocity ? this._velocity : 0
+        } km/s`;
     }
 
     private onBlur(): void {
@@ -218,4 +276,3 @@ export default class MeteorCreator {
         }
     }
 }
-

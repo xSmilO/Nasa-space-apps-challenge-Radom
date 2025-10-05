@@ -17,7 +17,11 @@ import { Earth } from "../element3D/earth";
 import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js";
 import Loader from "./loader";
 import { SETTINGS } from "./Settings";
-import type { AsteroidData, CraterResult } from "../utility/types";
+import type {
+    AsteroidData,
+    CraterResult,
+    FireballResult,
+} from "../utility/types";
 import Orbit from "../components/Orbit.ts";
 import { UI } from "./UI";
 import Asteroid from "../components/Asteroid.ts";
@@ -27,6 +31,11 @@ import gsap from "gsap";
 import HitScene from "../components/HitScene.ts";
 import { Radar } from "../element2D/radar.ts";
 import { AIExpert } from "../element2D/aiExpert.ts";
+import {
+    calculateKineticEnergy,
+    calculateMass,
+    estimateFireball,
+} from "../utility/math.ts";
 
 export default class Environment {
     public textureLoader: TextureLoader;
@@ -276,7 +285,35 @@ export default class Environment {
 
         this.radar.on("click", (event: MapMouseEvent) => {
             if (!SETTINGS.METEOR_MODE) return;
-            const result: CraterResult = this.ui.launchMeteor();
+            const craterResult: CraterResult = this.ui.launchMeteor();
+
+            const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(
+                event.lngLat.lat,
+                event.lngLat.lng
+            );
+            const mass = calculateMass(
+                this.ui.meteorCreator._density,
+                this.ui.meteorCreator._diameter
+            );
+
+            const fireballParams: FireballResult = estimateFireball(
+                calculateKineticEnergy(
+                    mass,
+                    this.ui.meteorCreator._velocity * 1000
+                )
+            );
+
+            this.radar.markSpot(
+                Radar.fireballRangeLayerID,
+                Radar.fireballRangeSourceID,
+                {
+                    latitude: event.lngLat.lat,
+                    longitude: event.lngLat.lng,
+                },
+                fireballParams.Rf_m,
+                "#fcba03"
+            );
+
             this.radar.markSpot(
                 Radar.impactSpotMarkingLayerID,
                 Radar.impactSpotMarkingSourceID,
@@ -284,19 +321,15 @@ export default class Environment {
                     latitude: event.lngLat.lat,
                     longitude: event.lngLat.lng,
                 },
-                result.Dtc_m
-            );
-
-            const hitNormalVec: Vector3 = this.earth.getPositionFromGeoLocation(
-                event.lngLat.lat,
-                event.lngLat.lng
+                craterResult.Dtc_m
             );
 
             this.hitScene.playScene(
                 hitNormalVec,
                 event.lngLat.lat,
                 event.lngLat.lng,
-                result.Dtc_m
+                craterResult,
+                fireballParams
             );
         });
     }

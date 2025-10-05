@@ -14,6 +14,11 @@ export class Radar extends Map {
     public static readonly dustRangeLayerID =
         "86442a7a-47c5-4342-9666-6f0d3072fb86";
 
+    public static readonly fireballRangeSourceID =
+        "6e31fc37-ceff-4c58-86d9-32dafb033110";
+    public static readonly fireballRangeLayerID =
+        "abd5317d-b682-44cd-bbd3-eef6f0dc4bc3";
+
     private htmlElement: HTMLDivElement;
     private environment: Environment;
     private isDraggable: boolean;
@@ -72,10 +77,10 @@ export class Radar extends Map {
         } catch (exception: any) {}
     }
 
-    public removeImpactSpotMarking(): void {
-        if (this.getSource(Radar.impactSpotMarkingSourceID)) {
-            this.removeLayer(Radar.impactSpotMarkingLayerID);
-            this.removeSource(Radar.impactSpotMarkingSourceID);
+    public removeImpactSpotMarking(layerID: string, sourceID: string): void {
+        if (this.getSource(sourceID)) {
+            this.removeLayer(layerID);
+            this.removeSource(sourceID);
         }
     }
 
@@ -125,7 +130,7 @@ export class Radar extends Map {
         this.addLayer({
             id: layerID,
             type: "fill",
-            source: Radar.impactSpotMarkingSourceID,
+            source: sourceID,
             paint: {
                 "fill-color": color,
                 "fill-opacity": opacity,
