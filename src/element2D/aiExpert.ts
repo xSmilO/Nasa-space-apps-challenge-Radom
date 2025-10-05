@@ -1,3 +1,5 @@
+import { TypeWriter } from "../utility/typeWriter";
+
 export class AIExpert {
   private htmlElement: HTMLDivElement;
   private latitude?: number;
@@ -24,9 +26,8 @@ export class AIExpert {
   }
 
   private addLabelContent(content: string, htmlElement: any): void {
-    this.htmlElement.appendChild(Object.assign(htmlElement, {
-      textContent: content
-    }));
+    this.htmlElement.appendChild(htmlElement);
+    new TypeWriter(this.htmlElement.lastChild as HTMLElement, 1000, content);
   }
 
   private addLabelInternal(label: string, htmlElement: any): void {
