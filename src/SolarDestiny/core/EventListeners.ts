@@ -45,7 +45,6 @@ export class EventListeners {
         document
             .querySelector<HTMLButtonElement>(".SolarDestiny .UI .BackToEarth")
             ?.addEventListener("click", () => {
-                console.log("penis");
                 SETTINGS.SOLAR_DESTINY_ACTIVE = false;
 
                 document.querySelector(".Meteors")?.classList.add("active");
