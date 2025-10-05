@@ -1,0 +1,126 @@
+.defencesBtn {
+    position: absolute;
+    top: 4.5em;
+    right: 3em;
+    border-radius: 8px;
+    background-color: #40424750;
+    outline: none;
+    padding: 0.6em 1.8em;
+    cursor: pointer;
+    pointer-events: all;
+    color: #ebe6e6;
+}
+
+.defencesBtn.hidden {
+    display: none;
+}
+
+.defences {
+    position: absolute;
+    top: 8em;
+    right: 3em;
+    width: 300px;
+    background-color: #40424750;
+    border-radius: 8px;
+    overflow: hidden;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1em;
+}
+
+.defences.show {
+    opacity: 1;
+}
+
+.defences .tryIt {
+    margin-top: 0.5em;
+    margin-right: 1em;
+    align-self: flex-end;
+    letter-spacing: 1.2px;
+    cursor: pointer;
+    pointer-events: all;
+    user-select: none;
+}
+
+.rad-label {
+    pointer-events: all;
+    display: flex;
+    align-items: center;
+
+    /* border-radius: 100px; */
+    padding: 14px 16px;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.rad-label:hover,
+.rad-label:focus-within {
+    background: hsla(0, 0%, 80%, 0.14);
+}
+
+.rad-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    z-index: -1;
+}
+
+.rad-design {
+    width: 18px;
+    height: 18px;
+    border-radius: 100px;
+
+    background: linear-gradient(
+        to right bottom,
+        hsl(154, 97%, 62%),
+        hsl(225, 97%, 62%)
+    );
+    position: relative;
+}
+
+.rad-design::before {
+    content: "";
+
+    display: inline-block;
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+
+    background: hsl(0, 0%, 90%);
+    transform: scale(1.1);
+    transition: 0.3s;
+}
+
+.rad-input:checked + .rad-design::before {
+    transform: scale(0);
+}
+
+.rad-text {
+    color: hsl(0, 0%, 60%);
+    margin-left: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 900;
+
+    transition: 0.3s;
+}
+
+.rad-input:checked ~ .rad-text {
+    color: hsl(0, 0%, 40%);
+}
+
+/* ABS */
+/* ====================================================== */
+.abs-site-link {
+    position: fixed;
+    bottom: 40px;
+    left: 20px;
+    color: hsla(0, 0%, 0%, 0.5);
+    font-size: 16px;
+}

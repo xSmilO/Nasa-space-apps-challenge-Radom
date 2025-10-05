@@ -466,6 +466,10 @@ body {
         transition: all 400ms ease;
     }
 
+    .missionsBtn.hidden {
+        display: none;
+    }
+
     .missionsBtn:hover {
         background-color: hsla(0, 11%, 91%, 60%);
         transform: translate(0, -50%) scale(1.2);

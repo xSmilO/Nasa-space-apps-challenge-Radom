@@ -10,6 +10,11 @@ export class UI {
     private date: HTMLDivElement | null = null;
     private clock: HTMLDivElement | null = null;
     private liveBtn: HTMLDivElement | null = null;
+    private missionsBtn: HTMLDivElement | null = null;
+    private missions: HTMLDivElement | null = null;
+    private defencesBtn: HTMLDivElement | null = null;
+    private defences: HTMLDivElement | null = null;
+
     public meteorCreator: MeteorCreator;
     private environment: Environment;
     private timeSlider: TimeSlider;
@@ -67,6 +72,23 @@ export class UI {
                     .querySelector(".Meteors .missions")
                     ?.classList.toggle("show");
             });
+
+        this.missionsBtn = document.querySelector(".Meteors .UI .missionsBtn");
+        this.missions = document.querySelector(".Meteors .UI .missions");
+
+        this.defencesBtn = document.querySelector(".Meteors .UI .defencesBtn");
+        this.defences = document.querySelector(".Meteors .UI .defences");
+
+        document
+            .querySelector(".Meteors .UI .defences .tryIt")
+            ?.addEventListener("click", () => {
+                const msg =
+                    Math.random() * 100 > 40
+                        ? "Congrants mate. You've made it"
+                        : "Ohhhh nooooo. Only God can save Us";
+
+                alert(msg);
+            });
     }
 
     public update(): void {
@@ -86,6 +108,9 @@ export class UI {
                 this.live();
                 this.timeSlider.reset();
             });
+        this.defencesBtn?.addEventListener("click", () => {
+            this.defences?.classList.toggle("show");
+        });
     }
 
     public updateTimelineInfo(date: Date): void {
@@ -136,11 +161,19 @@ export class UI {
     public show(): void {
         this.meteorCreator.showButton();
         this.searchBar.show();
+        this.missionsBtn?.classList.remove("hidden");
+        this.defencesBtn?.classList.remove("hidden");
     }
 
     public hide(): void {
         this.meteorCreator.hideButton();
         this.meteorCreator.disable();
         this.searchBar.hide();
+
+        this.missionsBtn?.classList.add("hidden");
+        this.missions?.classList.remove("show");
+
+        this.defencesBtn?.classList.add("hidden");
+        this.defences?.classList.remove("show");
     }
 }
